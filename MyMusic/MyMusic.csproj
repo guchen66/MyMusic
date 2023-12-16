@@ -1,0 +1,79 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+	<ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <ApplicationIcon>Music.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Remove="Assets\Fonts\iconfont.ttf" />
+    <None Remove="Assets\Images\Error\403.png" />
+    <None Remove="Assets\Images\Error\404.png" />
+    <None Remove="Assets\Images\Error\500.png" />
+    <None Remove="Assets\Images\Error\Sleeping.png" />
+    <None Remove="Assets\Images\Error\无网络.png" />
+    <None Remove="Assets\Images\Error\没数据.png" />
+    <None Remove="Assets\Images\jita.jpg" />
+    <None Remove="Assets\Images\music.jpg" />
+    <None Remove="Assets\Images\下载失败.png" />
+    <None Remove="Assets\Images\已完成.png" />
+    <None Remove="Assets\Images\提示.png" />
+    <None Remove="Assets\Images\警告.png" />
+    <None Remove="Assets\Images\通知公告.png" />
+    <None Remove="Assets\Images\雪花.jpeg" />
+    <None Remove="Music.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Music.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="HandyControl" Version="3.4.0" />
+    <PackageReference Include="MaterialDesign.Avalonia.PackIcon" Version="1.25.0" />
+    <PackageReference Include="MaterialDesignThemes" Version="4.9.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="8.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Prism.DryIoc" Version="8.1.97" />
+    <PackageReference Include="WpfExtensions.Xaml" Version="1.2.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Music.Shared\Music.Shared.csproj" />
+    <ProjectReference Include="..\Music.SqlSugar\Music.SqlSugar.csproj" />
+    <ProjectReference Include="..\Music.System\Music.System.csproj" />
+    <ProjectReference Include="..\Music.Themes\Music.Themes.csproj" />
+    <ProjectReference Include="..\Music.ToolKit\Music.ToolKit.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Fonts\iconfont.ttf" />
+    <Resource Include="Assets\Images\Error\403.png" />
+    <Resource Include="Assets\Images\Error\500.png" />
+    <Resource Include="Assets\Images\Error\Sleeping.png" />
+    <Resource Include="Assets\Images\Error\404.png" />
+    <Resource Include="Assets\Images\Error\无网络.png" />
+    <Resource Include="Assets\Images\Error\没数据.png" />
+    <Resource Include="Assets\Images\jita.jpg" />
+    <Resource Include="Assets\Images\music.jpg">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\下载失败.png" />
+    <Resource Include="Assets\Images\已完成.png" />
+    <Resource Include="Assets\Images\提示.png" />
+    <Resource Include="Assets\Images\警告.png" />
+    <Resource Include="Assets\Images\通知公告.png" />
+    <Resource Include="Assets\Images\雪花.jpeg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="App.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Shell\ViewModels\Dialogs\" />
+    <Folder Include="Shell\ViewModels\Settings\Children\" />
+  </ItemGroup>
+</Project>

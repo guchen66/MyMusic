@@ -1,0 +1,122 @@
+﻿<Window
+    x:Class="MyMusic.Views.LoginView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:i18n="clr-namespace:Music.ToolKit.I18nResource;assembly=Music.ToolKit"
+    xmlns:local="clr-namespace:MyMusic.Views"
+    xmlns:markup="clr-namespace:WpfExtensions.Xaml.Markup;assembly=WpfExtensions.Xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:prism="http://prismlibrary.com/"
+    xmlns:provider="clr-namespace:Music.ToolKit.Providers;assembly=Music.ToolKit"
+    Title="用户登录"
+    Width="650"
+    Height="390"
+    prism:ViewModelLocator.AutoWireViewModel="True"
+    ResizeMode="NoResize"
+    WindowStartupLocation="CenterScreen"
+    WindowStyle="None">
+    <Grid MouseDown="Border_MouseDown">
+        <!--<Grid.Background>
+            <LinearGradientBrush StartPoint="0.1,0" EndPoint="0.9,1">
+                <GradientStop Offset="1" Color="#FFE63070" />
+                <GradientStop Offset="0" Color="#FFFE8704" />
+            </LinearGradientBrush>
+        </Grid.Background>-->
+        <Border
+            Height="390"
+            VerticalAlignment="Top"
+            Background="#000000"
+            CornerRadius="0 0 120 0" />
+        <StackPanel Orientation="Horizontal">
+
+            <StackPanel Width="350" Panel.ZIndex="1">
+                <StackPanel Margin="20,40,20,40">
+                    <TextBlock
+                        Margin="20"
+                        FontFamily="Great Vibes"
+                        FontSize="35"
+                        Foreground="White"
+                        Text="{markup:I18n {x:Static i18n:I18nProvider.Login}}"
+                        TextAlignment="Center" />
+                    <StackPanel Margin="10" Orientation="Horizontal">
+                        <md:PackIcon
+                            Width="30"
+                            Height="30"
+                            Foreground="White"
+                            Kind="User" />
+                        <TextBox
+                            x:Name="txtUsername"
+                            Width="250"
+                            Margin="10,0"
+                            md:HintAssist.Hint="请输入用户名"
+                            BorderBrush="White"
+                            CaretBrush="#FFD94448"
+                            FontSize="16"
+                            Foreground="White"
+                            SelectionBrush="#FFD94448"
+                            Text="{Binding UserName}" />
+                    </StackPanel>
+                    <StackPanel Margin="10" Orientation="Horizontal">
+                        <md:PackIcon
+                            Width="30"
+                            Height="30"
+                            Foreground="White"
+                            Kind="Lock" />
+                        <PasswordBox
+                            x:Name="txtPassword"
+                            Width="250"
+                            Margin="10,0"
+                            md:HintAssist.Hint="请输入密码"
+                            provider:PasswordBoxProvider.Attach="True"
+                            provider:PasswordBoxProvider.Password="{Binding Password, Mode=TwoWay}"
+                            BorderBrush="White"
+                            CaretBrush="#FFD94448"
+                            FontSize="16"
+                            Foreground="White"
+                            SelectionBrush="#FFD94448" />
+                    </StackPanel>
+                    <StackPanel Margin="10,40,10,10" HorizontalAlignment="Center">
+                        <Button
+                            x:Name="btnLogin"
+                            Width="100"
+                            Height="40"
+                            Background="#D94448"
+                            BorderBrush="#D94448"
+                            BorderThickness="2"
+                            Command="{Binding LoginCommand}"
+                            CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"
+                            Content="登录"
+                            Foreground="White"
+                            IsDefault="True"
+                            ToolTip="登录" />
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Width="384" Margin="-85,40">
+                <Image
+                    Width="384"
+                    Height="240"
+                    VerticalAlignment="Top"
+                    Source="../Assets/Images/jita.jpg"
+                    Stretch="Fill" />
+            </StackPanel>
+            <StackPanel Margin="30,0,0,0" HorizontalAlignment="Right">
+                <Button
+                    Height="auto"
+                    Background="#000000"
+                    BorderBrush="#000000"
+                    Command="{Binding CancelCommand}">
+                    <md:PackIcon
+                        Width="30"
+                        Height="30"
+                        Foreground="White"
+                        Kind="Power" />
+                </Button>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+
+</Window>

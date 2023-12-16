@@ -1,0 +1,197 @@
+﻿<UserControl
+    x:Class="MyMusic.Views.HeaderView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:consts="clr-namespace:Music.Shared.Consts;assembly=Music.Shared"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:i18n="clr-namespace:Music.ToolKit.I18nResource;assembly=Music.ToolKit"
+    xmlns:markup="clr-namespace:WpfExtensions.Xaml.Markup;assembly=WpfExtensions.Xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:prism="http://prismlibrary.com/"
+    xmlns:vw="clr-namespace:MyMusic.Views;assembly=MyMusic"
+    prism:ViewModelLocator.AutoWireViewModel="True"
+    FlowDirection="LeftToRight">
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="MouseLeftButtonDown">
+            <i:InvokeCommandAction Command="{Binding DragMoveCommand}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+
+
+    <Grid Background="White">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="auto" />
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Grid.Column="0" Orientation="Horizontal">
+
+            <!--#region 前进后退-->
+            <StackPanel Margin="15,0,15,0" Orientation="Horizontal">
+                <TextBlock
+                    VerticalAlignment="Center"
+                    FontFamily="../../Assets/Fonts/#iconfont"
+                    FontSize="22"
+                    Text="&#xe616;"
+                    ToolTip="后退">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="MouseLeftButtonDown">
+                            <i:InvokeCommandAction Command="{Binding GoBackCommand, UpdateSourceTrigger=PropertyChanged}" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </TextBlock>
+
+                <TextBlock
+                    Margin="10,0,0,0"
+                    VerticalAlignment="Center"
+                    FontFamily="../../Assets/Fonts/#iconfont"
+                    FontSize="22"
+                    Text="&#xe61b;"
+                    ToolTip="前进">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="MouseLeftButtonDown">
+                            <i:InvokeCommandAction Command="{Binding ForWardCommand, UpdateSourceTrigger=PropertyChanged}" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </TextBlock>
+            </StackPanel>
+            <!--#endregion-->
+
+            <Border
+                Width="240"
+                Height="30"
+                BorderBrush="Gray"
+                BorderThickness="1"
+                CornerRadius="5">
+                <TextBox
+                    Width="240"
+                    Height="30"
+                    Padding="10,5,0,0"
+                    VerticalAlignment="Center"
+                    md:HintAssist.Hint="搜索音乐"
+                    md:TextFieldAssist.HasClearButton="True"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    FontSize="14"
+                    Text="{Binding SearchContent, UpdateSourceTrigger=PropertyChanged}">
+                    <TextBox.InputBindings>
+                        <KeyBinding Key="Enter" Command="{Binding SearchCommand}" />
+                    </TextBox.InputBindings>
+                </TextBox>
+            </Border>
+
+            <Button
+                Margin="10,0,0,0"
+                Command="{Binding SearchCommand, UpdateSourceTrigger=PropertyChanged}"
+                CommandParameter="{Binding SearchContent}"
+                Content="搜索"
+                Cursor="Hand" />
+
+        </StackPanel>
+
+
+
+        <StackPanel
+            Grid.Column="1"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Center"
+            Orientation="Horizontal">
+            <TextBlock
+                Margin="20,0,0,0"
+                VerticalAlignment="Center"
+                FontSize="16"
+                Text="播放源" />
+            <DockPanel x:Name="GroupCheckButton">
+                <StackPanel DockPanel.Dock="Left">
+                    <ItemsControl x:Name="cbt" ItemsSource="{Binding HeaderArgs.MusicSourceList}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <CheckBox
+                                    Margin="5,2,10,0"
+                                    Command="{Binding DataContext.ConfirmPlaySourceCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ItemsControl}}"
+                                    CommandParameter="{Binding Source}"
+                                    Content="{Binding Name}"
+                                    IsChecked="{Binding IsSelected}" />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </DockPanel>
+        </StackPanel>
+        <StackPanel Grid.Column="2" Orientation="Horizontal">
+            <!--<StackPanel>
+
+                <ToggleButton x:Name="SettingsToggleButton"
+                              Height="56" Style="{StaticResource ToggleButtonStyle.LeftBarAndUnderline}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="25"/>
+                            <RowDefinition Height="2"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <md:PackIcon Kind="Menu" Foreground="{DynamicResource LightGreyBackgroundBrush}" HorizontalAlignment="Center" Height="22" Width="25"/>
+                        <TextBlock Grid.Row="2" HorizontalAlignment="Center" Foreground="{DynamicResource LightGreyBackgroundBrush}" FontSize="10"
+                                   Text="菜单"/>
+                    </Grid>
+                </ToggleButton>
+                <vw:SettingsPopup IsOpen="{Binding IsChecked, ElementName=SettingsToggleButton}"  StaysOpen="False"
+                                     PlacementTarget="{Binding ElementName=SettingsToggleButton}" Placement="Right" VerticalOffset="-318" PopupAnimation="Fade"
+                                     Width="284" Height="Auto" />
+            </StackPanel>-->
+
+            <StackPanel
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                Orientation="Horizontal">
+                <TextBlock
+                    Margin="30,0,0,0"
+                    VerticalAlignment="Center"
+                    FontFamily="Microsoft YaHei"
+                    FontSize="24"
+                    FontWeight="Light"
+                    Text="liu" />
+                <md:PopupBox
+                    Margin="10"
+                    Foreground="DeepSkyBlue"
+                    PlacementMode="BottomAndAlignRightEdges"
+                    StaysOpen="False">
+                    <StackPanel Width="150">
+                        <Button Content="账户" />
+                        <Button
+                            Command="{Binding OpenSettingCommand}"
+                            CommandParameter="{x:Static consts:MenuNames.SetView}"
+                            Content="设置" />
+                        <Button
+                            Width="100"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Bottom"
+                            Click="Button_Click"
+                            Content="中文"
+                            Tag="zh-CN" />
+                        <Button
+                            Width="100"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Bottom"
+                            Click="Button_Click"
+                            Content="English"
+                            Tag="" />
+                        <Button Command="{Binding OpenLoggerCommand}" Content="日志" />
+                        <Separator />
+                        <Button Command="{Binding LogoutCommand}" Content="切换账号" />
+                    </StackPanel>
+                </md:PopupBox>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</UserControl>
+
+

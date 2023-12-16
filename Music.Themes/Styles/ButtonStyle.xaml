@@ -1,0 +1,131 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="clr-namespace:MaterialDesignThemes.Wpf.Converters;assembly=MaterialDesignThemes.Wpf"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
+    <!--  ToggleButton style  -->
+    <Style x:Key="ToggleButtonStyle.LeftBarAndUnderline" TargetType="ToggleButton">
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ToggleButton}">
+                    <Border
+                        Margin="{TemplateBinding Margin}"
+                        Background="{StaticResource PrimaryHueDarkBrush}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="0"
+                        ClipToBounds="{TemplateBinding ClipToBounds}">
+                        <Grid>
+                            <Border x:Name="MouseOverBorder" Opacity="0">
+                                <Border.Background>
+                                    <TemplateBinding Property="Foreground">
+                                        <TemplateBinding.Converter>
+                                            <converters:BrushRoundConverter HighValue="Black" LowValue="{StaticResource PrimaryHueMidBrush}" />
+                                        </TemplateBinding.Converter>
+                                    </TemplateBinding>
+                                </Border.Background>
+                            </Border>
+                            <Border
+                                x:Name="CheckedBorder"
+                                Opacity="0"
+                                RenderTransformOrigin="0.5,0.5">
+                                <Border.Background>
+                                    <TemplateBinding Property="Foreground">
+                                        <TemplateBinding.Converter>
+                                            <converters:BrushRoundConverter HighValue="Black" LowValue="{StaticResource PrimaryHueMidBrush}" />
+                                        </TemplateBinding.Converter>
+                                    </TemplateBinding>
+                                </Border.Background>
+                            </Border>
+                            <materialDesign:Ripple
+                                Padding="{TemplateBinding Padding}"
+                                HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                Content="{TemplateBinding Content}"
+                                ContentTemplate="{TemplateBinding ContentTemplate}"
+                                Focusable="False"
+                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}">
+                                <materialDesign:Ripple.Feedback>
+                                    <TemplateBinding Property="Foreground">
+                                        <TemplateBinding.Converter>
+                                            <converters:BrushRoundConverter HighValue="White" LowValue="LightGray" />
+                                        </TemplateBinding.Converter>
+                                    </TemplateBinding>
+                                </materialDesign:Ripple.Feedback>
+                            </materialDesign:Ripple>
+                            <Rectangle
+                                x:Name="PART_CheckedRectangle"
+                                Width="4"
+                                HorizontalAlignment="Left"
+                                Fill="{StaticResource PrimaryHueLightBrush}"
+                                Opacity="0" />
+                            <Rectangle
+                                x:Name="PART_MouseOverRectangle"
+                                Width="4"
+                                HorizontalAlignment="Left"
+                                Fill="{StaticResource PrimaryHueLightBrush}"
+                                Opacity="0" />
+                        </Grid>
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualStateGroup.Transitions>
+                                    <VisualTransition
+                                        GeneratedDuration="0:0:0.4"
+                                        Storyboard="{x:Null}"
+                                        From="{x:Null}"
+                                        To="Normal">
+                                        <VisualTransition.GeneratedEasingFunction>
+                                            <CircleEase EasingMode="EaseOut" />
+                                        </VisualTransition.GeneratedEasingFunction>
+                                    </VisualTransition>
+                                </VisualStateGroup.Transitions>
+                                <VisualState x:Name="Normal" />
+                                <VisualState x:Name="MouseOver">
+                                    <Storyboard>
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="MouseOverBorder"
+                                            Storyboard.TargetProperty="Opacity"
+                                            To="0.4"
+                                            Duration="0" />
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="PART_MouseOverRectangle"
+                                            Storyboard.TargetProperty="Opacity"
+                                            To="0.2"
+                                            Duration="0" />
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="Disabled" />
+                            </VisualStateGroup>
+                            <VisualStateGroup x:Name="CheckStates">
+                                <VisualStateGroup.Transitions>
+                                    <VisualTransition
+                                        GeneratedDuration="0:0:0.2"
+                                        GeneratedEasingFunction="{x:Null}"
+                                        Storyboard="{x:Null}"
+                                        From="{x:Null}"
+                                        To="{x:Null}" />
+                                </VisualStateGroup.Transitions>
+                                <VisualState x:Name="Checked">
+                                    <Storyboard>
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="CheckedBorder"
+                                            Storyboard.TargetProperty="Opacity"
+                                            To="0.8"
+                                            Duration="0" />
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="PART_CheckedRectangle"
+                                            Storyboard.TargetProperty="Opacity"
+                                            To="1"
+                                            Duration="0" />
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="Unchecked" />
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>

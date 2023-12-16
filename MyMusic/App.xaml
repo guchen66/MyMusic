@@ -1,0 +1,27 @@
+﻿<prism:PrismApplication
+    x:Class="MyMusic.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:convers="clr-namespace:MyMusic.Styles"
+    xmlns:local="clr-namespace:MyMusic"
+    xmlns:prism="http://prismlibrary.com/">
+
+    <Application.Resources>
+        <ResourceDictionary>
+
+            <ResourceDictionary.MergedDictionaries>
+
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Light.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.Blue.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.Indigo.xaml" />
+
+                <ResourceDictionary Source="pack://application:,,,/Music.ToolKit;component/Styles/ListViewStyle.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Music.Themes;component/Styles/DownLoadCheckBoxStyle.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Music.Themes;component/Styles/CustomListBoxItemStyle.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Music.Themes;component/Styles/ButtonStyle.xaml" />
+
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+</prism:PrismApplication>

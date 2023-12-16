@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.54" />
+    <PackageReference Include="Mapster" Version="7.4.0" />
+    <PackageReference Include="NLog" Version="5.2.6" />
+    <PackageReference Include="Prism.Wpf" Version="8.1.97" />
+    <PackageReference Include="SqlSugarCore" Version="5.1.4.117" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Music.Core\Music.Core.csproj" />
+    <ProjectReference Include="..\Music.SqlSugar\Music.SqlSugar.csproj" />
+    <ProjectReference Include="..\Music.ToolKit\Music.ToolKit.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Services\MainSign\FooterSign\Dtos\" />
+    <Folder Include="Services\MainSign\HomeSign\Dtos\" />
+    <Folder Include="Services\MainSign\EmptyPlayListSign\" />
+  </ItemGroup>
+</Project>
