@@ -1,18 +1,17 @@
 ﻿
+using Music.Shared.Mvvm;
 using Music.System.Services.HttpTools;
 using Music.System.Services.MainSign.FooterSign;
 
 namespace MyMusic.ViewModels
 {
-    public class EmptyPlayListViewModel : BindableBase, INavigationAware
+    public class EmptyPlayListViewModel : BaseViewModel, INavigationAware
     {
         #region 字段
 
         private Timer _timer;
         private DispatcherTimer timer;
         private readonly IFavorService _favorService;
-        IRegionNavigationJournal _navigationJournal;
-        IRegionManager _regionManager;
         private Music.System.Services.Loggers.ILogger _logger;
         IHttpClientService _httpClientService;
         IButtonPlaySingleService _buttonPlaySingleService;
@@ -59,11 +58,9 @@ namespace MyMusic.ViewModels
         }
         #endregion
 
-        public EmptyPlayListViewModel(IFavorService favorService, IRegionNavigationJournal navigationJournal, IRegionManager regionManager, IHttpClientService httpClientService, IButtonPlaySingleService buttonPlaySingleService)
+        public EmptyPlayListViewModel(IFavorService favorService, IHttpClientService httpClientService, IButtonPlaySingleService buttonPlaySingleService, IContainerProvider provider):base(provider)
         {
             _favorService = favorService;
-            _regionManager = regionManager;
-            _navigationJournal = navigationJournal;
             _httpClientService = httpClientService;
             _buttonPlaySingleService = buttonPlaySingleService;
             _logger = ContainerLocator.Container.Resolve<Music.System.Services.Loggers.ILogger>();
@@ -156,7 +153,7 @@ namespace MyMusic.ViewModels
                 {
                     if (string.IsNullOrEmpty(item))
                     {
-                        _regionManager.RequestNavigate(RegionNames.ContentRegion, new Uri("_404View", UriKind.Relative));
+                        RegionManager.RequestNavigate(RegionNames.ContentRegion, new Uri("_404View", UriKind.Relative));
                         continue;
                     }
 
@@ -176,7 +173,7 @@ namespace MyMusic.ViewModels
             }
             catch (Exception)
             {
-                _regionManager.RequestNavigate(RegionNames.ContentRegion, new Uri("_404View", UriKind.Relative));
+                RegionManager.RequestNavigate(RegionNames.ContentRegion, new Uri("_404View", UriKind.Relative));
                 throw;
             }
         }

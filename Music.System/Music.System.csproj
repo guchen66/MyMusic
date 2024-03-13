@@ -16,8 +16,8 @@
     <ProjectReference Include="..\Music.ToolKit\Music.ToolKit.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Services\MainSign\EmptyPlayListSign\Dtos\" />
     <Folder Include="Services\MainSign\FooterSign\Dtos\" />
     <Folder Include="Services\MainSign\HomeSign\Dtos\" />
-    <Folder Include="Services\MainSign\EmptyPlayListSign\" />
   </ItemGroup>
 </Project>

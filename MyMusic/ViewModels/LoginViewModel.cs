@@ -1,14 +1,14 @@
 ﻿
+using Music.Shared.Mvvm;
+
 namespace MyMusic.ViewModels
 {
-    public class LoginViewModel : BindableBase
+    public class LoginViewModel : BaseViewModel
     {
 
         #region  字段
-        private readonly IEventAggregator _eventAggregator;
        // private readonly LoginProvider _loginProvider;
         private readonly ILogger logger;
-        private readonly IRegionManager _regionManager;
         private readonly ILoginService _loginService;
         private  IConfiguration _configuration;
         #endregion
@@ -40,14 +40,12 @@ namespace MyMusic.ViewModels
         public ICommand CancelCommand {  get; set; }
         #endregion
 
-        public LoginViewModel(IRegionManager regionManager, IEventAggregator eventAggregator, ILogger logger,ILoginService loginService)
+        public LoginViewModel(ILogger logger,ILoginService loginService, IContainerProvider provider):base(provider)
         {
            
             this.logger = logger;
 
             _loginService=loginService;
-            _regionManager = regionManager;
-            _eventAggregator = eventAggregator;
            // _loginProvider = loginProvider;
             CloseingCommand = new DelegateCommand(ExecuteClose);
             LoginCommand = new DelegateCommand<Window>(async (win) => await SignInAsync(win));
@@ -70,7 +68,7 @@ namespace MyMusic.ViewModels
             var loginResult = await AuthenticateAsync(UserName, Password);
             if (loginResult.Status)
             {
-                _eventAggregator.GetEvent<LoginEvent>().Publish(win);                
+                EventAggregator.GetEvent<LoginEvent>().Publish(win);                
                 await Task.Delay(100); // 假设等待100毫秒，你可以根据实际情况调整
                 SplashScreenManager.CloseSplashScreen();
             }
@@ -85,7 +83,7 @@ namespace MyMusic.ViewModels
         /// </summary>
         private void SignOutAsync()
         {
-            _eventAggregator.GetEvent<LogOutEvent>().Publish();
+            EventAggregator.GetEvent<LogOutEvent>().Publish();
             //Application.Current.Shutdown();
         }
 

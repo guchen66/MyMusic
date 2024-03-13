@@ -1,19 +1,16 @@
 ﻿
+using Music.Shared.Mvvm;
+
 namespace MyMusic.ViewModels
 {
-    public class MainWindowViewModel : BindableBase
+    public class MainWindowViewModel : BaseViewModel
     {
 
         #region 字段
-
-        // private Timer _timer;
         public DispatcherTimer _timer;
+        // private Timer _timer;
         public MainArgs AppData { get; set; } = MainArgs.Instance;
-        IRegionNavigationJournal _navigationJournal;//导航日志，上一页，下一页
-        IRegionManager _regionManager;//区域管理
-        IDialogService _dialogService;
         IPlayListService _playListService;
-        IEventAggregator _eventAggregator;
         public SimpleClient<MusicInfo> db = new SimpleClient<MusicInfo>();
         public DataRepository<PlayListInfo> db2= new DataRepository<PlayListInfo>();
         #endregion
@@ -32,16 +29,13 @@ namespace MyMusic.ViewModels
 
         #endregion
 
-        public MainWindowViewModel(IDialogService dialogService, IRegionManager regionManager, IEventAggregator eventAggregator, IRegionNavigationJournal navigationJournal, IPlayListService playListService)
+        public MainWindowViewModel(IPlayListService playListService, IContainerProvider provider):base(provider)
         {
-            _dialogService = dialogService;
-            _regionManager = regionManager;
-            _eventAggregator = eventAggregator;
-            _navigationJournal = navigationJournal;
+ 
             _playListService = playListService;
-            regionManager.RegisterViewWithRegion(RegionNames.ContentRegion, typeof(EmptyPlayList));
-            regionManager.RegisterViewWithRegion(RegionNames.HeaderRegion, typeof(HeaderView));
-            regionManager.RegisterViewWithRegion(RegionNames.FooterRegion, typeof(FooterView));
+            RegionManager.RegisterViewWithRegion(RegionNames.ContentRegion, typeof(EmptyPlayList));
+            RegionManager.RegisterViewWithRegion(RegionNames.HeaderRegion, typeof(HeaderView));
+            RegionManager.RegisterViewWithRegion(RegionNames.FooterRegion, typeof(FooterView));
             SplashScreenManager.CloseSplashScreen();
 
             db2.GetList().ForEach(x => PlayListInputDtos.Add(x));
@@ -56,7 +50,7 @@ namespace MyMusic.ViewModels
           //  _timer.Tick += _timer_Tick;
             _timer.Start();
 
-            _eventAggregator.GetEvent<RefreshEvent>().Subscribe(async () => await RefreshAsync());
+            EventAggregator.GetEvent<RefreshEvent>().Subscribe(async () => await RefreshAsync());
 
             PlayListSignValue playListSignValue=new PlayListSignValue();
             playListSignValue.CalculationCompleted += PlayListSignValue_CalculationCompleted;
@@ -141,7 +135,7 @@ namespace MyMusic.ViewModels
                 { "Source",SourceName}
             };
                
-            _regionManager.RequestNavigate(RegionNames.ContentRegion, new Uri("EmptyPlayList", UriKind.Relative), navigationParameters);
+            RegionManager.RequestNavigate(RegionNames.ContentRegion, new Uri("EmptyPlayList", UriKind.Relative), navigationParameters);
 
         }
 
@@ -157,9 +151,9 @@ namespace MyMusic.ViewModels
         private void Navigate(MenuList navigatePath)
         {
             if (navigatePath != null)
-                _regionManager.RequestNavigate(RegionNames.ContentRegion, navigatePath.NameSpace, arg =>
+                RegionManager.RequestNavigate(RegionNames.ContentRegion, navigatePath.NameSpace, arg =>
                 {
-                    _navigationJournal = arg.Context.NavigationService.Journal;
+                    NavigationJournal = arg.Context.NavigationService.Journal;
                 });
         }
 
@@ -168,7 +162,7 @@ namespace MyMusic.ViewModels
         /// </summary>
         public void ExecuteCreatePlayListView()
         {
-            _dialogService.ShowDialog("AddPlayListDialog",  async arg =>
+            DialogService.ShowDialog("AddPlayListDialog",  async arg =>
             {
                 if (arg.Result == ButtonResult.Yes)
                 {
@@ -190,7 +184,7 @@ namespace MyMusic.ViewModels
         private void ExecuteOpenLyrics()
         {
             // 创建通知控件
-            _dialogService.ShowDialog("AppNotification", null, result => { });
+            DialogService.ShowDialog("AppNotification", null, result => { });
         }
 
         /// <summary>

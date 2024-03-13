@@ -47,7 +47,7 @@ namespace MyMusic
             containerRegistry.Register<IPlayListService, PlayListService>();
             containerRegistry.Register<IButtonPlaySingleService, ButtonPlaySingleService>();
             //注册单例
-            containerRegistry.RegisterSingleton<IEventAggregator, EventAggregator>();
+        //    containerRegistry.RegisterSingleton<IEventAggregator, EventAggregator>();
             containerRegistry.RegisterSingleton<ISettingsService, SettingsService>();
 
             //注入数据库仓储

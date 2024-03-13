@@ -1,7 +1,9 @@
 ﻿
+using Music.Shared.Mvvm;
+
 namespace MyMusic.ViewModels
 {
-    public class HomeViewModel : BindableBase
+    public class HomeViewModel : BaseViewModel
     {
 
         #region 字段
@@ -73,13 +75,12 @@ namespace MyMusic.ViewModels
 
         #endregion
 
-        public HomeViewModel(IFavorService favorService, IPlayListService playListService, IRegionManager regionManager,IHttpClientService httpClientService)
+        public HomeViewModel(IFavorService favorService, IPlayListService playListService,IHttpClientService httpClientService, IContainerProvider provider):base(provider)
         {
             SearchProgressVisibility = Visibility.Visible;
             DataVisibility = Visibility.Hidden;
             _favorService = favorService;
             _playListService = playListService;
-            _regionManager = regionManager;
             _httpClientService = httpClientService;
             // InitCommand=DialogHost.OpenDialogCommand;
             InitingCommand = new DelegateCommand(ExecuteIniting);

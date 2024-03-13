@@ -174,9 +174,11 @@
                                                 <!--  使用定位器重新实例化一个Button的数据上下文内容  -->
                                                 <Button.ContextMenu>
                                                     <ContextMenu Background="{x:Null}" Foreground="White">
+                                                       
                                                         <ContextMenu.DataContext>
                                                             <system:PlayListSettings />
                                                         </ContextMenu.DataContext>
+                                                        
                                                         <MenuItem
                                                             Background="Gray"
                                                             Command="{Binding ReNamePlayListItemCommand}"
@@ -187,6 +189,7 @@
                                                             Command="{Binding DeletePlayListItemCommand}"
                                                             CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.CommandParameter}"
                                                             Header="删除" />
+                                                        
                                                     </ContextMenu>
                                                 </Button.ContextMenu>
                                             </Button>
