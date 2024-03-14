@@ -1,5 +1,4 @@
-﻿global using Music.SqlSugar.Entity;
-global using SqlSugar;
+﻿global using SqlSugar;
 global using System;
 global using System.Collections.Generic;
 global using Microsoft.Extensions.Configuration;
@@ -56,4 +55,5 @@ global using Music.ToolKit.Settings;
 global using HtmlAgilityPack;
 global using Music.Shared.Events.LoginSign;
 global using Mapster;
+global using Music.SqlSugar.Repositorys;
 global using Music.Shared.Globals.Dtos;

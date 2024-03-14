@@ -18,9 +18,9 @@ namespace MyMusic.Views
     /// <summary>
     /// EmptyPlayList.xaml 的交互逻辑
     /// </summary>
-    public partial class EmptyPlayList : UserControl
+    public partial class EmptyPlayListView : UserControl
     {
-        public EmptyPlayList()
+        public EmptyPlayListView()
         {
             InitializeComponent();
         }

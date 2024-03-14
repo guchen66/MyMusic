@@ -1,6 +1,4 @@
 ﻿
-using Music.Shared.Mvvm;
-
 namespace MyMusic.ViewModels
 {
     public class LoginViewModel : BaseViewModel

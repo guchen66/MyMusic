@@ -1,8 +1,4 @@
 ﻿
-using Music.Shared.Mvvm;
-using Music.System.Services.HttpTools;
-using Music.System.Services.MainSign.FooterSign;
-
 namespace MyMusic.ViewModels
 {
     public class EmptyPlayListViewModel : BaseViewModel, INavigationAware

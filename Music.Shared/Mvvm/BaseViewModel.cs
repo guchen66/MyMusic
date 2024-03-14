@@ -13,6 +13,10 @@ using System.Windows.Threading;
 
 namespace Music.Shared.Mvvm
 {
+    /// <summary>
+    /// 中间类不能台臃肿，将Prism自带的注册进去，
+    /// 再写一个自定义的接口，然后实现一个自定义的接口。
+    /// </summary>
     public class BaseViewModel:BindableBase
     {
         public DispatcherTimer Timer;

@@ -1,16 +1,4 @@
-﻿using Music.Shared.Consts;
-using Music.Shared.Globals.MainSign.PlayListSign;
-using Prism.Mvvm;
-using Prism.Regions;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace Music.Shared.Globals.MainSign
 {
     public class MainArgs : BindableBase

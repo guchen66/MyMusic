@@ -11,11 +11,16 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Music.System", "Music.Syste
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Music.SqlSugar", "Music.SqlSugar\Music.SqlSugar.csproj", "{17EAA610-A159-4D79-B804-49AE0D6E2725}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Music.Themes", "Music.Themes\Music.Themes.csproj", "{53CBB5F4-CB01-4124-8B2E-21CBAF22F847}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Music.Themes", "Music.Themes\Music.Themes.csproj", "{53CBB5F4-CB01-4124-8B2E-21CBAF22F847}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Music.Shared", "Music.Shared\Music.Shared.csproj", "{6B3A00FD-528E-4A28-8C6C-C9D155877C13}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Music.Shared", "Music.Shared\Music.Shared.csproj", "{6B3A00FD-528E-4A28-8C6C-C9D155877C13}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Music.ToolKit", "Music.ToolKit\Music.ToolKit.csproj", "{439DDFC4-C41D-4082-80E4-4E9F4AD5F2A2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Music.ToolKit", "Music.ToolKit\Music.ToolKit.csproj", "{439DDFC4-C41D-4082-80E4-4E9F4AD5F2A2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D2199B4A-2DB8-4E05-9A59-1156DA34C0FC}"
+	ProjectSection(SolutionItems) = preProject
+		Directory.Packages.props = Directory.Packages.props
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

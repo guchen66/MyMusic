@@ -1,5 +1,5 @@
 ﻿<UserControl
-    x:Class="MyMusic.Views.EmptyPlayList"
+    x:Class="MyMusic.Views.EmptyPlayListView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"

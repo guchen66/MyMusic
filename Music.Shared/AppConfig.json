@@ -1,0 +1,26 @@
+{
+  "SqlConnection": {
+    "ConnectionMMsql": "server=.;uid=sa;pwd=211314;database=MusicDb;Trusted_Connection=true;",
+    "ConnectionMysql": "database = datageneratordb; server = localhost; port = 3306; uid = root; pwd = 1314; "
+  },
+  "HeaderConfig": {
+    "Home": "HomeView",
+    "News": "NewsView",
+    "Generator": "GeneratorView",
+    "Register": "RegisterView",
+    "Login": "LoginView"
+  },
+  "Scaning": {
+    "IsRegister": "true",
+    "RegisterName": {
+      "Title": "View",
+      "Name": "Service"
+    }
+  },
+  /**自动生成数据**/
+  "GeneratorData": {
+    "Title": "SqlServer",
+    "IsGenerator": "true", //初始化数据库和表格
+    "IsSeedData": "false" //自动生成表数据
+  }
+}

@@ -37,7 +37,6 @@ global using System.IO;
 global using System.Linq;
 global using System.Threading;
 global using System.Windows;
-global using Music.SqlSugar.Entity;
 global using Music.SqlSugar.Services;
 global using Music.System.Services.MainSign.PlayLists;
 global using Music.System.Services.MainSign.PlayLists.Dtos;
@@ -81,3 +80,10 @@ global using NAudio.Wave.SampleProviders;
 global using NewLife.Remoting;
 global using Newtonsoft.Json.Linq;
 global using WpfExtensions.Xaml;
+global using Music.SqlSugar.Repositorys;
+global using Music.Shared.Mvvm;
+global using Music.ToolKit.Commands;
+global using Music.Shared.Globals.MainSign.MyFavors;
+global using Music.System.Services.MainSign.FooterSign;
+global using System.Windows.Media;
+

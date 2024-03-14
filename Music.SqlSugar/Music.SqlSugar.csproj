@@ -7,12 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Const\" />
-    <Folder Include="Dto\" />
+    <Folder Include="Entity\" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="SqlSugarCore" Version="5.1.4.117" />
+    <PackageReference Include="SqlSugar.IOC"/>
+    <PackageReference Include="SqlSugarCore" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Music.Shared\Music.Shared.csproj" />
   </ItemGroup>
 
 </Project>

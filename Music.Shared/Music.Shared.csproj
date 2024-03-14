@@ -7,16 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Prism.Core" Version="8.1.97" />
-    <PackageReference Include="Prism.Wpf" Version="8.1.97" />
-    <PackageReference Include="SqlSugarCore" Version="5.1.4.117" />
+    <PackageReference Include="NewLife.Core"  />
+    <PackageReference Include="Prism.Core"  />
+    <PackageReference Include="Prism.Wpf"  />
+    <PackageReference Include="SqlSugarCore" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Music.SqlSugar\Music.SqlSugar.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <None Update="AppConfig.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="loginAccount.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

@@ -2,30 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Principal;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Music.SqlSugar.Entity
+namespace Music.Shared.Entitys.NotRegistered
 {
-    /// <summary>
-    /// 主键实体基类
-    /// </summary>
-    public abstract class PrimaryKeyEntity
-    {
-        /// <summary>
-        /// 主键Id
-        /// </summary>
-        [SugarColumn(ColumnDescription = "Id", IsPrimaryKey = true)]
-        public virtual long Id { get; set; }
-
-        /// <summary>
-        /// 拓展信息
-        /// </summary>
-        [SugarColumn(ColumnName = "ExtJson", ColumnDescription = "扩展信息", ColumnDataType = StaticConfig.CodeFirst_BigString, IsNullable = true)]
-        public virtual string ExtJson { get; set; }
-    }
-
     /// <summary>
     /// 框架实体基类
     /// </summary>
@@ -72,17 +51,5 @@ namespace Music.SqlSugar.Entity
         /// </summary>
         [SugarColumn(ColumnDescription = "软删除", IsNullable = true)]
         public virtual bool IsDelete { get; set; } = false;
-    }
-
-    /// <summary>
-    /// 业务数据实体基类(数据权限)
-    /// </summary>
-    public abstract class DataEntityBase : BaseEntity
-    {
-        /// <summary>
-        /// 创建者部门Id
-        /// </summary>
-        [SugarColumn(ColumnDescription = "创建者部门Id")]
-        public virtual long CreateOrgId { get; set; }
     }
 }

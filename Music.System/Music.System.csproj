@@ -4,11 +4,11 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="HtmlAgilityPack" Version="1.11.54" />
-    <PackageReference Include="Mapster" Version="7.4.0" />
-    <PackageReference Include="NLog" Version="5.2.6" />
-    <PackageReference Include="Prism.Wpf" Version="8.1.97" />
-    <PackageReference Include="SqlSugarCore" Version="5.1.4.117" />
+    <PackageReference Include="HtmlAgilityPack" />
+    <PackageReference Include="Mapster"  />
+    <PackageReference Include="NLog" />
+    <PackageReference Include="Prism.Wpf"/>
+    <PackageReference Include="SqlSugarCore"/>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Music.Core\Music.Core.csproj" />

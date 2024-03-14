@@ -1,11 +1,4 @@
-﻿using Music.SqlSugar.Entity;
-using SqlSugar;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace Music.Shared.Entitys
 {
     public class MyBogusAttribute : Attribute

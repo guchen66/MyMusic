@@ -30,13 +30,13 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="HandyControl" Version="3.4.0" />
-    <PackageReference Include="MaterialDesign.Avalonia.PackIcon" Version="1.25.0" />
-    <PackageReference Include="MaterialDesignThemes" Version="4.9.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="8.0.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="Prism.DryIoc" Version="8.1.97" />
-    <PackageReference Include="WpfExtensions.Xaml" Version="1.2.0" />
+    <PackageReference Include="HandyControl"/>
+    <PackageReference Include="MaterialDesign.Avalonia.PackIcon"  />
+    <PackageReference Include="MaterialDesignThemes"/>
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />
+    <PackageReference Include="Newtonsoft.Json"/>
+    <PackageReference Include="Prism.DryIoc" />
+    <PackageReference Include="WpfExtensions.Xaml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Music.Shared\Music.Shared.csproj" />

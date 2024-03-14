@@ -1,5 +1,5 @@
 ﻿
-using Music.Shared.Mvvm;
+using Music.Shared.Dtos;
 
 namespace MyMusic.ViewModels
 {
@@ -19,21 +19,26 @@ namespace MyMusic.ViewModels
 
         #region 属性
 
-        public ObservableCollection<PlayListInfo> _playListInputDtos=new ObservableCollection<PlayListInfo>();
+        public ObservableCollection<PlayListInfo> _playListInputDtos;
         public ObservableCollection<PlayListInfo> PlayListInputDtos
         {
-            get { return _playListInputDtos; }
-            set { SetProperty<ObservableCollection<PlayListInfo>>(ref _playListInputDtos, value); RaisePropertyChanged(); }
+            get => _playListInputDtos ?? (_playListInputDtos = new ObservableCollection<PlayListInfo>());
+            set => SetProperty(ref value, _playListInputDtos);
         }
-
-
+        //AsideMenus
+        public ObservableCollection<AsideMenuDto> _asideMenus;
+        public ObservableCollection<AsideMenuDto> AsideMenus
+        {
+            get => _asideMenus ?? (_asideMenus = new ObservableCollection<AsideMenuDto>());
+            set => SetProperty(ref value,_asideMenus);
+        }
         #endregion
 
         public MainWindowViewModel(IPlayListService playListService, IContainerProvider provider):base(provider)
         {
  
             _playListService = playListService;
-            RegionManager.RegisterViewWithRegion(RegionNames.ContentRegion, typeof(EmptyPlayList));
+            RegionManager.RegisterViewWithRegion(RegionNames.ContentRegion, typeof(EmptyPlayListView));
             RegionManager.RegisterViewWithRegion(RegionNames.HeaderRegion, typeof(HeaderView));
             RegionManager.RegisterViewWithRegion(RegionNames.FooterRegion, typeof(FooterView));
             SplashScreenManager.CloseSplashScreen();
@@ -135,7 +140,7 @@ namespace MyMusic.ViewModels
                 { "Source",SourceName}
             };
                
-            RegionManager.RequestNavigate(RegionNames.ContentRegion, new Uri("EmptyPlayList", UriKind.Relative), navigationParameters);
+            RegionManager.RequestNavigate(RegionNames.ContentRegion, new Uri("EmptyPlayListView", UriKind.Relative), navigationParameters);
 
         }
 

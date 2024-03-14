@@ -1,10 +1,4 @@
 ﻿
-using Music.System.Services.LoginSign.Dtos;
-using Music.System.Services.MainSign.HeaderSign;
-using Music.System.Services.MainSign.HeaderSign.Dtos;
-using Music.System.Services.MainSign.PlayLists;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
-
 namespace MyMusic.ViewModels.Headers
 {
     public class HeaderViewModel : BindableBase
@@ -185,11 +179,11 @@ namespace MyMusic.ViewModels.Headers
                 };
                 if (navigationParameters == null)
                 {
-                    _regionManager.RequestNavigate(RegionNames.ContentRegion, new Uri("EmptyPlayList", UriKind.Relative));
+                    _regionManager.RequestNavigate(RegionNames.ContentRegion, new Uri("EmptyPlayListView", UriKind.Relative));
                 }
                 if (navigationParameters != null)
                 {
-                    _regionManager.RequestNavigate(RegionNames.ContentRegion, new Uri("EmptyPlayList", UriKind.Relative), navigationParameters);
+                    _regionManager.RequestNavigate(RegionNames.ContentRegion, new Uri("EmptyPlayListView", UriKind.Relative), navigationParameters);
                 }
             }
 

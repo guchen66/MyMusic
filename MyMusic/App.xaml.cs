@@ -14,6 +14,7 @@ public partial class App
     protected override async void OnStartup(StartupEventArgs e)
     {
         //CodeFirstUtils.GreateDbAndTableByCode();
+        MyStartup.AddSqlSugar();
         base.OnStartup(e);
 
         
@@ -76,9 +77,11 @@ public partial class App
 
     protected override void RegisterTypes(IContainerRegistry containerRegistry)
     {
-        MyStartup myStartup = new MyStartup();
-        myStartup.Register(containerRegistry);
-      
+        MyStartup.Register(containerRegistry);
+
+        // TextDemo textDemo = new TextDemo(containerRegistry);
+        // textDemo.RegisterService().RegisterRepository().RegisterForNavigation().RegisterDialog();
+     
     }
 
 }

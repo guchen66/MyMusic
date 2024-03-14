@@ -1,6 +1,4 @@
 ﻿
-using Music.Shared.Mvvm;
-
 namespace MyMusic.ViewModels
 {
     public class HomeViewModel : BaseViewModel
@@ -75,13 +73,13 @@ namespace MyMusic.ViewModels
 
         #endregion
 
-        public HomeViewModel(IFavorService favorService, IPlayListService playListService,IHttpClientService httpClientService, IContainerProvider provider):base(provider)
+        public HomeViewModel(IContainerProvider provider):base(provider)
         {
             SearchProgressVisibility = Visibility.Visible;
             DataVisibility = Visibility.Hidden;
-            _favorService = favorService;
-            _playListService = playListService;
-            _httpClientService = httpClientService;
+            _favorService = provider.Resolve<IFavorService>();
+            _playListService = provider.Resolve<IPlayListService>();
+            _httpClientService = provider.Resolve<IHttpClientService>();
             // InitCommand=DialogHost.OpenDialogCommand;
             InitingCommand = new DelegateCommand(ExecuteIniting);
             PrePlayCommand = new DelegateCommand<string>(PrePlayExecute);
