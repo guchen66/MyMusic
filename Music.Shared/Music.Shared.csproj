@@ -7,9 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="NewLife.Core"  />
-    <PackageReference Include="Prism.Core"  />
-    <PackageReference Include="Prism.Wpf"  />
+    <PackageReference Include="NewLife.Core" />
+    <PackageReference Include="Prism.Core" />
+    <PackageReference Include="Prism.Wpf" />
     <PackageReference Include="SqlSugarCore" />
   </ItemGroup>
 

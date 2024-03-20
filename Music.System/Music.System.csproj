@@ -5,10 +5,10 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="HtmlAgilityPack" />
-    <PackageReference Include="Mapster"  />
+    <PackageReference Include="Mapster" />
     <PackageReference Include="NLog" />
-    <PackageReference Include="Prism.Wpf"/>
-    <PackageReference Include="SqlSugarCore"/>
+    <PackageReference Include="Prism.Wpf" />
+    <PackageReference Include="SqlSugarCore" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Music.Core\Music.Core.csproj" />

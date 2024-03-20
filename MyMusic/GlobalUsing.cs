@@ -86,4 +86,13 @@ global using Music.ToolKit.Commands;
 global using Music.Shared.Globals.MainSign.MyFavors;
 global using Music.System.Services.MainSign.FooterSign;
 global using System.Windows.Media;
+global using Music.System.Mvvm;
+global using MyMusic.Views.Errors;
+global using MyMusic.ViewModels.Errors;
+global using NewLife.Configuration;
+global using SqlSugar.IOC;
+global using Music.Shared.Attributes;
+global using Mapster;
+global using Music.System.ConverterDtoRegister;
+global using Music.Shared.Common;
 

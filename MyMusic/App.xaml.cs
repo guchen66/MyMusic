@@ -9,15 +9,21 @@ namespace MyMusic;
 /// </summary>
 public partial class App
 {
+    Mutex mutex;
     //初始化Root目录状态
     public RootArgs RootArgs { get; set; } = RootArgs.Instance;
     protected override async void OnStartup(StartupEventArgs e)
     {
-        //CodeFirstUtils.GreateDbAndTableByCode();
+        mutex = new Mutex(true, "MyMusic");
+        if (!mutex.WaitOne(TimeSpan.Zero, true))
+        {
+            MessageBox.Show("警告，已重复打开软件！", "MyMusic", MessageBoxButton.OK, MessageBoxImage.Error);
+            Environment.Exit(0);
+        }
+        //注册SqlSugar服务
         MyStartup.AddSqlSugar();
         base.OnStartup(e);
-
-        
+       
         //程序启动加载上一次关闭时保存的数据状态
         await StateManager.SaveLocalStateData();
     }
@@ -79,9 +85,12 @@ public partial class App
     {
         MyStartup.Register(containerRegistry);
 
-        // TextDemo textDemo = new TextDemo(containerRegistry);
-        // textDemo.RegisterService().RegisterRepository().RegisterForNavigation().RegisterDialog();
-     
+        RegistExtension register = new RegistExtension(containerRegistry);
+        register.RegisterAllTypes();
+
+      //  RegisterDemo.GetRegister();
+     //   register.RegisterScannedTypes2();//.RegisterRepository().RegisterForNavigation().RegisterDialog();
+
     }
 
 }

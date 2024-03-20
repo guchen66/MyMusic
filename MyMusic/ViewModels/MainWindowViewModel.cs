@@ -1,4 +1,5 @@
 ﻿
+using Mapster;
 using Music.Shared.Dtos;
 
 namespace MyMusic.ViewModels
@@ -10,22 +11,24 @@ namespace MyMusic.ViewModels
         public DispatcherTimer _timer;
         // private Timer _timer;
         public MainArgs AppData { get; set; } = MainArgs.Instance;
-        IPlayListService _playListService;
-        public SimpleClient<MusicInfo> db = new SimpleClient<MusicInfo>();
-        public DataRepository<PlayListInfo> db2= new DataRepository<PlayListInfo>();
+        private readonly IPlayListService _playListService;
+        private readonly IAsideMenuService _asideMenuService;
+        private readonly IAsideCreateControlService _asideCreateControlService;
+    //    public SimpleClient<MusicInfo> db = new SimpleClient<MusicInfo>();
+      //  public DataRepository<PlayListInfo> db2= new DataRepository<PlayListInfo>();
         #endregion
-
-
 
         #region 属性
 
-        public ObservableCollection<PlayListInfo> _playListInputDtos;
-        public ObservableCollection<PlayListInfo> PlayListInputDtos
+        public ObservableCollection<AsideCreateControl> _playListInputDtos;
+        public ObservableCollection<AsideCreateControl> PlayListInputDtos
         {
-            get => _playListInputDtos ?? (_playListInputDtos = new ObservableCollection<PlayListInfo>());
+            get => _playListInputDtos ?? (_playListInputDtos = new ObservableCollection<AsideCreateControl>());
             set => SetProperty(ref value, _playListInputDtos);
         }
-        //AsideMenus
+        /// <summary>
+        /// 左侧的菜单栏列表
+        /// </summary>
         public ObservableCollection<AsideMenuDto> _asideMenus;
         public ObservableCollection<AsideMenuDto> AsideMenus
         {
@@ -34,18 +37,20 @@ namespace MyMusic.ViewModels
         }
         #endregion
 
-        public MainWindowViewModel(IPlayListService playListService, IContainerProvider provider):base(provider)
+        public MainWindowViewModel(IContainerProvider provider):base(provider)
         {
  
-            _playListService = playListService;
+            _playListService = provider.Resolve<IPlayListService>();
+            _asideMenuService= provider.Resolve<IAsideMenuService>();
+            _asideCreateControlService = provider.Resolve<IAsideCreateControlService>();
             RegionManager.RegisterViewWithRegion(RegionNames.ContentRegion, typeof(EmptyPlayListView));
             RegionManager.RegisterViewWithRegion(RegionNames.HeaderRegion, typeof(HeaderView));
             RegionManager.RegisterViewWithRegion(RegionNames.FooterRegion, typeof(FooterView));
             SplashScreenManager.CloseSplashScreen();
-
-            db2.GetList().ForEach(x => PlayListInputDtos.Add(x));
-            NavigateCommand = new DelegateCommand<MenuList>(ExecuteOpenView);
-            InitintCommand=new DelegateCommand(ExecuteIniting);
+            
+           // db2.GetList().ForEach(x => PlayListInputDtos.Add(x));
+            NavigateCommand = new DelegateCommand<AsideMenuDto>(ExecuteOpenView);
+            LoadedCommand = new DelegateCommand(ExecuteLoaded);
             CreatePlayListCommand = new DelegateCommand(ExecuteCreatePlayListView);
             OpenPlayListCommand = new DelegateCommand<long?>(ExecuteOpenPlayList);
           
@@ -60,6 +65,8 @@ namespace MyMusic.ViewModels
             PlayListSignValue playListSignValue=new PlayListSignValue();
             playListSignValue.CalculationCompleted += PlayListSignValue_CalculationCompleted;
             playListSignValue.CalculateData(null,()=>new PlayListInputDto());
+
+
         }
 
         private void PlayListSignValue_CalculationCompleted(object sender, PlayListArgs e)
@@ -91,7 +98,7 @@ namespace MyMusic.ViewModels
         #region 命令
 
         public ICommand NavigateCommand { get; set; }
-        public ICommand InitintCommand { get; set; }
+        public ICommand LoadedCommand { get; set; }
         public ICommand CreatePlayListCommand { get; set; }
         public ICommand OpenPlayListCommand { get; set; }
         public ICommand OpenLyricsCommand { get; set; }
@@ -100,12 +107,19 @@ namespace MyMusic.ViewModels
         #region  方法
        
         /// <summary>
-        /// 初始化
+        /// 初始化加载界面
         /// </summary>
-        private void ExecuteIniting()
+        private async void ExecuteLoaded()
         {
+          
+            var asideMenus = await _asideMenuService.QueryListAsync();
+            var asideMenuDtos = asideMenus.Adapt<List<AsideMenuDto>>();
 
-           
+            foreach (var dto in asideMenuDtos)
+            {
+                AsideMenus.Add(dto);
+            }
+            (await _asideCreateControlService.QueryListAsync()).ForEach(x=> PlayListInputDtos.Add(x));
             /* //程序启动加载上一次关闭时SetData的数据状态
              StateHelper.ApplySavedState();
              Thread thread = new Thread(() =>
@@ -144,23 +158,19 @@ namespace MyMusic.ViewModels
 
         }
 
-        private void ExecuteOpenView(MenuList paramters)
+        /// <summary>
+        /// 导航，打开指定页面
+        /// </summary>
+        /// <param name="paramters"></param>
+        private void ExecuteOpenView(AsideMenuDto paramters)
         {
-            Navigate(paramters);
+            if (paramters != null)
+            RegionManager.RequestNavigate(RegionNames.ContentRegion, paramters.NameSpace, arg =>
+            {
+                NavigationJournal = arg.Context.NavigationService.Journal;
+            });
         }
 
-        /// <summary>
-        /// 导航
-        /// </summary>
-        /// <param name="navigatePath"></param>
-        private void Navigate(MenuList navigatePath)
-        {
-            if (navigatePath != null)
-                RegionManager.RequestNavigate(RegionNames.ContentRegion, navigatePath.NameSpace, arg =>
-                {
-                    NavigationJournal = arg.Context.NavigationService.Journal;
-                });
-        }
 
         /// <summary>
         /// 新增歌单
@@ -196,18 +206,16 @@ namespace MyMusic.ViewModels
         /// 刷新歌单列表
         /// </summary>
         /// <returns></returns>
-        public Task RefreshAsync()
+        public async Task RefreshAsync()
         {
-            var dataList = db2.GetList();
+           // var dataList = db2.GetList();
 
-            PlayListInputDtos = new ObservableCollection<PlayListInfo>();
-
-            if (dataList != null)
-            {
-                db2.GetList().ForEach(x => PlayListInputDtos.Add(x));
-            }
-            return Task.CompletedTask;
+            PlayListInputDtos = new ObservableCollection<AsideCreateControl>();
+            var createControls= await _asideCreateControlService.QueryListAsync();
+            createControls.ForEach(x=>PlayListInputDtos.Add(x));
+           
         }
+
         #endregion
 
 

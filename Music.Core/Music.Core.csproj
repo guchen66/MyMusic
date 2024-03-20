@@ -7,9 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Bogus"/>
-    <PackageReference Include="NewLife.Core"/>
-    <PackageReference Include="Newtonsoft.Json"/>
+    <PackageReference Include="Bogus" />
+    <PackageReference Include="NewLife.Core" />
+    <PackageReference Include="Newtonsoft.Json" />
   </ItemGroup>
 
   <ItemGroup>

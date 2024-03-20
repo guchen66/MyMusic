@@ -8,7 +8,5 @@
         public static readonly string FavorView = nameof(FavorView);
         public static readonly string RecentView = nameof(RecentView);
 
-
-
     }
 }

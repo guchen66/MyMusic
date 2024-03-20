@@ -1,4 +1,5 @@
-﻿using Music.System.Services.HttpTools;
+﻿using Music.Shared.Attributes;
+using Music.System.Services.HttpTools;
 using Music.System.Services.HttpTools.Dtos;
 using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
@@ -13,6 +14,7 @@ using System.Threading.Tasks;
 
 namespace Music.System.Services.MainSign.FooterSign
 {
+    [Scanning(RegisterType = "Singleton")]
     public class ButtonPlaySingleService : IButtonPlaySingleService
     {
         private static IWavePlayer player = new WaveOutEvent();

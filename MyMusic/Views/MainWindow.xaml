@@ -17,6 +17,11 @@
     prism:ViewModelLocator.AutoWireViewModel="True"
     Icon="../Music.ico"
     WindowStartupLocation="CenterScreen">
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding LoadedCommand}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
     <Window.Resources>
         <Storyboard x:Key="MenuOpen">
             <DoubleAnimationUsingKeyFrames Storyboard.TargetName="GridMenu" Storyboard.TargetProperty="(FrameworkElement.Width)">
@@ -95,7 +100,7 @@
                     <!--  导航歌单  -->
                     <ListView
                         Foreground="White"
-                        ItemsSource="{Binding AppData.ListViewMenus}"
+                        ItemsSource="{Binding AsideMenus}"
                         ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                         <ListView.ItemTemplate>
                             <DataTemplate>
@@ -115,8 +120,7 @@
                         </ListView.ItemTemplate>
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="PreviewMouseLeftButtonUp">
-                                <i:InvokeCommandAction Command="{Binding DataContext.NavigateCommand, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Mode=OneWay}"
-                                                       CommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}" />
+                                <i:InvokeCommandAction Command="{Binding DataContext.NavigateCommand, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Mode=OneWay}" CommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}" />
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
                     </ListView>
@@ -175,11 +179,11 @@
                                                 <!--  使用定位器重新实例化一个Button的数据上下文内容  -->
                                                 <Button.ContextMenu>
                                                     <ContextMenu Background="{x:Null}" Foreground="White">
-                                                       
+
                                                         <ContextMenu.DataContext>
                                                             <system:PlayListSettings />
                                                         </ContextMenu.DataContext>
-                                                        
+
                                                         <MenuItem
                                                             Background="Gray"
                                                             Command="{Binding ReNamePlayListItemCommand}"
@@ -190,7 +194,7 @@
                                                             Command="{Binding DeletePlayListItemCommand}"
                                                             CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.CommandParameter}"
                                                             Header="删除" />
-                                                        
+
                                                     </ContextMenu>
                                                 </Button.ContextMenu>
                                             </Button>

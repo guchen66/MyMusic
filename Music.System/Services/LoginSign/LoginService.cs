@@ -14,9 +14,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using Music.Shared.Attributes;
 
 namespace Music.System.Services.LoginSign
 {
+    [Scanning(RegisterType= "Singleton")]
     public class LoginService : ILoginService
     {
         private readonly IEventAggregator _eventAggregator;

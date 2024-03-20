@@ -1,7 +1,7 @@
 ﻿
 namespace Music.Shared.Dtos
 {
-    public class BaseDto
+    public class BaseDto:BindableBase
     {
     }
 }

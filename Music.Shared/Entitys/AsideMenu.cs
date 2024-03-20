@@ -20,4 +20,9 @@ namespace Music.Shared.Entitys
         [SugarColumn(ColumnDataType = "Nvarchar(16)", IsNullable = true)]
         public string? NameSpace { get; set; }
     }
+
+    public enum MenuEnum
+    { 
+        
+    }
 }

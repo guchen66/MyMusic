@@ -31,7 +31,6 @@
             Background="#000000"
             CornerRadius="0 0 120 0" />
         <StackPanel Orientation="Horizontal">
-
             <StackPanel Width="350" Panel.ZIndex="1">
                 <StackPanel Margin="20,40,20,40">
                     <TextBlock

@@ -1,25 +1,4 @@
-﻿using Music.System.Mvvm;
-using Music.ToolKit;
-using Prism.Ioc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Net.Http;
-using MyMusic.Views.Errors;
-using MyMusic.ViewModels.Errors;
-using Music.System.Services.MainSign.PlayLists;
-using Music.System.Services.MainSign.MyFavorSign;
-using Music.System.Services.MainSign.SettingSign;
-using Music.System.Services.MainSign.HeaderSign;
-using Music.System.Services.HttpTools;
-using Music.System.Services.MainSign.FooterSign;
-using Music.ToolKit.Extensions;
-using Music.Shared.Mvvm;
-using NewLife.Configuration;
-using SqlSugar.IOC;
-
+﻿
 namespace MyMusic
 {
     public class MyStartup
@@ -54,17 +33,24 @@ namespace MyMusic
         //    containerRegistry.RegisterSingleton<IEventAggregator, EventAggregator>();
             containerRegistry.RegisterSingleton<ISettingsService, SettingsService>();
 
-         //   containerRegistry.RegisterForNavigation<MainWindow, MainWindowViewModel>();
+            containerRegistry.RegisterForNavigation<MainWindow, MainWindowViewModel>();
 
             //注入数据库仓储
-            //  containerRegistry.RegisterScoped(typeof(DataRepository<MusicInfo>));
-
+         //   containerRegistry.RegisterScoped(typeof(DataRepository<MusicInfo>));
+            containerRegistry.RegisterScoped<IAsideMenuRepository, AsideMenuRepository>();
+            containerRegistry.RegisterScoped<IAsideCreateControlRepository, AsideCreateControlRepository>();
+            // containerRegistry.RegisterScoped<I>
             //国际化注册
             containerRegistry.Register<II18NService, I18NService>();
 
             containerRegistry.Register<PlayListSettings>();
-            //注册Http
+            //注册服务
             containerRegistry.RegisterSingleton<IHttpClientService, HttpClientService>();
+            containerRegistry.RegisterSingleton<IAsideMenuService, AsideMenuService>();
+            containerRegistry.RegisterSingleton<IAsideCreateControlService, AsideCreateControlService>();
+
+            //注册Dtos
+            containerRegistry.RegisterScoped<IRegister, AsideMenuRegister>();
         }
 
         public static void AddSqlSugar()
@@ -75,6 +61,22 @@ namespace MyMusic
                 DbType = IocDbType.SqlServer,
                 IsAutoCloseConnection = true
             });
+
+            //创建数据库
+            if (GeneratorDataProvider.IsGenerated)
+            {
+                DbScoped.SugarScope.DbMaintenance.CreateDatabase();
+
+                ////创建表
+                DbScoped.SugarScope.CodeFirst.InitTables(
+                    typeof(AsideControlView), typeof(AsideCreateControl), typeof(MusicInfo), typeof(PlayListUiInfo), typeof(PlayListInfo), typeof(AsideMenu));
+            }
+            //生成种子数据
+            if (GeneratorDataProvider.IsSeedData)
+            {
+                // AddSeedData();
+            }
+           
         }
         /// <summary>
         /// 使用NewLife读取Json
@@ -93,109 +95,175 @@ namespace MyMusic
     }
 
 
-    public class TextDemo
+    public class RegistExtension
     {
-        IContainerRegistry container;
-        public TextDemo(IContainerRegistry containerRegistry)
+        IContainerRegistry _containerRegistry;
+        public RegistExtension(IContainerRegistry containerRegistry)
         {
-
-            container = containerRegistry;
-
-        }
-        /// <summary>
-        /// 注册服务
-        /// </summary>
-        /// <param name="containerRegistry"></param>
-        /// <returns></returns>
-    /*    public TextDemo RegisterService()
-        {
-            var assembly = Assembly.GetExecutingAssembly(); // 获取当前执行的程序集
-            var types = assembly.GetTypes()
-                .Where(myType => myType.IsClass && !myType.IsAbstract && typeof(IPrismService).IsAssignableFrom(myType)); // 找到所有实现了IPrismComponent的非抽象类
-
-            foreach (var type in types)
-            {
-                container.RegisterScoped(typeof(IPrismService), type); // 将找到的类型注册为IPrismComponent的实现
-
-            }
-            return this;
-        }*/
-
-        /// <summary>
-        /// 注册仓储
-        /// </summary>
-        /// <param name="containerRegistry"></param>
-        /// <returns></returns>
-      /*  public TextDemo RegisterRepository()
-        {
-            var assembly = Assembly.GetExecutingAssembly(); // 获取当前执行的程序集
-            var types = assembly.GetTypes()
-                .Where(myType => myType.IsClass && !myType.IsAbstract && typeof(IPrismRepository).IsAssignableFrom(myType)); // 找到所有实现了IPrismComponent的非抽象类
-
-            foreach (var type in types)
-            {
-                container.RegisterScoped(typeof(IPrismRepository), type); // 将找到的类型注册为IPrismComponent的实现
-
-            }
-            return this;
-        }*/
-
-        /// <summary>
-        /// 注册视图
-        /// </summary>
-        /// <param name="containerRegistry"></param>
-        /// <returns></returns>
-        public TextDemo RegisterForNavigation<TView, TViewModel>()where TView:UserControl where TViewModel : BaseViewModel
-        {
-            var assembly = Assembly.GetExecutingAssembly();
-            var viewModelsNamespace = "ViewModels";
-            var viewsNamespace = "Views";
-
-            var viewModelTypes = assembly.GetTypes()
-                .Where(t => t.Namespace != null && t.Namespace.Contains(viewModelsNamespace) && t.Name.EndsWith("ViewModel"))
-                .ToList();
-
-            var viewTypes = assembly.GetTypes()
-                .Where(t => t.Namespace != null && t.Namespace.Contains(viewsNamespace) && t.Name.EndsWith("View"))
-                .ToList();
-            
-            foreach (var viewModelType in viewModelTypes)
-            {               
-                var viewType = viewTypes.FirstOrDefault(v => v.Name == viewModelType.Name.Replace("ViewModel", "View"));
-
-                if (viewType != null&&viewType.Name=="FooterView")
-                {
-                    container.RegisterForNavigation(viewType, viewModelType.Name);
-                }
-            }
-            return this;
+            _containerRegistry = containerRegistry;
         }
 
+        Dictionary<string, Action<Type, Type>> Dicts = new Dictionary<string, Action<Type, Type>>();
         /// <summary>
-        /// 注册弹窗
+        /// 动态注册仓储和数据服务
         /// </summary>
-        /// <param name="containerRegistry"></param>
-        /// <returns></returns>
-        public TextDemo RegisterDialog()
+        public void RegisterScannedTypes()
         {
-            var assembly = Assembly.GetExecutingAssembly(); // 获取当前执行的程序集
-
-            var dialogVMTypes = assembly.GetTypes()
-                .Where(myType => myType.IsClass && !myType.IsAbstract && typeof(IDialogAware).IsAssignableFrom(myType));
-
-            var doalogTypes = assembly.GetTypes()
-               .Where(t => t.Namespace != null && t.Name.EndsWith("Dialog"))
-               .ToList();
-            foreach (var type in dialogVMTypes)
+            var assemblies = new[]
             {
-                var viewType = doalogTypes.FirstOrDefault(v => v.Name == type.Name.Replace("ViewModel", "View"));
-                if (viewType != null)
-                {
-                    container.RegisterForNavigation(viewType, type.ToString());
-                }
+                // 这里添加您的程序集名称，不包括 .dll 扩展名
+                "MyMusic",
+                "Music.Core",
+                "Music.System",
+                "Music.SqlSugar"
+            };
 
+            foreach (var assemblyName in assemblies)
+            {
+                var assembly = Assembly.Load(assemblyName);
+                FindScanningAttributedClasses(assembly);
             }
-            return this;
+
+        }
+        private void FindScanningAttributedClasses(Assembly assembly)
+        {
+            var typesToRegister = assembly.GetTypes()
+                 .Where(type => Attribute.IsDefined(type, typeof(ScanningAttribute)));
+
+            foreach (var type in typesToRegister)
+            {
+                Type[] interfaces = type.GetInterfaces();
+                foreach (var inter in interfaces)
+                {
+                    var scanAttribute = (ScanningAttribute)type.GetCustomAttribute(typeof(ScanningAttribute));
+                    if (inter != null)
+                    {
+                        switch (scanAttribute.RegisterType)
+                        {
+                            case "Scpoed": _containerRegistry.RegisterScoped(inter, type); break;
+                            case "Singleton": _containerRegistry.RegisterSingleton(inter, type); break;
+                            default:
+                                break;
+                        }
+                    }
+
+                }
+            }
+        }
+        /// <summary>
+        /// 反射太影响性能了，暂时搁浅
+        /// </summary>
+        public void RegisterAllTypes()
+        {
+            var assembly = Assembly.LoadFrom("Music.SqlSugar.dll");
+            var assembly2 = Assembly.LoadFrom("Music.System.dll");
+            var assembly3 = Assembly.LoadFrom("MyMusic.dll");
+            var typesToRegister = assembly.GetTypes()
+                .Where(type => Attribute.IsDefined(type, typeof(ScanningAttribute)));
+            var typesToRegister2 = assembly2.GetTypes()
+               .Where(type => Attribute.IsDefined(type, typeof(ScanningAttribute)));
+            var typesToRegister3 = assembly3.GetTypes()
+               .Where(type => Attribute.IsDefined(type, typeof(ScanningAttribute)));
+
+            foreach (var type in typesToRegister)
+            {
+                Type[] interfaces = type.GetInterfaces();
+                foreach (var inter in interfaces)
+                {
+                    _containerRegistry.RegisterScoped(inter, type);
+                }
+            }
+            foreach (var type2 in typesToRegister2)
+            {
+                Type[] interfaces = type2.GetInterfaces();
+                foreach (var inter in interfaces)
+                {
+                    _containerRegistry.RegisterSingleton(inter, type2);
+                }
+            }
+            foreach (var type3 in typesToRegister3)
+            {
+                Type[] interfaces = type3.GetInterfaces();
+                foreach (var inter in interfaces)
+                {
+                    _containerRegistry.Register(inter, type3);
+                }
+            }
+        }
+ /*       public void RegisterAllTypes()
+        {
+          
+        }*/
+
+        private void RegisterTypesFromAssembly<TAttribute>(string assemblyPath, Action<Type, Type> registerAction)
+            where TAttribute : Attribute
+        {
+            var assembly = Assembly.LoadFrom(assemblyPath);
+            var typesToRegister = assembly.GetTypes()
+                .Where(type => Attribute.IsDefined(type, typeof(TAttribute)));
+
+            foreach (var type in typesToRegister)
+            {
+                Type[] interfaces = type.GetInterfaces();
+                foreach (var inter in interfaces)
+                {
+                    registerAction(inter, type);
+                }
+            }
+        }
+        
+
+        public void AddRegister1(Type from,Type to)
+        {
+            _containerRegistry.RegisterScoped(from,to);
+        }
+        public void AddRegister2(Type from, Type to)
+        {
+            _containerRegistry.RegisterSingleton(from,to);
+        }
+        public void AddRegister3(Type from, Type to)
+        {
+            _containerRegistry.Register(from,to);
+        }    
+
+    }
+    public class RegisterDemo
+    {
+        private static IContainerRegistry _containerRegistry;
+
+        public RegisterDemo(IContainerRegistry containerRegistry)
+        {
+            _containerRegistry = containerRegistry;
+        }
+
+        public static void GetRegister()
+        {
+            MethodInfo methodInfo = typeof(IContainerRegistry).GetMethod("RegisterSingleton", new Type[] { typeof(Type), typeof(Type) });
+            Func<IContainerRegistry, object, object, object> Register = MagicMethod<IContainerRegistry>(methodInfo);
+
+            Register(_containerRegistry, typeof(IAsideMenuService), typeof(AsideMenuService));
+        }
+
+        static Func<T, object, object, object> MagicMethod<T>(MethodInfo methodInfo) where T : class
+        {
+            MethodInfo genericHelper = typeof(RegisterDemo).GetMethod("MagicMethodHelper", BindingFlags.Static | BindingFlags.NonPublic);
+            MethodInfo constructHelper = genericHelper.MakeGenericMethod(typeof(T), methodInfo.GetParameters()[0].ParameterType, methodInfo.GetParameters()[1].ParameterType, methodInfo.ReturnType);
+
+            object ret = constructHelper.Invoke(null, new object[] { methodInfo });
+            return (Func<T, object, object, object>)ret;
+        }
+
+        static Func<TTarget, object, object, object> MagicMethodHelper<TTarget, TParam1, TParam2, TReturn>(MethodInfo method)
+            where TTarget : class , new()
+        {
+            // 将方法转为委托
+            Func<TTarget, TParam1, TParam2, TReturn> func = (Func<TTarget, TParam1, TParam2, TReturn>)Delegate.CreateDelegate
+                (typeof(Func<TTarget, TParam1, TParam2, TReturn>), method);
+
+            // 创建一个更弱的委托调用上面的委托
+            Func<TTarget, object, object, object> ret = (TTarget target, object param1, object param2) => func(target, (TParam1)param1, (TParam2)param2);
+            return ret;
         }
     }
+
 }
