@@ -1,18 +1,16 @@
-﻿using Music.SqlSugar.Db;
-using Music.SqlSugar.Repositorys;
-using SqlSugar;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
+﻿
+using Music.SqlSugar.IRepositorys;
 
 namespace Music.SqlSugar.Services
 {
     public class DataService<TEntity> : IDataService<TEntity> where TEntity : class, new()
     {
-        protected IDataRepository<TEntity> db;            //这个注入是从子类来的
+        private IDataRepository<TEntity> db;            //这个注入是从子类来的
+
+        public DataService(IDataRepository<TEntity> repository)
+        {
+            db = repository;
+        }
         public async Task<bool> AddAsync(TEntity entity)
         {
             return await db.AddAsync(entity);
@@ -33,8 +31,9 @@ namespace Music.SqlSugar.Services
             return await db.QueryAsync(id);
         }
 
-        public async Task<List<TEntity>> QueryListAsync()
+        public virtual async Task<List<TEntity>> QueryListAsync()
         {
+
             return await db.QueryListAsync();
         }
 

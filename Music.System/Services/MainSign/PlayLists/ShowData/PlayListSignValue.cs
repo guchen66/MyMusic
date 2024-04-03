@@ -1,4 +1,6 @@
 ﻿
+using Music.Shared.Dtos;
+
 namespace Music.System.Services.MainSign.PlayLists.ShowData
 {
     public class PlayListSignValue : BindableBase

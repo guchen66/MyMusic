@@ -7,7 +7,7 @@ namespace Music.System.Services.MainSign.MyFavorSign
         /// 获取港台歌曲
         /// </summary>
         /// <returns></returns>
-        Task<List<HongKongDto>> GetHongKongListAsync();
+        Task<List<HongKongMusicDto>> GetHongKongListAsync();
         Task GetSongList();
     }
 }

@@ -7,6 +7,7 @@
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:const="clr-namespace:Music.Shared.Consts;assembly=Music.Shared"
     xmlns:args="clr-namespace:Music.Shared.Globals.MainSign.MyFavors;assembly=Music.Shared"
     d:DesignHeight="450"
     d:DesignWidth="800"
@@ -16,7 +17,10 @@
             <i:InvokeCommandAction Command="{Binding InitCommand}"/>
         </i:EventTrigger>
     </i:Interaction.Triggers>
-    <StackPanel HorizontalAlignment="Left" VerticalAlignment="Stretch">
+    <UserControl.Resources>
+        <const:FavorConst x:Key="favorConst"/>
+    </UserControl.Resources>
+    <StackPanel HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="20 0 0 0">
         <!--<StackPanel.DataContext>
             <args:FavorArgs/>
         </StackPanel.DataContext>-->
@@ -26,15 +30,15 @@
             materialDesign:ColorZoneAssist.Foreground="{DynamicResource PrimaryHueMidBrush}"
             materialDesign:ColorZoneAssist.Mode="Custom"
             Style="{StaticResource MaterialDesignFilledTabControl}">
-            <TabItem Header="{Binding FavorArgs.Song,Mode=OneWay}">
+            <TabItem Header="{Binding Songs,Source={StaticResource favorConst}}">
                 <local:SongView />
             </TabItem>
 
-            <TabItem Header="{Binding FavorArgs.PlayList}">
+            <TabItem Header="{Binding PlayLists,Source={StaticResource favorConst}}">
                 <local:PlayListView />
             </TabItem>
 
-            <TabItem Header="{Binding FavorArgs.Album}">
+            <TabItem Header="{Binding Albums,Source={StaticResource favorConst}}">
                 <local:AlbumView />
             </TabItem>
         </TabControl>

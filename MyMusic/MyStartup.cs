@@ -1,11 +1,15 @@
-﻿
+﻿using MapsterMapper;
+using Music.Shared.Entitys.Header;
+using Music.SqlSugar.IRepositorys;
+using Music.System.Registers;
+
 namespace MyMusic
 {
     public class MyStartup
     {
         public static void Register(IContainerRegistry containerRegistry)
         {
-            containerRegistry.RegisterForNavigation<SetView>();  //设置信息
+            containerRegistry.RegisterForNavigation<SetView>(); //设置信息
             containerRegistry.RegisterForNavigation<DownLoadView, DownLoadViewModel>();
             containerRegistry.RegisterForNavigation<RecentView, RecentViewModel>();
 
@@ -21,46 +25,56 @@ namespace MyMusic
             containerRegistry.RegisterDialog<AddPlayListDialog, AddPlayListDialogViewModel>();
             containerRegistry.RegisterDialog<DeletePlayListDialog, DeletePlayListDialogViewModel>();
             containerRegistry.RegisterDialog<ReNamePlayListDialog, ReNamePlayListDialogViewModel>();
-         //   containerRegistry.RegisterDialog<PopupInputContentDialog, PopupInputContentDialogViewModel>();
+            //   containerRegistry.RegisterDialog<PopupInputContentDialog, PopupInputContentDialogViewModel>();
             // 注册 ILog 日志接口和 NLogLogger 实现类
-            containerRegistry.Register<ILogger, DefaultLogger>();
-            containerRegistry.Register<ILoginService, LoginService>();
-            containerRegistry.Register<IFavorService, FavorService>();
-            containerRegistry.Register<IStateService, StateService>();
             containerRegistry.Register<IPlayListService, PlayListService>();
-            containerRegistry.Register<IButtonPlaySingleService, ButtonPlaySingleService>();
+            //改用特性注册
+            /*   containerRegistry.Register<ILogger, DefaultLogger>();
+               containerRegistry.Register<ILoginService, LoginService>();
+               containerRegistry.Register<IFavorService, FavorService>();
+               containerRegistry.Register<IStateService, StateService>();
+               containerRegistry.Register<IPlayListService, PlayListService>();
+               containerRegistry.Register<IButtonPlaySingleService, ButtonPlaySingleService>();*/
             //注册单例
-        //    containerRegistry.RegisterSingleton<IEventAggregator, EventAggregator>();
+            //    containerRegistry.RegisterSingleton<IEventAggregator, EventAggregator>();
             containerRegistry.RegisterSingleton<ISettingsService, SettingsService>();
 
             containerRegistry.RegisterForNavigation<MainWindow, MainWindowViewModel>();
 
             //注入数据库仓储
-         //   containerRegistry.RegisterScoped(typeof(DataRepository<MusicInfo>));
-            containerRegistry.RegisterScoped<IAsideMenuRepository, AsideMenuRepository>();
-            containerRegistry.RegisterScoped<IAsideCreateControlRepository, AsideCreateControlRepository>();
+            containerRegistry.Register<IAsideMenuRepository, AsideMenuRepository>();
+            containerRegistry.Register<IAsideCreateControlRepository,AsideCreateControlRepository>();
+            containerRegistry.Register<IHeaderMusicSourceRepository, HeaderMusicSourceRepository>();
             // containerRegistry.RegisterScoped<I>
             //国际化注册
             containerRegistry.Register<II18NService, I18NService>();
 
-            containerRegistry.Register<PlayListSettings>();
+          //  containerRegistry.Register<PlayListSettings>();
+            containerRegistry.Register<IMapper, Mapper>();
             //注册服务
-            containerRegistry.RegisterSingleton<IHttpClientService, HttpClientService>();
-            containerRegistry.RegisterSingleton<IAsideMenuService, AsideMenuService>();
-            containerRegistry.RegisterSingleton<IAsideCreateControlService, AsideCreateControlService>();
+            containerRegistry.RegisterScoped<IHttpClientService, HttpClientService>();
+            containerRegistry.RegisterScoped<IAsideMenuService, AsideMenuService>();
+            containerRegistry.RegisterScoped<IAsideCreateControlService,AsideCreateControlService>();
+            containerRegistry.RegisterScoped<IHeaderMusicSourceService, HeaderMusicSourceService>();
+
+
+           
 
             //注册Dtos
             containerRegistry.RegisterScoped<IRegister, AsideMenuRegister>();
+           // containerRegistry.RegisterInstance(IRegister,AsideCreateControllerRegister);
         }
-
+    
         public static void AddSqlSugar()
         {
-            SugarIocServices.AddSqlSugar(new IocConfig()
-            {
-                ConnectionString = GetJsonData(),
-                DbType = IocDbType.SqlServer,
-                IsAutoCloseConnection = true
-            });
+            SugarIocServices.AddSqlSugar(
+                new IocConfig()
+                {
+                    ConnectionString = GetConnectionObject(),
+                    DbType = IocDbType.SqlServer,
+                   // IsAutoCloseConnection = true
+                }
+            );
 
             //创建数据库
             if (GeneratorDataProvider.IsGenerated)
@@ -69,164 +83,103 @@ namespace MyMusic
 
                 ////创建表
                 DbScoped.SugarScope.CodeFirst.InitTables(
-                    typeof(AsideControlView), typeof(AsideCreateControl), typeof(MusicInfo), typeof(PlayListUiInfo), typeof(PlayListInfo), typeof(AsideMenu));
+                    typeof(AsideControlView),
+                    typeof(AsideCreateController),
+                    typeof(MusicInfo),
+                    typeof(PlayListUiInfo),
+                    typeof(PlayListInfo),
+                    typeof(AsideMenu),typeof(MusicSourceInfo)
+                );
             }
             //生成种子数据
             if (GeneratorDataProvider.IsSeedData)
             {
                 // AddSeedData();
             }
-           
         }
+
         /// <summary>
         /// 使用NewLife读取Json
+        /// MultipleActiveResultSets=True; 允许打开多个结果集
         /// </summary>
         /// <returns></returns>
-        public static string GetJsonData()
+        public static string GetConnectionObject()
         {
             string result = "";
-            var provider = new JsonConfigProvider()
-            {
-                FileName = "AppConfig.json"
-            };
+            var provider = new JsonConfigProvider() { FileName = "AppConfig.json" };
             result = provider.GetSection("SqlConnection:ConnectionMMsql").Value;
             return result;
         }
     }
 
-
     public class RegistExtension
     {
         IContainerRegistry _containerRegistry;
+
         public RegistExtension(IContainerRegistry containerRegistry)
         {
             _containerRegistry = containerRegistry;
         }
 
-        Dictionary<string, Action<Type, Type>> Dicts = new Dictionary<string, Action<Type, Type>>();
-        /// <summary>
-        /// 动态注册仓储和数据服务
-        /// </summary>
         public void RegisterScannedTypes()
         {
-            var assemblies = new[]
-            {
-                // 这里添加您的程序集名称，不包括 .dll 扩展名
-                "MyMusic",
-                "Music.Core",
-                "Music.System",
-                "Music.SqlSugar"
-            };
-
+            var assemblies = new[] { "Music.SqlSugar", "Music.System", "MyMusic", };
             foreach (var assemblyName in assemblies)
             {
+                //1、先是加载程序集
                 var assembly = Assembly.Load(assemblyName);
-                FindScanningAttributedClasses(assembly);
-            }
+                //2、找到类中标注了特性ScanningAttribute的所有类
+                var typesToRegister = assembly
+                    .GetTypes()
+                    .Where(type => Attribute.IsDefined(type, typeof(ScanningAttribute)));
 
-        }
-        private void FindScanningAttributedClasses(Assembly assembly)
-        {
-            var typesToRegister = assembly.GetTypes()
-                 .Where(type => Attribute.IsDefined(type, typeof(ScanningAttribute)));
+                // 3、创建一个字典，键是接口类型，值是实现类的类型 因为标注了特性ScanningAttribute的类只有一个接口
+                var typeInterfaceDicts = typesToRegister.ToDictionary(
+                    type => type.GetInterfaces()[0],
+                    type => type);
 
-            foreach (var type in typesToRegister)
-            {
-                Type[] interfaces = type.GetInterfaces();
-                foreach (var inter in interfaces)
+                foreach (var typeInterDict in typeInterfaceDicts)
                 {
-                    var scanAttribute = (ScanningAttribute)type.GetCustomAttribute(typeof(ScanningAttribute));
-                    if (inter != null)
+                    //4、找到关于类中特性的RegisterType
+                    var attribute = typeInterDict.Value.GetCustomAttribute<ScanningAttribute>(false);
+                    if (attribute != null)
                     {
-                        switch (scanAttribute.RegisterType)
+                        switch (attribute.RegisterType)
                         {
-                            case "Scpoed": _containerRegistry.RegisterScoped(inter, type); break;
-                            case "Singleton": _containerRegistry.RegisterSingleton(inter, type); break;
+                            case "Register":
+                                Register(typeInterDict.Key, typeInterDict.Value);
+                                break;
+                            case "RegisterScoped":
+                                RegisterScoped(typeInterDict.Key, typeInterDict.Value);
+                                break;
+                            case "RegisterSingleton":
+                                RegisterScoped(typeInterDict.Key, typeInterDict.Value);
+                                break;
                             default:
                                 break;
                         }
                     }
-
                 }
             }
         }
+
         /// <summary>
-        /// 反射太影响性能了，暂时搁浅
+        /// 特性注册标注Register
         /// </summary>
-        public void RegisterAllTypes()
+        private void Register(Type interfaceType, Type implementationType)
         {
-            var assembly = Assembly.LoadFrom("Music.SqlSugar.dll");
-            var assembly2 = Assembly.LoadFrom("Music.System.dll");
-            var assembly3 = Assembly.LoadFrom("MyMusic.dll");
-            var typesToRegister = assembly.GetTypes()
-                .Where(type => Attribute.IsDefined(type, typeof(ScanningAttribute)));
-            var typesToRegister2 = assembly2.GetTypes()
-               .Where(type => Attribute.IsDefined(type, typeof(ScanningAttribute)));
-            var typesToRegister3 = assembly3.GetTypes()
-               .Where(type => Attribute.IsDefined(type, typeof(ScanningAttribute)));
-
-            foreach (var type in typesToRegister)
-            {
-                Type[] interfaces = type.GetInterfaces();
-                foreach (var inter in interfaces)
-                {
-                    _containerRegistry.RegisterScoped(inter, type);
-                }
-            }
-            foreach (var type2 in typesToRegister2)
-            {
-                Type[] interfaces = type2.GetInterfaces();
-                foreach (var inter in interfaces)
-                {
-                    _containerRegistry.RegisterSingleton(inter, type2);
-                }
-            }
-            foreach (var type3 in typesToRegister3)
-            {
-                Type[] interfaces = type3.GetInterfaces();
-                foreach (var inter in interfaces)
-                {
-                    _containerRegistry.Register(inter, type3);
-                }
-            }
+            _containerRegistry.Register(interfaceType, implementationType);
         }
- /*       public void RegisterAllTypes()
-        {
-          
-        }*/
 
-        private void RegisterTypesFromAssembly<TAttribute>(string assemblyPath, Action<Type, Type> registerAction)
-            where TAttribute : Attribute
+        /// <summary>
+        /// 特性注册标注RegisterScoped
+        /// </summary>
+        private void RegisterScoped(Type interfaceType, Type implementationType)
         {
-            var assembly = Assembly.LoadFrom(assemblyPath);
-            var typesToRegister = assembly.GetTypes()
-                .Where(type => Attribute.IsDefined(type, typeof(TAttribute)));
-
-            foreach (var type in typesToRegister)
-            {
-                Type[] interfaces = type.GetInterfaces();
-                foreach (var inter in interfaces)
-                {
-                    registerAction(inter, type);
-                }
-            }
+            _containerRegistry.RegisterScoped(interfaceType, implementationType);
         }
-        
-
-        public void AddRegister1(Type from,Type to)
-        {
-            _containerRegistry.RegisterScoped(from,to);
-        }
-        public void AddRegister2(Type from, Type to)
-        {
-            _containerRegistry.RegisterSingleton(from,to);
-        }
-        public void AddRegister3(Type from, Type to)
-        {
-            _containerRegistry.Register(from,to);
-        }    
-
     }
+
     public class RegisterDemo
     {
         private static IContainerRegistry _containerRegistry;
@@ -238,30 +191,56 @@ namespace MyMusic
 
         public static void GetRegister()
         {
-            MethodInfo methodInfo = typeof(IContainerRegistry).GetMethod("RegisterSingleton", new Type[] { typeof(Type), typeof(Type) });
-            Func<IContainerRegistry, object, object, object> Register = MagicMethod<IContainerRegistry>(methodInfo);
+            MethodInfo methodInfo = typeof(IContainerRegistry).GetMethod(
+                "RegisterSingleton",
+                new Type[] { typeof(Type), typeof(Type) }
+            );
+            Func<IContainerRegistry, object, object, object> Register =
+                MagicMethod<IContainerRegistry>(methodInfo);
 
             Register(_containerRegistry, typeof(IAsideMenuService), typeof(AsideMenuService));
         }
 
-        static Func<T, object, object, object> MagicMethod<T>(MethodInfo methodInfo) where T : class
+        static Func<T, object, object, object> MagicMethod<T>(MethodInfo methodInfo)
+            where T : class
         {
-            MethodInfo genericHelper = typeof(RegisterDemo).GetMethod("MagicMethodHelper", BindingFlags.Static | BindingFlags.NonPublic);
-            MethodInfo constructHelper = genericHelper.MakeGenericMethod(typeof(T), methodInfo.GetParameters()[0].ParameterType, methodInfo.GetParameters()[1].ParameterType, methodInfo.ReturnType);
+            MethodInfo genericHelper = typeof(RegisterDemo).GetMethod(
+                "MagicMethodHelper",
+                BindingFlags.Static | BindingFlags.NonPublic
+            );
+            MethodInfo constructHelper = genericHelper.MakeGenericMethod(
+                typeof(T),
+                methodInfo.GetParameters()[0].ParameterType,
+                methodInfo.GetParameters()[1].ParameterType,
+                methodInfo.ReturnType
+            );
 
             object ret = constructHelper.Invoke(null, new object[] { methodInfo });
             return (Func<T, object, object, object>)ret;
         }
 
-        static Func<TTarget, object, object, object> MagicMethodHelper<TTarget, TParam1, TParam2, TReturn>(MethodInfo method)
-            where TTarget : class , new()
+        static Func<TTarget, object, object, object> MagicMethodHelper<
+            TTarget,
+            TParam1,
+            TParam2,
+            TReturn
+        >(MethodInfo method)
+            where TTarget : class, new()
         {
             // 将方法转为委托
-            Func<TTarget, TParam1, TParam2, TReturn> func = (Func<TTarget, TParam1, TParam2, TReturn>)Delegate.CreateDelegate
-                (typeof(Func<TTarget, TParam1, TParam2, TReturn>), method);
+            Func<TTarget, TParam1, TParam2, TReturn> func =
+                (Func<TTarget, TParam1, TParam2, TReturn>)
+                    Delegate.CreateDelegate(
+                        typeof(Func<TTarget, TParam1, TParam2, TReturn>),
+                        method
+                    );
 
             // 创建一个更弱的委托调用上面的委托
-            Func<TTarget, object, object, object> ret = (TTarget target, object param1, object param2) => func(target, (TParam1)param1, (TParam2)param2);
+            Func<TTarget, object, object, object> ret = (
+                TTarget target,
+                object param1,
+                object param2
+            ) => func(target, (TParam1)param1, (TParam2)param2);
             return ret;
         }
     }

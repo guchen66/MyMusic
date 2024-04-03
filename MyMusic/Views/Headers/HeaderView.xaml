@@ -18,8 +18,6 @@
             <i:InvokeCommandAction Command="{Binding DragMoveCommand}" />
         </i:EventTrigger>
     </i:Interaction.Triggers>
-
-
     <Grid Background="White">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto" />
@@ -105,21 +103,25 @@
                 FontSize="16"
                 Text="播放源" />
             <DockPanel x:Name="GroupCheckButton">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="Loaded">
+                        <i:InvokeCommandAction Command="{Binding InitializedCommand}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
                 <StackPanel DockPanel.Dock="Left">
-                    <ItemsControl x:Name="cbt" ItemsSource="{Binding HeaderArgs.MusicSourceList}">
+                    <ItemsControl x:Name="cbt" ItemsSource="{Binding MusicSourceInfoList}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <StackPanel Orientation="Horizontal" />
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
-
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <CheckBox
                                     Margin="5,2,10,0"
-                                    Command="{Binding DataContext.ConfirmPlaySourceCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ItemsControl}}"
-                                    CommandParameter="{Binding Source}"
-                                    Content="{Binding Name}"
+                                    Command="{Binding DataContext.ConfirmPlaySourceCommand, ElementName=GroupCheckButton}"
+                                    CommandParameter="{Binding SourceName}"
+                                    Content="{Binding SourceName}"
                                     IsChecked="{Binding IsSelected}" />
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>

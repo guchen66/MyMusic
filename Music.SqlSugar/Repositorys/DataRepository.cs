@@ -1,6 +1,7 @@
 ﻿using Music.Shared.Common;
 using Music.Shared.Entitys;
 using Music.SqlSugar.Db;
+using Music.SqlSugar.IRepositorys;
 using SqlSugar;
 using SqlSugar.IOC;
 using System;
@@ -14,26 +15,10 @@ namespace Music.SqlSugar.Repositorys
 {
     public class DataRepository<TEntity> : SimpleClient<TEntity>,IDataRepository<TEntity> where TEntity : class, new()
     {
-        public ITenant itenant = null;
         public DataRepository(ISqlSugarClient db = null) : base(db)
         {
             base.Context = DbScoped.Sugar;
-            //创建数据库
-            if (GeneratorDataProvider.IsGenerated)
-            {
-                //base.Context.DbMaintenance.CreateDatabase();
-
-                ////创建表
-                //base.Context.CodeFirst.InitTables(
-                //    typeof(AsideControlView));
-            }
-            //生成种子数据
-            if (GeneratorDataProvider.IsSeedData)
-            {
-                // AddSeedData();
-            }
         }
-
 
         public async Task<bool> AddAsync(TEntity entity)
         {
@@ -58,6 +43,7 @@ namespace Music.SqlSugar.Repositorys
         public virtual async Task<List<TEntity>> QueryListAsync()
         {
             return await base.GetListAsync();
+
         }
 
         public virtual async Task<List<TEntity>> QueryListAsync(Expression<Func<TEntity, bool>> func)

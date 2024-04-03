@@ -41,6 +41,7 @@ namespace MyMusic.Shell.ViewModels.MyFavor
 
         private async void Timer_Tick(object sender, EventArgs e)
         {
+            await Task.Run(() => { });
             FavorArgs.Song = DateTime.Now.ToString();
             //  ShowFavorData();
             // await Clear();

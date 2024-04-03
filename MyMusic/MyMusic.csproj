@@ -30,11 +30,11 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="HandyControl"/>
-    <PackageReference Include="MaterialDesign.Avalonia.PackIcon"  />
-    <PackageReference Include="MaterialDesignThemes"/>
+    <PackageReference Include="HandyControl" />
+    <PackageReference Include="MaterialDesign.Avalonia.PackIcon" />
+    <PackageReference Include="MaterialDesignThemes" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />
-    <PackageReference Include="Newtonsoft.Json"/>
+    <PackageReference Include="Newtonsoft.Json" />
     <PackageReference Include="Prism.DryIoc" />
     <PackageReference Include="WpfExtensions.Xaml" />
   </ItemGroup>

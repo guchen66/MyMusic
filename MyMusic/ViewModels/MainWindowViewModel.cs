@@ -1,6 +1,4 @@
-﻿
-using Mapster;
-using Music.Shared.Dtos;
+﻿using Prism.Regions;
 
 namespace MyMusic.ViewModels
 {
@@ -9,50 +7,65 @@ namespace MyMusic.ViewModels
 
         #region 字段
         public DispatcherTimer _timer;
+        public IMapper _mapper;
         // private Timer _timer;
-        public MainArgs AppData { get; set; } = MainArgs.Instance;
         private readonly IPlayListService _playListService;
         private readonly IAsideMenuService _asideMenuService;
         private readonly IAsideCreateControlService _asideCreateControlService;
-    //    public SimpleClient<MusicInfo> db = new SimpleClient<MusicInfo>();
-      //  public DataRepository<PlayListInfo> db2= new DataRepository<PlayListInfo>();
         #endregion
 
         #region 属性
 
-        public ObservableCollection<AsideCreateControl> _playListInputDtos;
-        public ObservableCollection<AsideCreateControl> PlayListInputDtos
+        /// <summary>
+        /// 是否新增和删除歌单
+        /// </summary>
+        private bool _isChanged;
+
+        public bool IsChanged
         {
-            get => _playListInputDtos ?? (_playListInputDtos = new ObservableCollection<AsideCreateControl>());
-            set => SetProperty(ref value, _playListInputDtos);
+            get => _isChanged;
+            set => SetProperty(ref _isChanged, value);
         }
+
+        /// <summary>
+        /// 左侧新建的歌单列表控制器
+        /// </summary>
+        public ObservableCollection<AsideCreateControllerDto> _asedeCreateplayListDtos;
+        public ObservableCollection<AsideCreateControllerDto> AsedeCreateplayListDtos
+        {
+            get => _asedeCreateplayListDtos ?? (_asedeCreateplayListDtos = new ObservableCollection<AsideCreateControllerDto>());
+            set => SetProperty(ref value, _asedeCreateplayListDtos);
+        }
+
         /// <summary>
         /// 左侧的菜单栏列表
         /// </summary>
-        public ObservableCollection<AsideMenuDto> _asideMenus;
-        public ObservableCollection<AsideMenuDto> AsideMenus
+        public ThreadSafeObservableCollection<AsideMenuDto> _asideMenus;
+        public ThreadSafeObservableCollection<AsideMenuDto> AsideMenus
         {
-            get => _asideMenus ?? (_asideMenus = new ObservableCollection<AsideMenuDto>());
-            set => SetProperty(ref value,_asideMenus);
+            get => _asideMenus ?? (_asideMenus = new ThreadSafeObservableCollection<AsideMenuDto>());
+            set => SetProperty(ref value, _asideMenus);
         }
+
         #endregion
 
-        public MainWindowViewModel(IContainerProvider provider):base(provider)
+        public MainWindowViewModel(IMapper mapper, IContainerProvider provider):base(provider)
         {
- 
+            
+            _mapper= mapper;
             _playListService = provider.Resolve<IPlayListService>();
             _asideMenuService= provider.Resolve<IAsideMenuService>();
             _asideCreateControlService = provider.Resolve<IAsideCreateControlService>();
-            RegionManager.RegisterViewWithRegion(RegionNames.ContentRegion, typeof(EmptyPlayListView));
+          //  RegionManager.RegisterViewWithRegion(RegionNames.ContentRegion, typeof(EmptyPlayListView));
+            RegionManager.RegisterViewWithRegion(RegionNames.ContentRegion, typeof(HomeView));
             RegionManager.RegisterViewWithRegion(RegionNames.HeaderRegion, typeof(HeaderView));
             RegionManager.RegisterViewWithRegion(RegionNames.FooterRegion, typeof(FooterView));
-            SplashScreenManager.CloseSplashScreen();
+         //   SplashScreenManager.CloseSplashScreen();
             
-           // db2.GetList().ForEach(x => PlayListInputDtos.Add(x));
             NavigateCommand = new DelegateCommand<AsideMenuDto>(ExecuteOpenView);
-            LoadedCommand = new DelegateCommand(ExecuteLoaded);
+            LoadedCommand = new DelegateCommand(async()=>await ExecuteLoaded());
             CreatePlayListCommand = new DelegateCommand(ExecuteCreatePlayListView);
-            OpenPlayListCommand = new DelegateCommand<long?>(ExecuteOpenPlayList);
+            OpenPlayListCommand = new DelegateCommand<bool?>(ExecuteOpenPlayList);
           
             OpenLyricsCommand = new DelegateCommand(ExecuteOpenLyrics);
             _timer = new DispatcherTimer();
@@ -109,28 +122,19 @@ namespace MyMusic.ViewModels
         /// <summary>
         /// 初始化加载界面
         /// </summary>
-        private async void ExecuteLoaded()
+        private async Task ExecuteLoaded()
         {
-          
             var asideMenus = await _asideMenuService.QueryListAsync();
-            var asideMenuDtos = asideMenus.Adapt<List<AsideMenuDto>>();
+            var asideMenuDtos = _mapper.Map<List<AsideMenuDto>>(asideMenus);
 
-            foreach (var dto in asideMenuDtos)
+            // 加载左侧菜单选项
+            foreach (var menu in asideMenuDtos)
             {
-                AsideMenus.Add(dto);
+                Dispatcher.CurrentDispatcher.Invoke(() => AsideMenus.Add(menu));
             }
-            (await _asideCreateControlService.QueryListAsync()).ForEach(x=> PlayListInputDtos.Add(x));
-            /* //程序启动加载上一次关闭时SetData的数据状态
-             StateHelper.ApplySavedState();
-             Thread thread = new Thread(() =>
-             {
-                 splash = new SplashWindow();
-                 splash.ShowDialog();
-             });
-             thread.SetApartmentState(ApartmentState.STA);
 
-             thread.Start();
-             _timer = new Timer(CloseSplash, null, TimeSpan.FromSeconds(3), Timeout.InfiniteTimeSpan);*/
+            //加载左侧新建个单列表控制器选项
+            await RefreshAsync();
         }
       
       
@@ -138,14 +142,15 @@ namespace MyMusic.ViewModels
         /// 打开新的空白歌单界面
         /// </summary>
         /// <param name="id"></param>
-        public async void ExecuteOpenPlayList(long? id)
+        public async void ExecuteOpenPlayList(bool? isExistContext)
         {
-            JsonProvider jsonProvider = new JsonProvider();
+            
+         /*   JsonProvider jsonProvider = new JsonProvider();
             var playListInfo = await _playListService.GetPlayListByIdAsync(id);
 
             List<MusicSourceDto> list = await jsonProvider.GetMusicSourceDto();
             var SourceName = list.Where(m => m.IsSelected == true).Select(m => m.Name).ToArray();
-
+            
             // 导航到空白模板界面 并传递导航参数
             //将搜索的内容和三大音乐官网的来源传输过去
             var navigationParameters = new NavigationParameters
@@ -153,8 +158,9 @@ namespace MyMusic.ViewModels
                 { "PlaylistName", playListInfo.PlayListName },
                 { "Source",SourceName}
             };
-               
-            RegionManager.RequestNavigate(RegionNames.ContentRegion, new Uri("EmptyPlayListView", UriKind.Relative), navigationParameters);
+               */
+          //  RegionManager.RequestNavigate(RegionNames.ContentRegion, new Uri("EmptyPlayListView", UriKind.Relative), navigationParameters);
+            RegionManager.RequestNavigate(RegionNames.ContentRegion, new Uri("EmptyPlayListView", UriKind.Relative));
 
         }
 
@@ -164,11 +170,7 @@ namespace MyMusic.ViewModels
         /// <param name="paramters"></param>
         private void ExecuteOpenView(AsideMenuDto paramters)
         {
-            if (paramters != null)
-            RegionManager.RequestNavigate(RegionNames.ContentRegion, paramters.NameSpace, arg =>
-            {
-                NavigationJournal = arg.Context.NavigationService.Journal;
-            });
+            NavigationToView(paramters.NameSpace);
         }
 
 
@@ -182,12 +184,24 @@ namespace MyMusic.ViewModels
                 if (arg.Result == ButtonResult.Yes)
                 {
                     var value = arg.Parameters.GetValue<string>("PlayListName");      //歌单名称传递过来
-                    PlayListInputDto playListInfo = new PlayListInputDto();
-                    playListInfo.Id= YitIdHelper.NextId();
-                    playListInfo.PlayListName = value;
-                    await  _playListService.CreatePlatListAsync(playListInfo);
-                    //拿到歌单名称后，实现异步将歌单添加到界面Expander内部
-                   await RefreshAsync();
+
+                    var s= await _asideCreateControlService.QueryAsync(x=>x.Name==value);
+                    if (s!=null) 
+                    {
+                        MessageBox.Show("歌单已存在");
+                        return;
+                    }
+                    else
+                    {
+                        AsideCreateControllerDto controllerDto = new AsideCreateControllerDto();
+                        controllerDto.Id = YitIdHelper.NextId();
+                        controllerDto.PlayListName = value;
+                        controllerDto.IsExistContent = true;
+                        await _asideCreateControlService.CreatePlatListAsync(controllerDto);
+                    //    IsChanged = !IsChanged;
+                        //拿到歌单名称后，实现异步将歌单添加到界面Expander内部
+                        await RefreshAsync();
+                    }
                 }
             });
         }
@@ -203,22 +217,23 @@ namespace MyMusic.ViewModels
         }
 
         /// <summary>
-        /// 刷新歌单列表
+        /// 刷新新建的歌单列表
         /// </summary>
         /// <returns></returns>
         public async Task RefreshAsync()
         {
-           // var dataList = db2.GetList();
-
-            PlayListInputDtos = new ObservableCollection<AsideCreateControl>();
-            var createControls= await _asideCreateControlService.QueryListAsync();
-            createControls.ForEach(x=>PlayListInputDtos.Add(x));
-           
+            // 清除现有的歌单列表
+            AsedeCreateplayListDtos.Clear();
+            //加载左侧新建个单列表控制器选项
+            var asideCreateControllers = await _asideCreateControlService.QueryListAsync(x => x.IsDelete == false);
+            var asidasideCreateControllerseMenuDtos = _mapper.Map<List<AsideCreateControllerDto>>(asideCreateControllers);
+            foreach (var menu in asidasideCreateControllerseMenuDtos)
+            {
+                Dispatcher.CurrentDispatcher.Invoke(() => AsedeCreateplayListDtos.Add(menu));
+            }
         }
-
         #endregion
 
-
-
     }
+  
 }

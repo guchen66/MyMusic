@@ -100,6 +100,7 @@ namespace MyMusic.ViewModels
         }
         private async void Timer_Tick(object sender, EventArgs e)
         {
+            await Task.Run(() => { });
           //  MusicInfos = await _favorService.GetHongKongListAsync();
             
         }
@@ -139,10 +140,10 @@ namespace MyMusic.ViewModels
         {
             try
             {
-                // string decodeStr = WebUtility.UrlDecode(DefaultPlayListName);
+                //  string decodeStr = WebUtility.UrlDecode(DefaultPlayListName);
                 //获取歌名 获取音乐来源
-               var TransferName = navigationContext.Parameters["PlaylistName"] as string;
-                var source = navigationContext.Parameters["Source"] as string[];
+                var TransferName = navigationContext.Parameters["PlaylistName"] as string;
+                var source = navigationContext.Parameters["SourceName"] as string[];
                 var tasks = new List<Task<List<IMusic>>>();
 
                 foreach (var item in source)
@@ -154,7 +155,7 @@ namespace MyMusic.ViewModels
                     }
 
                     Task<List<IMusic>> task = GetMusicDataAsync(item, TransferName);
-                    tasks.Add(task);
+                    tasks.Add(task); 
                 }
 
                 await Task.WhenAll(tasks);
@@ -176,13 +177,13 @@ namespace MyMusic.ViewModels
         private async Task<List<IMusic>> GetMusicDataAsync(string source, string content)
         {        
             var musicInfos = new List<IMusic>();
-            if (source == "网易云")
+            if (source == "网易云音乐")
             {
 
                 string url = "https://tqlcode.com/page/music/api.php";
                 byte[] commit = Encoding.UTF8.GetBytes($"types=search&count=10&source=netease&pages=1&name={content}");
-                HttpClientDto httpClientDto = new HttpClientDto();
-                byte[] data = await _httpClientService.PostAsync(url, commit, httpClientDto);
+                HttpClientDto clientDto = new HttpClientDto();
+                byte[] data = await _httpClientService.PostAsync(url, commit, clientDto);
                 string s = Encoding.UTF8.GetString(data);
                 var infos = JsonConvert.DeserializeObject<NeteaseMusic[]>(Encoding.UTF8.GetString(data));
                 // 根据歌单名称加载对应的歌曲列表数据
@@ -192,9 +193,9 @@ namespace MyMusic.ViewModels
             else if (source == "酷狗音乐")
             {
                 string url = "https://tqlcode.com/page/music/api.php";
-                byte[] commit = Encoding.UTF8.GetBytes($"types=search&count=10&source=kugou&pages=1&name={content}");
-                HttpClientDto httpClientArgs = new HttpClientDto();
-                byte[] data = await _httpClientService.PostAsync(url, commit, httpClientArgs);
+                byte[] commit = Encoding.UTF8.GetBytes($"types=search&count=20&source=kugou&pages=1&name={content}");
+                HttpClientDto clientDto = new HttpClientDto();
+                byte[] data = await _httpClientService.PostAsync(url, commit, clientDto);
                 KugouMusic[] infos = JsonConvert.DeserializeObject<KugouMusic[]>(Encoding.UTF8.GetString(data));
                 musicInfos.AddRange(infos);
 
@@ -204,8 +205,8 @@ namespace MyMusic.ViewModels
                 try
                 {
                     string url = $"https://api.qq.jsososo.com/search?key={content}&pageNo=1&pageSize=10";
-                    HttpClientDto httpClientArgs = new HttpClientDto();
-                    byte[] data = await _httpClientService.GetAsync(url, httpClientArgs);
+                    HttpClientDto clientDto = new HttpClientDto();
+                    byte[] data = await _httpClientService.GetAsync(url, clientDto);
                     TencentMusic[] infos = JsonConvert.DeserializeObject<TencentMusic[]>(JObject.Parse(Encoding.UTF8.GetString(data))?["data"]?["list"].ToString());
                     musicInfos.AddRange(infos);
 

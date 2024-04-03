@@ -1,4 +1,4 @@
-﻿<UserControl
+﻿<StackPanel
     x:Class="MyMusic.Views.Dialog.AddPlayListDialog"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -9,11 +9,13 @@
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:prism="http://prismlibrary.com/"
+    MaxWidth="360"
+    Width="360"
     prism:ViewModelLocator.AutoWireViewModel="True"
     mc:Ignorable="d">
-    <UserControl.Resources>
+    <StackPanel.Resources>
         <converter:LengthToDecrementedValueConverter x:Key="LengthToDecrementedValueConverter" />
-    </UserControl.Resources>
+    </StackPanel.Resources>
     <Border Width="360" Background="AliceBlue">
         <Grid Width="360" Height="210">
             <Grid.RowDefinitions>
@@ -95,4 +97,4 @@
 
         </Grid>
     </Border>
-</UserControl>
+</StackPanel>

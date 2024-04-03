@@ -1,11 +1,14 @@
 ﻿
+using Music.Shared.Attributes;
+
 namespace Music.System.Services.MainSign.MyFavorSign
 {
+    [Scanning(RegisterType = "Register")]
     public class FavorService : IFavorService
     {
-        public async Task<List<HongKongDto>> GetHongKongList()
+        public  Task<List<HongKongMusicDto>> GetHongKongList()
         {
-            List<HongKongDto> HonKongDataList = new List<HongKongDto>();
+            List<HongKongMusicDto> HonKongDataList = new List<HongKongMusicDto>();
             // 获取网页的Html
             var html = @"https://y.qq.com/n/ryqq/toplist/59/";
             var web = new HtmlWeb();
@@ -38,7 +41,7 @@ namespace Music.System.Services.MainSign.MyFavorSign
                         var timeNode = songNode.SelectSingleNode(".//div[@class='songlist__time']"); // 获取时长
                         var time = timeNode?.InnerText?.Trim();
 
-                        HongKongDto honKongData = new HongKongDto();
+                        HongKongMusicDto honKongData = new HongKongMusicDto();
                         honKongData.MusicAlbum = musicAlbum;
                         honKongData.MusicName = musicName;
                         honKongData.Singer = singer;
@@ -49,11 +52,11 @@ namespace Music.System.Services.MainSign.MyFavorSign
                 }
             }
 
-            return HonKongDataList;
+            return Task.FromResult(HonKongDataList);    
         }
-        public async Task<List<HongKongDto>> GetHongKongListAsync()
+        public async Task<List<HongKongMusicDto>> GetHongKongListAsync()
         {
-            List<HongKongDto> HongKongDataList = new List<HongKongDto>();
+            List<HongKongMusicDto> HongKongDataList = new List<HongKongMusicDto>();
 
             // 使用 HttpClient 异步获取网页内容
             using (var httpClient = new HttpClient())
@@ -94,7 +97,7 @@ namespace Music.System.Services.MainSign.MyFavorSign
                                 var timeNode = songNode.SelectSingleNode(".//div[@class='songlist__time']"); // 获取时长
                                 var time = timeNode?.InnerText?.Trim();
 
-                                HongKongDto honKongData = new HongKongDto();
+                                HongKongMusicDto honKongData = new HongKongMusicDto();
                                 honKongData.MusicAlbum = musicAlbum;
                                 honKongData.MusicName = musicName;
                                 honKongData.Singer = singer;

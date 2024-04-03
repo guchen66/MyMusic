@@ -1,8 +1,9 @@
 {
   "SqlConnection": {
-    "ConnectionMMsql": "server=.;uid=sa;pwd=211314;database=MusicDb;Trusted_Connection=true;",
+    "ConnectionMMsql": "server=.;uid=sa;pwd=211314;database=MusicDb;Trusted_Connection=true;MultipleActiveResultSets=True;",
     "ConnectionMysql": "database = datageneratordb; server = localhost; port = 3306; uid = root; pwd = 1314; "
   },
+  // "ConnectionMMsql": "server=.;uid=sa;pwd=211314;database=MusicDb;Trusted_Connection=true;MultipleActiveResultSets=True;",
   "HeaderConfig": {
     "Home": "HomeView",
     "News": "NewsView",
@@ -20,7 +21,7 @@
   /**自动生成数据**/
   "GeneratorData": {
     "Title": "SqlServer",
-    "IsGenerator": "false", //初始化数据库和表格
+    "IsGenerator": "true", //初始化数据库和表格
     "IsSeedData": "false" //自动生成表数据
   }
 }

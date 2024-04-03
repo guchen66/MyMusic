@@ -1,10 +1,5 @@
 ﻿using NAudio.Dsp;
-using NAudio.Wave;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Complex = NAudio.Dsp.Complex;
 
 namespace Music.System.Services.MainSign.FooterSign
 {
@@ -20,7 +15,7 @@ namespace Music.System.Services.MainSign.FooterSign
         // FFT
         public event EventHandler<FftEventArgs> FftCalculated;
         public bool PerformFFT { get; set; }
-        private readonly Complex[] fftBuffer;
+        private readonly NAudio.Dsp.Complex[] fftBuffer;
         private readonly FftEventArgs fftArgs;
         private int fftPos;
         private readonly int fftLength;

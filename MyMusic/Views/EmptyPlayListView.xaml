@@ -26,7 +26,7 @@
         <ToolBar Grid.Row="0">
             <Button
                 Width="120"
-                Height="40"
+                Height="38"
                 md:ButtonAssist.CornerRadius="10"
                 Background="#2196f3"
                 Command="{Binding ClickPlayAllCommand}"
@@ -45,7 +45,7 @@
             </Button>
             <Button
                 Width="120"
-                Height="40"
+                Height="38"
                 Margin="10,0,10,0"
                 md:ButtonAssist.CornerRadius="10"
                 Background="#2196f3"
@@ -66,7 +66,7 @@
 
             <Button
                 Width="120"
-                Height="40"
+                Height="38"
                 Margin="0,0,10,0"
                 md:ButtonAssist.CornerRadius="10"
                 Background="#2196f3"
@@ -128,16 +128,17 @@
                 ItemsSource="{Binding MusicInfos}">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="MouseDoubleClick">
-                        <i:InvokeCommandAction Command="{Binding PrePlayCommand}" CommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
+                        <i:InvokeCommandAction Command="{Binding PrePlayCommand}" 
+                                               CommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
                 <DataGrid.Columns>
-                    <DataGridTextColumn
+                    <!--<DataGridTextColumn
                         Width="4*"
                         Binding="{Binding Id}"
-                        Header="歌曲Id" />
+                        Header="歌曲Id" />-->
                     <DataGridTextColumn
-                        Width="4*"
+                        Width="2*"
                         Binding="{Binding Name}"
                         Header="歌曲名" />
                     <DataGridTextColumn
@@ -152,11 +153,17 @@
                         Width="2*"
                         Binding="{Binding SourceName}"
                         Header="音乐来源" />
-                    <!--<DataGridTextColumn
-                        Width="1*"
+                    <DataGridTextColumn
+                        Width="2*"
                         Binding="{Binding Duration}"
-                        Header="时长" />-->
+                        Header="时长" />
                     <DataGridTemplateColumn Width="120" Header="操作">
+                        <DataGridTemplateColumn.HeaderStyle>
+                            <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}">
+                                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridTemplateColumn.HeaderStyle>
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">

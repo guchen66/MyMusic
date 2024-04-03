@@ -11,7 +11,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="SqlSugar.IOC"/>
+    <PackageReference Include="Mapster" />
+    <PackageReference Include="SqlSugar.IOC" />
     <PackageReference Include="SqlSugarCore" />
   </ItemGroup>
 

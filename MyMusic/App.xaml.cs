@@ -1,5 +1,6 @@
 ﻿
-using ReactiveUI;
+using Prism.Ioc;
+
 using StartupEventArgs = System.Windows.StartupEventArgs;
 
 namespace MyMusic;
@@ -9,10 +10,15 @@ namespace MyMusic;
 /// </summary>
 public partial class App
 {
+
+    public App()
+    {
+       // Service.RunNative(RunOptions.Default);
+    }
     Mutex mutex;
     //初始化Root目录状态
     public RootArgs RootArgs { get; set; } = RootArgs.Instance;
-    protected override async void OnStartup(StartupEventArgs e)
+    protected override void OnStartup(StartupEventArgs e)
     {
         mutex = new Mutex(true, "MyMusic");
         if (!mutex.WaitOne(TimeSpan.Zero, true))
@@ -25,9 +31,10 @@ public partial class App
         base.OnStartup(e);
        
         //程序启动加载上一次关闭时保存的数据状态
-        await StateManager.SaveLocalStateData();
+      //  await StateManager.SaveLocalStateData();
     }
 
+     
     protected override void OnExit(ExitEventArgs e)
     {
         // 程序退出之前保存监控的数据
@@ -86,11 +93,41 @@ public partial class App
         MyStartup.Register(containerRegistry);
 
         RegistExtension register = new RegistExtension(containerRegistry);
-        register.RegisterAllTypes();
+        register.RegisterScannedTypes();
 
-      //  RegisterDemo.GetRegister();
-     //   register.RegisterScannedTypes2();//.RegisterRepository().RegisterForNavigation().RegisterDialog();
+        var config = TypeAdapterConfig.GlobalSettings;
+        // RegisterMapper(containerRegistry);
+      //  var config = new TypeAdapterConfig();
+        var assembly = Assembly.Load("Music.System");
+        config.Scan(assembly);
 
+        // 注册单例实例
+        containerRegistry.RegisterInstance(typeof(TypeAdapterConfig), config);
+
+        // 创建并注册 Mapper 实例
+        var mapper = new Mapper(config);
+        containerRegistry.RegisterInstance(typeof(Mapper), mapper);
+    }
+
+    /// <summary>
+    /// 注册Mapster
+    /// </summary>
+    /// <param name="containerRegistry"></param>
+    private void RegisterMapper(IContainerRegistry containerRegistry)
+    {
+
+        var config = new TypeAdapterConfig();
+        var assembly = Assembly.Load("Music.System");
+        config.Scan(assembly);
+
+        // 注册单例实例
+        containerRegistry.RegisterInstance(typeof(TypeAdapterConfig), config);
+
+        // 创建并注册 Mapper 实例
+        var mapper = new Mapper(config);
+        containerRegistry.RegisterInstance(typeof(Mapper), mapper);
     }
 
 }
+
+

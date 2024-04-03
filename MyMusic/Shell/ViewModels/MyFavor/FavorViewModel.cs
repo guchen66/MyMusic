@@ -4,17 +4,11 @@ namespace MyMusic.Shell.ViewModels.MyFavor
     public class FavorViewModel : BindableBase
     {
         DispatcherTimer timer;
-        private FavorArgs _favorArgs;
-        public FavorArgs FavorArgs
-        {
-            get { return _favorArgs; }
-            set { SetProperty<FavorArgs>(ref _favorArgs, value); }
-        }
+      
 
         public FavorViewModel() 
         {
-            FavorArgs = new FavorArgs();
-            // FavorArgs.Song = "4444";
+           
           //  InitCommand = new DelegateCommand(ExecuteIniting);
         }
         public ICommand InitCommand { get; set; }
@@ -34,7 +28,7 @@ namespace MyMusic.Shell.ViewModels.MyFavor
 
         private async void Timer_Tick(object sender, EventArgs e)
         {
-            
+            await Task.Delay(1000);
             ShowFavorData();
            
         }
@@ -43,11 +37,11 @@ namespace MyMusic.Shell.ViewModels.MyFavor
         private void ShowFavorData() 
         {
 
-            int number = FavorArgs.Number.ToInt();
+          /*  int number = FavorArgs.Number.ToInt();
             // 使用 LINQ 截取数字部分并拼接回去
             string newNumberPart = string.Concat(number.ToString().Select(c => char.IsDigit(c) ? c.ToString() : ""));
             string newName = FavorArgs.Song + newNumberPart;
-            FavorArgs.Song = newName;
+            FavorArgs.Song = newName;*/
             /*  lock (FavorArgs.Song)
               {
                   FavorArgs.Song= "4444";

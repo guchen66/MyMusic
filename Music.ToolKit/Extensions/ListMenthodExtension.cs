@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 
 namespace Music.ToolKit.Extensions
 {
@@ -243,6 +247,45 @@ namespace Music.ToolKit.Extensions
 
             return true;
         }
+        /// <summary>
+        /// List转ObservableCollection
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static ObservableCollection<T> ToObservableCollection<T>(this IEnumerable<T> source)
+        {
+            if (source == null)
+            {
+                throw new ArgumentNullException("source");
+            }
+            return new ObservableCollection<T>(source);
+        }
+    }
 
+    public class ThreadSafeObservableCollection<T> : ObservableCollection<T>
+    {
+        public ThreadSafeObservableCollection()
+        {
+
+        }
+        public ThreadSafeObservableCollection(IEnumerable<T> list) : base(new List<T>(list ?? throw new ArgumentNullException(nameof(list))))
+        {
+        }
+        protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
+        {
+            // 确保 CollectionChanged 事件在 UI 线程上触发
+            if (Thread.CurrentThread.ManagedThreadId == Dispatcher.CurrentDispatcher.Thread.ManagedThreadId)
+            {
+                base.OnCollectionChanged(e);
+            }
+            else
+            {
+                Dispatcher.CurrentDispatcher.Invoke(() => base.OnCollectionChanged(e));
+            }
+        }
+
+        // 其他需要重写的 OnCollectionChanged 相关方法，如 OnAddingNew, OnRemoved, OnReplaced 等
     }
 }

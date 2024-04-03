@@ -24,12 +24,12 @@ namespace MyMusic.ViewModels.Dialog
         /// <summary>
         /// 歌单长度
         /// </summary>
-        private int _playListNameLength=20;
+        private int _playListNameLength;
 
         public int PlayListNameLength
         {
             get { return _playListNameLength; }
-            set { SetProperty<int>(ref _playListNameLength, value); PlayListNameLength = _playListName.Length; }
+            set { SetProperty<int>(ref _playListNameLength, value); }// PlayListNameLength = _playListName.Length; }
         }
 
         #endregion

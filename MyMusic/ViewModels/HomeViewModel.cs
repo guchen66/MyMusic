@@ -1,4 +1,6 @@
 ﻿
+using System.Windows.Controls;
+
 namespace MyMusic.ViewModels
 {
     public class HomeViewModel : BaseViewModel
@@ -15,6 +17,14 @@ namespace MyMusic.ViewModels
         #endregion
 
         #region  属性
+
+        private bool _isDataLoading;
+
+        public bool IsDataLoading
+        {
+            get => _isDataLoading?false:true;
+            set => SetProperty(ref _isDataLoading, value);
+        }
         /// <summary>
         /// 传递过来的歌单Name
         /// </summary>
@@ -26,8 +36,8 @@ namespace MyMusic.ViewModels
             set { SetProperty<string>(ref _transferName, value); }
         }
 
-        public List<HongKongDto> _musicInfos;
-        public List<HongKongDto> MusicInfos
+        public List<HongKongMusicDto> _musicInfos;
+        public List<HongKongMusicDto> MusicInfos
         {
             get { return _musicInfos; }
             set { SetProperty(ref _musicInfos, value); }
@@ -44,19 +54,6 @@ namespace MyMusic.ViewModels
             }
         }
 
-        /// <summary>
-        /// 显示转圈圈
-        /// </summary>
-        private Visibility _searchProgressVisibility;
-        public Visibility SearchProgressVisibility
-        {
-            get { return _searchProgressVisibility; }
-            set
-            {
-                _searchProgressVisibility = value;
-                this.RaisePropertyChanged("SearchProgressVisibility");
-            }
-        }
         /// <summary>
         /// 找到数据之后展示数据，结束转圈圈
         /// </summary>
@@ -75,12 +72,11 @@ namespace MyMusic.ViewModels
 
         public HomeViewModel(IContainerProvider provider):base(provider)
         {
-            SearchProgressVisibility = Visibility.Visible;
-            DataVisibility = Visibility.Hidden;
+           // SearchProgressVisibility = Visibility.Visible;
+           // DataVisibility = Visibility.Hidden;
             _favorService = provider.Resolve<IFavorService>();
             _playListService = provider.Resolve<IPlayListService>();
             _httpClientService = provider.Resolve<IHttpClientService>();
-            // InitCommand=DialogHost.OpenDialogCommand;
             InitingCommand = new DelegateCommand(ExecuteIniting);
             PrePlayCommand = new DelegateCommand<string>(PrePlayExecute);
             PlayCommand = new DelegateCommand<string>(ExecutePlay);
@@ -106,11 +102,19 @@ namespace MyMusic.ViewModels
         private async void ExecuteIniting()
         {
             MusicInfos = await _favorService.GetHongKongListAsync();
+
+            if (MusicInfos.Count==0)
+            {
+                RegionManager.RequestNavigate(RegionNames.ContentRegion, new Uri("_404View", UriKind.Relative));
+              
+            }
+            //找到数据隐藏转圈圈
+          //  IsDataLoading = false;
             /*timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromSeconds(1);
             timer.Tick += Timer_Tick;
             timer.Start();*/
-            CloseSplash("");
+            //  CloseSplash("");
         }
 
         private async void Timer_Tick(object sender, EventArgs e)
@@ -125,6 +129,7 @@ namespace MyMusic.ViewModels
         /// <param name="parameter"></param>
         public async void PrePlayExecute(string playList)
         {
+            await Task.Run(() => { });
             //异步加载音乐
             /*await Task.Run(new Action(() =>
             {
@@ -147,7 +152,7 @@ namespace MyMusic.ViewModels
         /// <param name="state"></param>
         private void CloseSplash(object state)
         {
-            SearchProgressVisibility = Visibility.Collapsed;
+            IsDataLoading = false;
             DataVisibility = Visibility.Visible;
         }
 

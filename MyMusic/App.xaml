@@ -20,7 +20,7 @@
                 <ResourceDictionary Source="pack://application:,,,/Music.Themes;component/Styles/DownLoadCheckBoxStyle.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Music.Themes;component/Styles/CustomListBoxItemStyle.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Music.Themes;component/Styles/ButtonStyle.xaml" />
-
+                <!--<ResourceDictionary Source="pack://application:,,,/Music.Themes;component/Styles/MyDataGridStyle.xaml" />-->
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

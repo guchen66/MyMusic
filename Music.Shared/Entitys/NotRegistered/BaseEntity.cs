@@ -47,7 +47,7 @@ namespace Music.Shared.Entitys.NotRegistered
         public virtual string UpdateUser { get; set; }
 
         /// <summary>
-        /// 软删除
+        /// 软删除 false==0,true==1
         /// </summary>
         [SugarColumn(ColumnDescription = "软删除", IsNullable = true)]
         public virtual bool IsDelete { get; set; } = false;

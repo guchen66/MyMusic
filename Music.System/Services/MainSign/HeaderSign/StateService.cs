@@ -1,6 +1,9 @@
 ﻿
+using Music.Shared.Attributes;
+
 namespace Music.System.Services.MainSign.HeaderSign
 {
+    [Scanning(RegisterType = "Register")]
     public class StateService : IStateService
     {
         public string GetHeader(string key)

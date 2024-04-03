@@ -8,8 +8,7 @@ namespace Music.Shared.Entitys
 {
     public class AsideControlView : BaseEntity
     {
-        [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]//主键自增
-        public new int Id { get; set; }
+        public int ViewId { get; set; }
 
         [SugarColumn(ColumnDataType = "Nvarchar(50)", ColumnDescription = "音乐名称")]//自定义情况Length不要设置
         public string? Name { get; set; }

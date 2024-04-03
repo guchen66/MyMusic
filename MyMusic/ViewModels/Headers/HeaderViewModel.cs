@@ -1,16 +1,17 @@
 ﻿
+using Music.Shared.Entitys.Header;
+using SqlSugar;
+using Prism.Ioc;
 namespace MyMusic.ViewModels.Headers
 {
-    public class HeaderViewModel : BindableBase
+    public class HeaderViewModel : BaseViewModel
     {
         #region 字段
 
-        IRegionNavigationJournal _navigationJournal;//导航日志，上一页，下一页
-        IRegionManager _regionManager;//区域管理
-        IDialogService _dialogService;
-        IEventAggregator _eventAggregator;
-        IStateService _stateService;
-        IPlayListService _playListService;
+        private readonly IStateService _stateService;
+        private readonly IPlayListService _playListService;
+        IHeaderMusicSourceService _headerMusicSourceService;
+        IAsideCreateControlService _asideCreateControlService;
         #endregion
 
         #region 属性
@@ -21,12 +22,16 @@ namespace MyMusic.ViewModels.Headers
         private MusicSourceDto _musicSourceArgs;
         public MusicSourceDto MusicSource
         {
-            get { return _musicSourceArgs; }
-            set
-            {
-                _musicSourceArgs = value;
-                RaisePropertyChanged();
-            }
+            get => _musicSourceArgs;
+            set => SetProperty(ref _musicSourceArgs, value);
+        }
+
+        private ObservableCollection<MusicSourceInfo> _musicSourceInfoList;
+
+        public ObservableCollection<MusicSourceInfo> MusicSourceInfoList
+        {
+            get => _musicSourceInfoList??(_musicSourceInfoList=new ObservableCollection<MusicSourceInfo>());
+            set => SetProperty(ref _musicSourceInfoList, value);
         }
 
         /// <summary>
@@ -35,8 +40,8 @@ namespace MyMusic.ViewModels.Headers
         private string _searchContent;
         public string SearchContent
         {
-            get { return _searchContent; }
-            set { SetProperty(ref _searchContent, value); }
+            get => _searchContent;
+            set => SetProperty(ref _searchContent, value);
         }
 
         /// <summary>
@@ -45,12 +50,8 @@ namespace MyMusic.ViewModels.Headers
         private bool _searchHistoryIsOpen = false;
         public bool SearchHistoryIsOpen
         {
-            get { return _searchHistoryIsOpen; }
-            set
-            {
-                _searchHistoryIsOpen = value;
-                RaisePropertyChanged("SearchHistoryIsOpen");
-            }
+            get => _searchHistoryIsOpen;
+            set => SetProperty(ref _searchHistoryIsOpen, value);
         }
 
         public GlibalHeaderArgs HeaderArgs { get; set; } = GlibalHeaderArgs.Instance;
@@ -59,25 +60,19 @@ namespace MyMusic.ViewModels.Headers
 
         public bool IsSlected
         {
-            get
-            {
-                 return _isSlected;               
-               
-            }
-            set { SetProperty<bool>(ref _isSlected, value); }
+            get => _isSlected;
+            set => SetProperty(ref _isSlected, value);
         }
 
         #endregion
 
-        public HeaderViewModel(IRegionNavigationJournal navigationJournal, IDialogService dialogService, IRegionManager regionManager, IEventAggregator eventAggregator,IStateService stateService, IPlayListService playListService)
+        public HeaderViewModel(IHeaderMusicSourceService headerMusicSourceService, IStateService stateService, IPlayListService playListService,IContainerProvider provider) : base(provider)
         {
-            _navigationJournal = navigationJournal;
-            _dialogService = dialogService;
-            _regionManager = regionManager;
-            _eventAggregator = eventAggregator;
+  
             _stateService = stateService;
             _playListService = playListService;
-
+            _headerMusicSourceService=headerMusicSourceService;
+            _asideCreateControlService = ContainerLocator.Container.Resolve<IAsideCreateControlService>();
             OpenSettingCommand = new DelegateCommand<string>(ExecuteSetting);
             CloseCommand = new DelegateCommand(ExecuteClosing);
             SearchCommand = new DelegateCommand<string>(ExecuteSearchSong);
@@ -87,12 +82,14 @@ namespace MyMusic.ViewModels.Headers
             DragMoveCommand = new DelegateCommand(ExecuteDragMove);
             LogoutCommand = new DelegateCommand(async () => await ExecuteRestartAsync());
             ConfirmPlaySourceCommand = new DelegateCommand<string>(async (source) => await ExecuteSourceAsync(source));
-           
+            InitializedCommand = new DelegateCommand(ExecuteInit);
         }
+
+       
 
         #region  命令
 
-        public ICommand ConfirmPlaySourceCommand { get; set; }
+        public ICommand ConfirmPlaySourceCommand { get; set; }                   //确认播放源
         public ICommand OpenSettingCommand { get; set; }
         public ICommand CloseCommand {  get; set; }
         public ICommand SearchCommand {  get; set; }
@@ -101,25 +98,32 @@ namespace MyMusic.ViewModels.Headers
         public ICommand OpenLoggerCommand { get; set; }
         public ICommand DragMoveCommand { get; set; }
         public ICommand LogoutCommand { get; set; }
+        public ICommand InitializedCommand { get; set; }
 
         #endregion
 
         #region  方法
 
+        public void ExecuteInit()
+        {
+            Task.Run(async () => { await ExecuteHeaderMusicSourceInfo(); });
+        }
+        /// <summary>
+        /// 查看Header是否选中播放源
+        /// </summary>
+        /// <returns></returns>
+        private async Task ExecuteHeaderMusicSourceInfo()
+        {
+
+            var musicSourceInfos = await _headerMusicSourceService.QueryListAsync();
+            MusicSourceInfoList = musicSourceInfos.ToObservableCollection();
+        }
+
         #region 导航
 
         private void ExecuteSetting(string paramters)
         {
-            Navigate(paramters);
-        }
-
-        private void Navigate(string navigatePath)
-        {
-            if (navigatePath != null)
-                _regionManager.RequestNavigate(RegionNames.ContentRegion, navigatePath, arg =>
-                {
-                    _navigationJournal = arg.Context.NavigationService.Journal;
-                });
+            NavigationToView(paramters);
         }
 
         #endregion
@@ -138,12 +142,12 @@ namespace MyMusic.ViewModels.Headers
 
         private void ExecuteGoBack()
         {
-            _regionManager.Regions["ContentRegion"].NavigationService.Journal.GoBack();
+            RegionManager.Regions["ContentRegion"].NavigationService.Journal.GoBack();
         }
 
         private void ExecuteForWard()
         {
-            _regionManager.Regions["ContentRegion"].NavigationService.Journal.GoForward();
+            RegionManager.Regions["ContentRegion"].NavigationService.Journal.GoForward();
         }
 
         #endregion
@@ -156,34 +160,33 @@ namespace MyMusic.ViewModels.Headers
         /// <param name="content"></param>
         public async void ExecuteSearchSong(string content)
         {       
+            //防呆
             if (content == null)
             {
                 PopupInputContentDialog popupDialog = new PopupInputContentDialog();
                 popupDialog.Show();
-                Task.Delay(1000).Wait();
-                popupDialog.Close();
+                Task.Delay(1500).Wait();
+                popupDialog.Close();return;
             }
             if (content != null)
             {
-                JsonProvider jsonProvider = new JsonProvider();
-                List<MusicSourceDto> list =await jsonProvider.GetMusicSourceDto();          
-                var SourceName = list.Where(m => m.IsSelected == true).Select(m => m.Name).ToArray();
+                var musicSourceInfos = await _headerMusicSourceService.QueryListAsync();
 
-                var playListInfo = await _playListService.GetPlatListByNameAsync(content);
-                
-                //将搜索的内容和三大音乐官网的来源传输过去
+                var SourceName = musicSourceInfos.Where(x => x.IsSelected == true).Select(x=>x.SourceName).ToArray();
+
+                //将搜索的内容和三大音乐官网的SourceName传输过去
                 var navigationParameters = new NavigationParameters 
                 {
                     { "PlaylistName", SearchContent },
-                    { "Source",SourceName} 
+                    { "SourceName",SourceName} 
                 };
                 if (navigationParameters == null)
                 {
-                    _regionManager.RequestNavigate(RegionNames.ContentRegion, new Uri("EmptyPlayListView", UriKind.Relative));
+                    RegionManager.RequestNavigate(RegionNames.ContentRegion, new Uri("EmptyPlayListView", UriKind.Relative));
                 }
                 if (navigationParameters != null)
                 {
-                    _regionManager.RequestNavigate(RegionNames.ContentRegion, new Uri("EmptyPlayListView", UriKind.Relative), navigationParameters);
+                    RegionManager.RequestNavigate(RegionNames.ContentRegion, new Uri("EmptyPlayListView", UriKind.Relative), navigationParameters);
                 }
             }
 
@@ -231,33 +234,12 @@ namespace MyMusic.ViewModels.Headers
        
         private async Task ExecuteSourceAsync(string source)
         {
-          
-            await _stateService.SaveState(GlibalHeaderArgs.Instance.MusicSourceList.ToList());
-
+            var music=await _headerMusicSourceService.QueryAsync(x=>x.SourceName==source);
+            music.IsSelected= !music.IsSelected;
+            await _headerMusicSourceService.UpdateAsync(music);
         }
-
-
-        public static void SaveState(ObservableCollection<DownLoadInfo> items)
-        {
-            // 创建设置settings对象
-            var settingsList = new List<MusicSettings>();
-
-            // 遍历所有StartupInfo
-            foreach (var item in items)
-            {
-                // 创建MusicSettings对象并添加到settingsList
-                var settings = new MusicSettings() { Id = item.Id, IsSelected = item.IsSelected, Type = SettingType.DownLoadInfo };
-                settingsList.Add(settings);
-            }
-            // 序列化保存
-            string serializedSettings = JsonConvert.SerializeObject(settingsList);
-            File.WriteAllText("settings.json", serializedSettings);
-        }
-
-       
 
         #endregion
-
 
         #region 查看本地日志
 

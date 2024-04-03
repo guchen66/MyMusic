@@ -4,18 +4,20 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:i18n="clr-namespace:Music.ToolKit.I18nResource;assembly=Music.ToolKit"
-    xmlns:local="clr-namespace:MyMusic.ViewModels"
+    xmlns:ioc="clr-namespace:Prism.Ioc;assembly=Prism"
+    xmlns:local="clr-namespace:MyMusic"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:cvt="clr-namespace:ValueConverters;assembly=ValueConverters"
     xmlns:prism="http://prismlibrary.com/"
     xmlns:region="clr-namespace:Music.Shared.Consts;assembly=Music.Shared"
+    xmlns:sign="clr-namespace:Music.System.Services.MainSign.CreateControllerSign;assembly=Music.System"
+    xmlns:be="clr-namespace:Music.Themes.Behaviors;assembly=Music.Themes"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
-    xmlns:system="clr-namespace:Music.System.Mvvm;assembly=Music.System"
     xmlns:vw="clr-namespace:MyMusic.Views"
     Title="主界面"
     Width="1100"
     Height="700"
     prism:ViewModelLocator.AutoWireViewModel="True"
-    Icon="../Music.ico"
     WindowStartupLocation="CenterScreen">
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
@@ -47,8 +49,6 @@
     </Window.Triggers>
 
     <DockPanel LastChildFill="True">
-
-
         <!--  左侧折叠栏  -->
         <Grid
             x:Name="GridMenu"
@@ -120,7 +120,7 @@
                         </ListView.ItemTemplate>
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="PreviewMouseLeftButtonUp">
-                                <i:InvokeCommandAction Command="{Binding DataContext.NavigateCommand, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Mode=OneWay}" CommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}" />
+                                <i:InvokeCommandAction Command="{Binding DataContext.NavigateCommand, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}" CommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}" />
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
                     </ListView>
@@ -131,6 +131,7 @@
                             <SolidColorBrush Opacity="0.2" Color="Gray" />
                         </Border.BorderBrush>
                         <Expander
+                            x:Name="expander"
                             HorizontalContentAlignment="Stretch"
                             Panel.ZIndex="1"
                             Background="{x:Null}"
@@ -163,27 +164,34 @@
                                 </StackPanel>
                             </Expander.Header>
                             <Expander.Content>
-                                <ItemsControl ItemsSource="{Binding PlayListInputDtos, Mode=TwoWay}">
+                                <ItemsControl ItemsSource="{Binding AsedeCreateplayListDtos, Mode=TwoWay}"  
+                                              be:RefreshItemsControlBehavior.IsChanged="{Binding DataContext.IsChanged,ElementName=expander}" >
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
                                             <Button
                                                 x:Name="btn"
                                                 Height="50"
+                                              
                                                 Command="{Binding DataContext.OpenPlayListCommand, RelativeSource={RelativeSource AncestorType=Expander}}"
-                                                CommandParameter="{Binding Id, ConverterParameter=StringToLongConverter}"
+                                                CommandParameter="{Binding IsExistContent,ConverterParameter=StringToLongConverter}"
                                                 Content="{Binding PlayListName}"
+                                                Tag="{Binding Id}"
                                                 Foreground="White"
                                                 Style="{StaticResource MaterialDesignFlatButton}"
                                                 TextBlock.TextAlignment="Center">
-
                                                 <!--  使用定位器重新实例化一个Button的数据上下文内容  -->
                                                 <Button.ContextMenu>
                                                     <ContextMenu Background="{x:Null}" Foreground="White">
-
+                                                        <ContextMenu.Resources>
+                                                            <ObjectDataProvider x:Key="playListDataProvider" ObjectType="{x:Type sign:OperatePlayLists}">
+                                                                <!--  `技术有限，由于接口不能直接绑定为参数  -->
+                                                                <!--<ioc:IContainerProvider/>-->
+                                                            </ObjectDataProvider>
+                                                        </ContextMenu.Resources>
                                                         <ContextMenu.DataContext>
-                                                            <system:PlayListSettings />
+                                                            <!--<sign:OperatePlayLists />-->
+                                                            <Binding Source="{StaticResource playListDataProvider}" />
                                                         </ContextMenu.DataContext>
-
                                                         <MenuItem
                                                             Background="Gray"
                                                             Command="{Binding ReNamePlayListItemCommand}"
@@ -192,9 +200,8 @@
                                                         <MenuItem
                                                             Background="Gray"
                                                             Command="{Binding DeletePlayListItemCommand}"
-                                                            CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.CommandParameter}"
+                                                            CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.Tag}"
                                                             Header="删除" />
-
                                                     </ContextMenu>
                                                 </Button.ContextMenu>
                                             </Button>

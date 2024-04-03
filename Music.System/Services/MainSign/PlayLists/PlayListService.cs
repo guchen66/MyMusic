@@ -1,10 +1,11 @@
 ﻿
+using Music.Shared.Attributes;
+
 namespace Music.System.Services.MainSign.PlayLists
 {
-
+    [Scanning(RegisterType = "Register")]
     public class PlayListService : DataRepository<PlayListInfo>, IPlayListService
     {
-
         public async Task<bool> CreatePlatListAsync(PlayListInputDto input)
         {
             var playList = input.Adapt<PlayListInfo>();//实体转换       父类转子类

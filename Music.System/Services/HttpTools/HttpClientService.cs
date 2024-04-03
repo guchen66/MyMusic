@@ -1,17 +1,7 @@
-﻿using Music.Shared.Attributes;
-using Music.System.Services.HttpTools.Dtos;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace Music.System.Services.HttpTools
 {
-    [Scanning(RegisterType = "Singleton")]
+   // [Scanning(RegisterType = "Singleton")]
     public class HttpClientService : IHttpClientService
     {
         public HttpClient CreateClient()

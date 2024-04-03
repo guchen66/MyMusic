@@ -3,7 +3,6 @@ namespace Music.Shared.Globals.HeaderSign
 {
     public class MusicSourceArgs : BindableBase
     {
-
         private int _id;
 
         public int Id

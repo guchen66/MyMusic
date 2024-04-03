@@ -1,11 +1,4 @@
-﻿using HtmlAgilityPack;
-using Music.System.Services.MainSign.MyFavorSign.Dtos;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace Music.System.Managers
 {
     public class HtmlAgilityPackManager
@@ -50,9 +43,9 @@ namespace Music.System.Managers
         /// <summary>
         /// 获取香港地区榜单
         /// </summary>
-        public static List<HongKongDto> GetHonKongData()
+        public static List<HongKongMusicDto> GetHonKongData()
         {
-            List<HongKongDto> HonKongDataList = new List<HongKongDto>();
+            List<HongKongMusicDto> HonKongDataList = new List<HongKongMusicDto>();
             // 获取网页的Html
             var html = @"https://y.qq.com/n/ryqq/toplist/59/";
             var web = new HtmlWeb();
@@ -92,7 +85,7 @@ namespace Music.System.Managers
                             Console.WriteLine("时长： " + time);
                             Console.WriteLine();*/
 
-                        HongKongDto honKongData = new HongKongDto();
+                        HongKongMusicDto honKongData = new HongKongMusicDto();
                         honKongData.MusicAlbum = musicAlbum;
                         honKongData.MusicName = musicName;
                         honKongData.Singer = singer;

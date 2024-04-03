@@ -1,10 +1,14 @@
 <Project>
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <!--使用包源映射-->
+    <RestoreSources>$(RestoreSources);https://api.nuget.org/v3/index.json</RestoreSources>
   </PropertyGroup>
   <ItemGroup>
     <!--   使用中央包管理器  -->
+    <PackageVersion Include="Furion" Version="4.9.2" />
     <PackageVersion Include="Microsoft.Build.Utilities.Core" Version="15.1.0-preview-000545-01" />
+    <PackageVersion Include="ObservableCollectionExtended" Version="1.2.0" />
     <PackageVersion Include="SqlSugarCore" Version="5.1.4.117" />
     <PackageVersion Include="SqlSugar.IOC" Version="2.0.0" />
     <PackageVersion Include="Bogus" Version="34.0.2" />
@@ -20,6 +24,7 @@
     <PackageVersion Include="Microsoft.Rest.ClientRuntime" Version="2.3.24" />
     <PackageVersion Include="NAudio" Version="2.2.1" />
     <PackageVersion Include="Prism.DryIoc" Version="8.1.97" />
+    <PackageVersion Include="ValueConverters" Version="3.0.26" />
     <PackageVersion Include="Yitter.IdGenerator" Version="1.0.14" />
     <PackageVersion Include="HandyControl" Version="3.4.0" />
     <PackageVersion Include="MaterialDesign.Avalonia.PackIcon" Version="1.25.0" />

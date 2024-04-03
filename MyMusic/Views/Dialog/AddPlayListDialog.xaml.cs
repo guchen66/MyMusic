@@ -19,7 +19,7 @@ namespace MyMusic.Views.Dialog
     /// <summary>
     /// AddPlayListDialog.xaml 的交互逻辑
     /// </summary>
-    public partial class AddPlayListDialog : UserControl
+    public partial class AddPlayListDialog : StackPanel
     {
         public AddPlayListDialog()
         {

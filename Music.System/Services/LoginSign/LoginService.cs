@@ -1,24 +1,7 @@
-﻿using Music.Core.Components;
-using Music.System.Services.MainSign.HeaderSign.Dtos;
-using Music.System.Services.Loggers;
-using Music.System.Services.LoginSign.Dtos;
-using Music.Shared.Args;
-using Music.Shared.Events.LoginSign;
-using Newtonsoft.Json;
-using Prism.Events;
-using Prism.Ioc;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using Music.Shared.Attributes;
-
+﻿
 namespace Music.System.Services.LoginSign
 {
-    [Scanning(RegisterType= "Singleton")]
+    [Scanning(RegisterType= "Register")]
     public class LoginService : ILoginService
     {
         private readonly IEventAggregator _eventAggregator;

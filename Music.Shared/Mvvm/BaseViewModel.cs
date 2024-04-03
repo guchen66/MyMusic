@@ -14,6 +14,7 @@ using System.Windows.Threading;
 namespace Music.Shared.Mvvm
 {
     /// <summary>
+    /// Mvvm总线通知
     /// 中间类不能台臃肿，将Prism自带的注册进去，
     /// 再写一个自定义的接口，然后实现一个自定义的接口。
     /// </summary>
@@ -37,6 +38,16 @@ namespace Music.Shared.Mvvm
             EventAggregator =provider.Resolve<IEventAggregator>();
 
             Timer = new DispatcherTimer();
+        }
+
+
+        protected void NavigationToView(string navigatePath)
+        {
+            if (navigatePath != null)
+                RegionManager.RequestNavigate(RegionNames.ContentRegion, navigatePath, arg =>
+                {
+                    NavigationJournal = arg.Context.NavigationService.Journal;
+                });
         }
     }
 }

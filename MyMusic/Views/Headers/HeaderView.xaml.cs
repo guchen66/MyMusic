@@ -33,9 +33,6 @@ namespace MyMusic.Views
             string? tag = button.Tag.ToString();
 
             ResxLanguageConfigHelper.SetLanguage(tag);
-        }
-
-
-     
+        }  
     }
 }

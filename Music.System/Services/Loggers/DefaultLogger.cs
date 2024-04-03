@@ -1,4 +1,5 @@
 ﻿
+using Music.Shared.Attributes;
 using NLog;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 namespace Music.System.Services.Loggers
 {
     // NLogLogger 实现类
+    [Scanning(RegisterType = "Register")]
     public class DefaultLogger : ILogger
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();

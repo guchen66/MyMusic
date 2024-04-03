@@ -9,13 +9,14 @@
   <ItemGroup>
     <PackageReference Include="FluentValidation" />
     <PackageReference Include="Microsoft.Extensions.Http" />
-    <PackageReference Include="Microsoft.Rest.ClientRuntime"/>
+    <PackageReference Include="Microsoft.Rest.ClientRuntime" />
     <PackageReference Include="NAudio" />
-    <PackageReference Include="Newtonsoft.Json"/>
-    <PackageReference Include="NLog"/>
+    <PackageReference Include="Newtonsoft.Json" />
+    <PackageReference Include="NLog" />
     <PackageReference Include="Prism.Core" />
     <PackageReference Include="Prism.DryIoc" />
-    <PackageReference Include="Yitter.IdGenerator"/>
+    <PackageReference Include="ValueConverters" />
+    <PackageReference Include="Yitter.IdGenerator" />
   </ItemGroup>
 
   <ItemGroup>
