@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace Music.Shared.Entitys
 {
-    public class AsideControlView : BaseEntity
+    public class AsideControlView : AutoIncrementEntity
     {
+        [SugarColumn(ColumnDescription = "歌单控制器对应视图Id")]
         public int ViewId { get; set; }
 
         [SugarColumn(ColumnDataType = "Nvarchar(50)", ColumnDescription = "音乐名称")]//自定义情况Length不要设置

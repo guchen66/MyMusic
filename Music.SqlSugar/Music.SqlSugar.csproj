@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Entity\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Mapster" />
     <PackageReference Include="SqlSugar.IOC" />
     <PackageReference Include="SqlSugarCore" />

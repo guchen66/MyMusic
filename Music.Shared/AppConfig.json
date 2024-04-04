@@ -21,7 +21,7 @@
   /**自动生成数据**/
   "GeneratorData": {
     "Title": "SqlServer",
-    "IsGenerator": "true", //初始化数据库和表格
+    "IsGenerator": "false", //初始化数据库和表格
     "IsSeedData": "false" //自动生成表数据
   }
 }

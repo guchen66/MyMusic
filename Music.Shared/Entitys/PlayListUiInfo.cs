@@ -2,7 +2,7 @@
 namespace Music.Shared.Entitys
 {
     [SugarTable("PlayListUiInfo", "歌单Ui信息表")]
-    public class PlayListUiInfo : BaseEntity
+    public class PlayListUiInfo : NotAutoIncrementEntity
     {
 
         [SugarColumn(ColumnDataType = "Nvarchar(50)", IsNullable = true)]

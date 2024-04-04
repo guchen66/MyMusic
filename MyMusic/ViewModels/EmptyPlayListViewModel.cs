@@ -146,6 +146,10 @@ namespace MyMusic.ViewModels
                 var source = navigationContext.Parameters["SourceName"] as string[];
                 var tasks = new List<Task<List<IMusic>>>();
 
+                if (source ==null || TransferName==null)
+                {
+                    return;
+                }
                 foreach (var item in source)
                 {
                     if (string.IsNullOrEmpty(item))

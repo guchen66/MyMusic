@@ -1,16 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace Music.Shared.Entitys
 {
-    public class AsideMenu
+    public class AsideMenu: AutoIncrementEntity
     {
-        [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
-        public int Id { get; set; }
-
         [SugarColumn(ColumnDataType = "Nvarchar(16)", IsNullable = true)]
         public string? Icon { get; set; }
 

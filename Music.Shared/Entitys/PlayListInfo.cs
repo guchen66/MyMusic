@@ -3,7 +3,7 @@ namespace Music.Shared.Entitys
 {
    
     [SugarTable("PlayListInfo", "左侧创建歌单表")]//安全级别高，只创建，不修改和删除
-    public class PlayListInfo : BaseEntity
+    public class PlayListInfo : NotAutoIncrementEntity
     {
         [SugarColumn(ColumnDataType = "Nvarchar(50)", IsNullable = true)]
         public virtual string? PlayListName { get; set; }

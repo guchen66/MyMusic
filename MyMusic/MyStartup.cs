@@ -18,6 +18,7 @@ namespace MyMusic
             containerRegistry.RegisterForNavigation<HomeView, HomeViewModel>();
             containerRegistry.RegisterForNavigation<FavorView, FavorViewModel>();
             containerRegistry.RegisterForNavigation<EmptyPlayListView, EmptyPlayListViewModel>();
+            containerRegistry.RegisterForNavigation<EditPlayListView, EditPlayListViewModel>();
             containerRegistry.RegisterForNavigation<_404View, _404ViewModel>();
             containerRegistry.RegisterForNavigation<_500View, _500ViewModel>();
             ///注册对话框弹窗
@@ -88,7 +89,7 @@ namespace MyMusic
                     typeof(MusicInfo),
                     typeof(PlayListUiInfo),
                     typeof(PlayListInfo),
-                    typeof(AsideMenu),typeof(MusicSourceInfo)
+                    typeof(AsideMenu),typeof(MusicSourceInfo),typeof(SysUser)
                 );
             }
             //生成种子数据

@@ -1,16 +1,4 @@
-﻿using Music.Shared.Globals.MainSign;
-using Prism.Events;
-using Prism.Ioc;
-using Prism.Mvvm;
-using Prism.Regions;
-using Prism.Services.Dialogs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Threading;
-
+﻿
 namespace Music.Shared.Mvvm
 {
     /// <summary>

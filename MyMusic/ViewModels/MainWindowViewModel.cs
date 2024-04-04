@@ -50,8 +50,7 @@ namespace MyMusic.ViewModels
         #endregion
 
         public MainWindowViewModel(IMapper mapper, IContainerProvider provider):base(provider)
-        {
-            
+        {        
             _mapper= mapper;
             _playListService = provider.Resolve<IPlayListService>();
             _asideMenuService= provider.Resolve<IAsideMenuService>();
@@ -133,7 +132,7 @@ namespace MyMusic.ViewModels
                 Dispatcher.CurrentDispatcher.Invoke(() => AsideMenus.Add(menu));
             }
 
-            //加载左侧新建个单列表控制器选项
+            //加载左侧新建歌单列表控制器选项
             await RefreshAsync();
         }
       
@@ -142,25 +141,34 @@ namespace MyMusic.ViewModels
         /// 打开新的空白歌单界面
         /// </summary>
         /// <param name="id"></param>
-        public async void ExecuteOpenPlayList(bool? isExistContext)
+        public void ExecuteOpenPlayList(bool? isExistContext)
         {
-            
-         /*   JsonProvider jsonProvider = new JsonProvider();
-            var playListInfo = await _playListService.GetPlayListByIdAsync(id);
-
-            List<MusicSourceDto> list = await jsonProvider.GetMusicSourceDto();
-            var SourceName = list.Where(m => m.IsSelected == true).Select(m => m.Name).ToArray();
-            
-            // 导航到空白模板界面 并传递导航参数
-            //将搜索的内容和三大音乐官网的来源传输过去
-            var navigationParameters = new NavigationParameters
+            if (isExistContext is bool isExist && isExist)
             {
-                { "PlaylistName", playListInfo.PlayListName },
-                { "Source",SourceName}
-            };
-               */
-          //  RegionManager.RequestNavigate(RegionNames.ContentRegion, new Uri("EmptyPlayListView", UriKind.Relative), navigationParameters);
-            RegionManager.RequestNavigate(RegionNames.ContentRegion, new Uri("EmptyPlayListView", UriKind.Relative));
+                RegionManager.RequestNavigate(RegionNames.ContentRegion, new Uri("EditPlayListView", UriKind.Relative));
+            }
+            else
+            {
+                RegionManager.RequestNavigate(RegionNames.ContentRegion, new Uri("EmptyPlayListView", UriKind.Relative));
+            }
+            /*   JsonProvider jsonProvider = new JsonProvider();
+               var playListInfo = await _playListService.GetPlayListByIdAsync(id);
+
+               List<MusicSourceDto> list = await jsonProvider.GetMusicSourceDto();
+               var SourceName = list.Where(m => m.IsSelected == true).Select(m => m.Name).ToArray();
+
+               // 导航到空白模板界面 并传递导航参数
+               //将搜索的内容和三大音乐官网的来源传输过去
+               var navigationParameters = new NavigationParameters
+               {
+                   { "PlaylistName", playListInfo.PlayListName },
+                   { "Source",SourceName}
+               };
+                  */
+            //  RegionManager.RequestNavigate(RegionNames.ContentRegion, new Uri("EmptyPlayListView", UriKind.Relative), navigationParameters);
+          /*  bool isExist = isExistContext ?? false;
+            string viewName = isExist ? "EditPlayListView" : "EmptyPlayListView";
+            RegionManager.RequestNavigate(RegionNames.ContentRegion, new Uri(viewName, UriKind.Relative));*/
 
         }
 
@@ -196,7 +204,7 @@ namespace MyMusic.ViewModels
                         AsideCreateControllerDto controllerDto = new AsideCreateControllerDto();
                         controllerDto.Id = YitIdHelper.NextId();
                         controllerDto.PlayListName = value;
-                        controllerDto.IsExistContent = true;
+                        controllerDto.IsExistContent = false;
                         await _asideCreateControlService.CreatePlatListAsync(controllerDto);
                     //    IsChanged = !IsChanged;
                         //拿到歌单名称后，实现异步将歌单添加到界面Expander内部

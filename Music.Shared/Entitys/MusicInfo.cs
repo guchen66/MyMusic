@@ -15,11 +15,8 @@ namespace Music.Shared.Entitys
 
     //   [MyBogus(true, 100)]
     [SugarTable("MusicInfo", "音乐信息表")]//安全级别高，只创建，不修改和删除
-    public class MusicInfo : BaseEntity
+    public class MusicInfo : AutoIncrementEntity
     {
-        [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]//主键自增
-        public new int Id { get; set; }
-
         [SugarColumn(ColumnDataType = "Nvarchar(50)" ,ColumnDescription ="音乐名称")]//自定义情况Length不要设置
         public string? Name { get; set; }
 

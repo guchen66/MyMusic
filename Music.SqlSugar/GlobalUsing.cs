@@ -8,7 +8,6 @@ global using System.ComponentModel.DataAnnotations.Schema;
 global using Prism.Mvvm;
 global using System.Collections.ObjectModel;
 global using Prism.Events;
-global using Music.Shared.Entitys.NotRegistered;
 global using System.Windows;
 global using Music.Shared.Consts;
 global using System.ComponentModel;
