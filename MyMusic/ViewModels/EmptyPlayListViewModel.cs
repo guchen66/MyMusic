@@ -1,4 +1,11 @@
 ﻿
+using Microsoft.Win32;
+using Music.Shared.Entitys;
+using Music.Shared.Events.EmptySign;
+using Music.System.Services.CustomPlaySign;
+using Music.System.Services.CustomPlaySign.Netease;
+
+
 namespace MyMusic.ViewModels
 {
     public class EmptyPlayListViewModel : BaseViewModel, INavigationAware
@@ -15,6 +22,14 @@ namespace MyMusic.ViewModels
         #endregion
 
         #region  属性
+
+        private string _musicName;
+
+        public string MusicName
+        {
+            get => _musicName;
+            set => SetProperty(ref _musicName, value);
+        }
 
         public List<IMusic> _musicInfos;
         public List<IMusic> MusicInfos
@@ -41,17 +56,6 @@ namespace MyMusic.ViewModels
             set { SetProperty(ref _isRequestFailed, value); }
         }
 
-       
-        private Visibility _searchProgressVisibility;
-        public Visibility SearchProgressVisibility
-        {
-            get { return _searchProgressVisibility; }
-            set
-            {
-                _searchProgressVisibility = value;
-                this.RaisePropertyChanged("SearchProgressVisibility");
-            }
-        }
         #endregion
 
         public EmptyPlayListViewModel(IFavorService favorService, IHttpClientService httpClientService, IButtonPlaySingleService buttonPlaySingleService, IContainerProvider provider):base(provider)
@@ -63,6 +67,86 @@ namespace MyMusic.ViewModels
             InitingCommand = new DelegateCommand(ExecuteIniting);
             PrePlayCommand = new DelegateCommand<object>(PrePlayExecute);
             PlayCommand = new DelegateCommand<string>(async (id)=>await ExecutePlay(id));
+            AddToFavorCommand = new DelegateCommand(ExecuteAddToFavor);
+            DownLoadCommand = new DelegateCommand<object>(async (x)=>await ExecuteDownLoad(x));
+
+
+        }
+
+        /// <summary>
+        /// 将歌曲添加至收藏
+        /// </summary>
+        private void ExecuteAddToFavor()
+        {
+           
+        }
+
+        /// <summary>
+        /// 打开下载界面
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        private async Task ExecuteDownLoad(object obj)
+        {
+            // return null;
+            DialogParameters paramters = new DialogParameters();
+             paramters.Add("selectedItem", obj);
+            await Task.Delay(1000);
+            DialogService.ShowDialog("DownLoadDialog", paramters, DialogCompleted);
+        }
+
+        /// <summary>
+        /// 下载完成
+        /// </summary>
+        /// <param name="result"></param>
+        private void DialogCompleted(IDialogResult result)
+        {
+            if (result.Result == ButtonResult.OK)
+            {
+                string mp3 = "保存的数据"; // 这是你想要保存的文本内容
+
+                // 创建并显示保存文件对话框
+                SaveFileDialog sfd = new SaveFileDialog();
+                sfd.InitialDirectory = @"E:\MyFolder"; // 设置对话框的起始路径
+                sfd.Filter = "Text Files|*.mp3"; // 设置文件过滤器，这里表示只有mp3
+
+                // 设置默认文件名，如果用户没有输入文件名，将使用这个默认值
+                sfd.DefaultExt = "mp3"; // 默认文件扩展名
+                sfd.AddExtension = true; // 确保即使用户输入的文件名中没有扩展名，也会添加扩展名
+
+                // 用户点击确定后执行以下代码
+                if (sfd.ShowDialog() == true)
+                {
+                    string fileFullPath = sfd.FileName; // 获取用户选择的文件的完整路径
+
+                    // 新建或覆盖已选择的文件，并将result内容写入该文件
+                    try
+                    {
+                        // 使用StreamWriter来写入文本文件
+                        using (StreamWriter writer = new StreamWriter(fileFullPath))
+                        {
+                            writer.WriteLine(mp3);
+                        }
+
+                        // 弹出消息框告知用户文件已保存
+                        MessageBox.Show("数据已保存到文件。");
+                    }
+                    catch (Exception ex)
+                    {
+                        // 如果发生异常，弹出消息框显示错误信息
+                        MessageBox.Show("保存文件时发生错误: " + ex.Message);
+                    }
+                }
+                else
+                {
+                    // 如果用户没有选择文件，点击了取消按钮
+                    MessageBox.Show("操作已取消。");
+                }
+            }
+            else
+            {
+              //  MessageBox.Show("返回");
+            }
         }
 
 
@@ -73,6 +157,8 @@ namespace MyMusic.ViewModels
         public ICommand OpenPopupCommand { get; set; }
         public ICommand PrePlayCommand { get; set; }
         public ICommand PlayCommand { get; set; }
+        public ICommand AddToFavorCommand { get; set; }
+        public ICommand DownLoadCommand { get; set; }
         #endregion
 
 
@@ -90,14 +176,7 @@ namespace MyMusic.ViewModels
             timer.Start();
 
         }
-        /// <summary>
-        /// 找到数据之后展示数据，结束转圈圈
-        /// </summary>
-        /// <param name="state"></param>
-        private void CloseSplash(object state)
-        {
-            SearchProgressVisibility = Visibility.Collapsed;
-        }
+        
         private async void Timer_Tick(object sender, EventArgs e)
         {
             await Task.Run(() => { });
@@ -113,7 +192,11 @@ namespace MyMusic.ViewModels
         {
             //主页面设置播放状态
              ViewModelManager.Footer.SetPlayState();
-             await _buttonPlaySingleService.PlayListAsync(id);
+            //   var SourceName = SourceName;
+            var model= MusicInfos.FirstOrDefault(x=>x.Id==id);
+            EventAggregator.GetEvent<EmptyViewMusicEvent>().Publish(model.Name);
+            var playService =  MusicSourceFactory.CreatePlayProvider(model.SourceName);
+            await playService.PlayListAsync(id);
         }
         public static PlaybackState State
         {
@@ -141,7 +224,7 @@ namespace MyMusic.ViewModels
             try
             {
                 //  string decodeStr = WebUtility.UrlDecode(DefaultPlayListName);
-                //获取歌名 获取音乐来源
+                //获取搜索框信息 获取音乐来源
                 var TransferName = navigationContext.Parameters["PlaylistName"] as string;
                 var source = navigationContext.Parameters["SourceName"] as string[];
                 var tasks = new List<Task<List<IMusic>>>();
@@ -163,7 +246,7 @@ namespace MyMusic.ViewModels
                 }
 
                 await Task.WhenAll(tasks);
-
+             //   MusicSourceArgs
                 List<IMusic> musicInfos = new List<IMusic>();
                 foreach (var task in tasks)
                 {

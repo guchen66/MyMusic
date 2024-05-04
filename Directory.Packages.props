@@ -6,6 +6,7 @@
   </PropertyGroup>
   <ItemGroup>
     <!--   使用中央包管理器  -->
+    <PackageVersion Include="Downloader" Version="3.0.6" />
     <PackageVersion Include="Furion" Version="4.9.2" />
     <PackageVersion Include="Microsoft.Build.Utilities.Core" Version="15.1.0-preview-000545-01" />
     <PackageVersion Include="ObservableCollectionExtended" Version="1.2.0" />

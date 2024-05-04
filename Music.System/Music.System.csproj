@@ -4,6 +4,7 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Downloader" />
     <PackageReference Include="HtmlAgilityPack" />
     <PackageReference Include="Mapster" />
     <PackageReference Include="NLog" />
@@ -14,8 +15,5 @@
     <ProjectReference Include="..\Music.Core\Music.Core.csproj" />
     <ProjectReference Include="..\Music.SqlSugar\Music.SqlSugar.csproj" />
     <ProjectReference Include="..\Music.ToolKit\Music.ToolKit.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Services\MainSign\HomeSign\" />
   </ItemGroup>
 </Project>

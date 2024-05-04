@@ -19,12 +19,12 @@
     Height="700"
     prism:ViewModelLocator.AutoWireViewModel="True"
     WindowStartupLocation="CenterScreen">
-    <i:Interaction.Triggers>
+    <!--<i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
             <i:InvokeCommandAction Command="{Binding LoadedCommand}" />
         </i:EventTrigger>
-    </i:Interaction.Triggers>
-    <Window.Resources>
+    </i:Interaction.Triggers>-->
+    <!--<Window.Resources>
         <Storyboard x:Key="MenuOpen">
             <DoubleAnimationUsingKeyFrames Storyboard.TargetName="GridMenu" Storyboard.TargetProperty="(FrameworkElement.Width)">
                 <EasingDoubleKeyFrame KeyTime="0" Value="60" />
@@ -46,48 +46,48 @@
         <EventTrigger RoutedEvent="ButtonBase.Click" SourceName="ButtonCloseMenu">
             <BeginStoryboard Storyboard="{StaticResource MenuClose}" />
         </EventTrigger>
-    </Window.Triggers>
+    </Window.Triggers>-->
 
     <DockPanel LastChildFill="True">
         <!--  左侧折叠栏  -->
-        <Grid
-            x:Name="GridMenu"
-            Width="60"
-            HorizontalAlignment="Left"
-            Background="{DynamicResource PrimaryHueMidBrush}"
-            DockPanel.Dock="Left">
+        <!--<Grid
+    x:Name="GridMenu"
+    Width="60"
+    HorizontalAlignment="Left"
+    Background="{DynamicResource PrimaryHueMidBrush}"
+    DockPanel.Dock="Left">
             <StackPanel>
                 <Grid Height="150" Background="White">
                     <Button
-                        x:Name="ButtonCloseMenu"
-                        Width="60"
-                        Height="60"
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Top"
-                        Background="{x:Null}"
-                        BorderBrush="{x:Null}"
-                        Click="ButtonCloseMenu_Click"
-                        Visibility="Collapsed">
+                x:Name="ButtonCloseMenu"
+                Width="60"
+                Height="60"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                Background="{x:Null}"
+                BorderBrush="{x:Null}"
+                Click="ButtonCloseMenu_Click"
+                Visibility="Collapsed">
                         <materialDesign:PackIcon
-                            Width="25"
-                            Height="25"
-                            Foreground="#FF1B3861"
-                            Kind="ArrowLeft" />
+                    Width="25"
+                    Height="25"
+                    Foreground="#FF1B3861"
+                    Kind="ArrowLeft" />
                     </Button>
                     <Button
-                        x:Name="ButtonOpenMenu"
-                        Width="60"
-                        Height="60"
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Top"
-                        Background="{x:Null}"
-                        BorderBrush="{x:Null}"
-                        Click="ButtonOpenMenu_Click">
+                x:Name="ButtonOpenMenu"
+                Width="60"
+                Height="60"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                Background="{x:Null}"
+                BorderBrush="{x:Null}"
+                Click="ButtonOpenMenu_Click">
                         <materialDesign:PackIcon
-                            Width="25"
-                            Height="25"
-                            Foreground="#FF1B3861"
-                            Kind="Menu" />
+                    Width="25"
+                    Height="25"
+                    Foreground="#FF1B3861"
+                    Kind="Menu" />
                     </Button>
                 </Grid>
 
@@ -97,24 +97,24 @@
                         <RowDefinition />
                     </Grid.RowDefinitions>
 
-                    <!--  导航歌单  -->
+                    --><!--  导航歌单  --><!--
                     <ListView
-                        Foreground="White"
-                        ItemsSource="{Binding AsideMenus}"
-                        ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                Foreground="White"
+                ItemsSource="{Binding AsideMenus}"
+                ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                         <ListView.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
                                     <materialDesign:PackIcon
-                                        Width="25"
-                                        Height="25"
-                                        Margin="10"
-                                        VerticalAlignment="Center"
-                                        Kind="{Binding Icon}" />
+                                Width="25"
+                                Height="25"
+                                Margin="10"
+                                VerticalAlignment="Center"
+                                Kind="{Binding Icon}" />
                                     <TextBlock
-                                        Margin="20,10"
-                                        VerticalAlignment="Center"
-                                        Text="{Binding Content}" />
+                                Margin="20,10"
+                                VerticalAlignment="Center"
+                                Text="{Binding Content}" />
                                 </StackPanel>
                             </DataTemplate>
                         </ListView.ItemTemplate>
@@ -125,38 +125,38 @@
                         </i:Interaction.Triggers>
                     </ListView>
 
-                    <!--  创建新歌单  -->
+                    --><!--  创建新歌单  --><!--
                     <Border Grid.Row="1" BorderThickness="1,1,0,0">
                         <Border.BorderBrush>
                             <SolidColorBrush Opacity="0.2" Color="Gray" />
                         </Border.BorderBrush>
                         <Expander
-                            x:Name="expander"
-                            HorizontalContentAlignment="Stretch"
-                            Panel.ZIndex="1"
-                            Background="{x:Null}"
-                            ExpandDirection="Down"
-                            IsExpanded="True">
+                    x:Name="expander"
+                    HorizontalContentAlignment="Stretch"
+                    Panel.ZIndex="1"
+                    Background="{x:Null}"
+                    ExpandDirection="Down"
+                    IsExpanded="True">
                             <Expander.Header>
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock
-                                        Grid.Column="1"
-                                        HorizontalAlignment="Center"
-                                        VerticalAlignment="Center"
-                                        Panel.ZIndex="1"
-                                        FontFamily="../Assets/Fonts/#iconfont"
-                                        FontSize="15"
-                                        Foreground="White"
-                                        Text="创建的歌单" />
+                                Grid.Column="1"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Panel.ZIndex="1"
+                                FontFamily="../Assets/Fonts/#iconfont"
+                                FontSize="15"
+                                Foreground="White"
+                                Text="创建的歌单" />
                                     <TextBlock
-                                        Margin="10,0,0,0"
-                                        HorizontalAlignment="Center"
-                                        VerticalAlignment="Center"
-                                        Panel.ZIndex="10"
-                                        FontFamily="../Assets/Fonts/#iconfont"
-                                        FontSize="20"
-                                        Foreground="White"
-                                        Text="&#xe695;">
+                                Margin="10,0,0,0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Panel.ZIndex="10"
+                                FontFamily="../Assets/Fonts/#iconfont"
+                                FontSize="20"
+                                Foreground="White"
+                                Text="&#xe695;">
                                         <TextBlock.InputBindings>
                                             <MouseBinding Command="{Binding CreatePlayListCommand}" MouseAction="LeftClick" />
                                         </TextBlock.InputBindings>
@@ -164,48 +164,46 @@
                                 </StackPanel>
                             </Expander.Header>
                             <Expander.Content>
-                                <ItemsControl ItemsSource="{Binding AsedeCreateplayListDtos, Mode=TwoWay}"  
-                                              be:RefreshItemsControlBehavior.IsChanged="{Binding DataContext.IsChanged,ElementName=expander}" >
+                                <ItemsControl be:RefreshItemsControlBehavior.IsChanged="{Binding DataContext.IsChanged, ElementName=expander}" ItemsSource="{Binding AsedeCreateplayListDtos, Mode=TwoWay}">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
                                             <Button
-                                                x:Name="btn"
-                                                Height="50"
-                                              
-                                                Command="{Binding DataContext.OpenPlayListCommand, RelativeSource={RelativeSource AncestorType=Expander}}"
-                                                CommandParameter="{Binding IsExistContent,ConverterParameter=StringToLongConverter}"
-                                                Content="{Binding PlayListName}"
-                                                Tag="{Binding Id}"
-                                                Foreground="White"
-                                                Style="{StaticResource MaterialDesignFlatButton}"
-                                                TextBlock.TextAlignment="Center">
-                                                <!--  使用定位器重新实例化一个Button的数据上下文内容  -->
+                                        x:Name="btn"
+                                        Height="50"
+                                        Command="{Binding DataContext.OpenPlayListCommand, RelativeSource={RelativeSource AncestorType=Expander}}"
+                                        CommandParameter="{Binding IsExistContent, ConverterParameter=StringToLongConverter}"
+                                        Content="{Binding PlayListName}"
+                                        Foreground="White"
+                                        Style="{StaticResource MaterialDesignFlatButton}"
+                                        Tag="{Binding Id}"
+                                        TextBlock.TextAlignment="Center">
+                                                --><!--  使用定位器重新实例化一个Button的数据上下文内容  --><!--
                                                 <Button.ContextMenu>
                                                     <ContextMenu Background="{x:Null}" Foreground="White">
                                                         <ContextMenu.Resources>
                                                             <ObjectDataProvider x:Key="playListDataProvider" ObjectType="{x:Type sign:OperatePlayLists}">
-                                                                <!--  `技术有限，由于接口不能直接绑定为参数  -->
-                                                                <!--<ioc:IContainerProvider/>-->
+                                                                --><!--  `技术有限，由于接口不能直接绑定为参数  -->
+                                                                <!--<ioc:IContainerProvider/>--><!--
                                                             </ObjectDataProvider>
                                                         </ContextMenu.Resources>
                                                         <ContextMenu.DataContext>
-                                                            <!--<sign:OperatePlayLists />-->
+                                                            --><!--<sign:OperatePlayLists />--><!--
                                                             <Binding Source="{StaticResource playListDataProvider}" />
                                                         </ContextMenu.DataContext>
                                                         <MenuItem
-                                                            Background="Gray"
-                                                            Command="{Binding ReNamePlayListItemCommand}"
-                                                            CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.Content}"
-                                                            Header="重命名" />
+                                                    Background="Gray"
+                                                    Command="{Binding ReNamePlayListItemCommand}"
+                                                    CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.Content}"
+                                                    Header="重命名" />
                                                         <MenuItem
-                                                            Background="Gray"
-                                                            Command="{Binding DeletePlayListItemCommand}"
-                                                            CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.Tag}"
-                                                            Header="删除" />
+                                                    Background="Gray"
+                                                    Command="{Binding DeletePlayListItemCommand}"
+                                                    CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.Tag}"
+                                                    Header="删除" />
                                                     </ContextMenu>
                                                 </Button.ContextMenu>
                                             </Button>
-                                            <!--  Style="{StaticResource MaterialDesignFlatDarkBgButton}"  -->
+                                            --><!--  Style="{StaticResource MaterialDesignFlatDarkBgButton}"  --><!--
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
@@ -215,8 +213,11 @@
                 </Grid>
 
             </StackPanel>
+        </Grid>-->
+        <Grid DockPanel.Dock="Left">
+            <ContentControl  prism:RegionManager.RegionName="{x:Static region:RegionNames.AsideRegion}" />
         </Grid>
-
+       
         <!--  Header   Background="{DynamicResource PrimaryHueMidBrush}"  -->
         <Border
             x:Name="GridTitle"

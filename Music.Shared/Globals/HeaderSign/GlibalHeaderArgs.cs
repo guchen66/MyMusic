@@ -10,12 +10,12 @@ namespace Music.Shared.Globals.HeaderSign
         }
         public void Init()
         {
-            MusicSourceList = new ObservableCollection<MusicSourceArgs>
+          /*  MusicSourceList = new ObservableCollection<MusicSourceArgs>
             {
                 new MusicSourceArgs(){ Id=1, Name="网易云",Source="网易云"},
                 new MusicSourceArgs(){ Id=2, Name="QQ音乐",Source = "QQ音乐"},
                 new MusicSourceArgs(){ Id=3, Name="酷狗音乐",Source = "酷狗音乐"}
-            };
+            };*/
         }
 
         public ObservableCollection<MusicSourceArgs> MusicSourceList { get; set; }

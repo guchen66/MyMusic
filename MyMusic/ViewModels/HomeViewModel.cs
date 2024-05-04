@@ -1,4 +1,5 @@
 ﻿
+using Music.System.Services.MainSign.HomeSign;
 using System.Windows.Controls;
 
 namespace MyMusic.ViewModels
@@ -11,6 +12,7 @@ namespace MyMusic.ViewModels
         private Timer _timer;
         private DispatcherTimer timer;
         private readonly IFavorService _favorService;
+        private readonly IPlayMusicService _playMusicService;
         IPlayListService _playListService;
         IRegionManager _regionManager;
         IHttpClientService _httpClientService;
@@ -74,6 +76,7 @@ namespace MyMusic.ViewModels
         {
            // SearchProgressVisibility = Visibility.Visible;
            // DataVisibility = Visibility.Hidden;
+            _playMusicService = provider.Resolve<IPlayMusicService>();
             _favorService = provider.Resolve<IFavorService>();
             _playListService = provider.Resolve<IPlayListService>();
             _httpClientService = provider.Resolve<IHttpClientService>();
@@ -108,13 +111,7 @@ namespace MyMusic.ViewModels
                 RegionManager.RequestNavigate(RegionNames.ContentRegion, new Uri("_404View", UriKind.Relative));
               
             }
-            //找到数据隐藏转圈圈
-          //  IsDataLoading = false;
-            /*timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromSeconds(1);
-            timer.Tick += Timer_Tick;
-            timer.Start();*/
-            //  CloseSplash("");
+
         }
 
         private async void Timer_Tick(object sender, EventArgs e)
@@ -137,15 +134,6 @@ namespace MyMusic.ViewModels
             }));*/
         }
 
-      /*  public string GetMusicUrl()
-        {
-            string url = "https://tqlcode.com/page/music/api.php";
-            byte[] commit = Encoding.UTF8.GetBytes($"types=url&id={Id}&source=netease");
-            byte[] data = _httpClientService.PostAsync(url, commit);
-            JObject json = JObject.Parse(Encoding.UTF8.GetString(data));
-            return json["url"].ToString();
-        }*/
-
         /// <summary>
         /// 找到数据之后展示数据，结束转圈圈
         /// </summary>
@@ -164,7 +152,7 @@ namespace MyMusic.ViewModels
 
         public void ExecutePlay(string name)
         {
-
+            _playMusicService.SingleMusicPlay(name);
         }
         #endregion
     }

@@ -1,20 +1,29 @@
-﻿using MaterialDesignThemes.Wpf;
-using NLog;
-using System;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
 
-namespace MyMusic.Views
+namespace MyMusic.Views.Asides
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// AsidesView.xaml 的交互逻辑
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class AsideView : UserControl
     {
-        public MainWindow()
+        public AsideView()
         {
             InitializeComponent();
-           // GridTitle.PreviewMouseDown += GridTitle_PreviewMouseDown;
+         //   GridTitle.PreviewMouseDown += GridTitle_PreviewMouseDown;
             /*btnMin.Click += (s, e) => { this.WindowState = WindowState.Minimized; };
             btnMax.Click += (s, e) =>
             {
@@ -44,7 +53,7 @@ namespace MyMusic.Views
 
 
         }
-      /*  private void ButtonPopUpLogout_Click(object sender, RoutedEventArgs e)
+        private void ButtonPopUpLogout_Click(object sender, RoutedEventArgs e)
         {
             Application.Current.Shutdown();
         }
@@ -60,18 +69,18 @@ namespace MyMusic.Views
             ButtonOpenMenu.Visibility = Visibility.Visible;
             ButtonCloseMenu.Visibility = Visibility.Collapsed;
         }
-*/
-        private void GridTitle_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            DragMove();
 
-        }
+        /*   private void GridTitle_MouseDown(object sender, MouseButtonEventArgs e)
+           {
+               DragMove();
 
+           }
+   */
 
         private DateTime lastClickTime = DateTime.Now;
         private const int doubleClickInterval = 300; // 双击间隔时间阈值（单位：毫秒）
 
-        private void GridTitle_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+      /*  private void GridTitle_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ClickCount == 2)
             {
@@ -85,8 +94,8 @@ namespace MyMusic.Views
 
                 lastClickTime = currentClickTime;
             }
-        }
-        private void ToggleWindowState()
+        }*/
+      /*  private void ToggleWindowState()
         {
             if (WindowState == WindowState.Normal)
             {
@@ -96,7 +105,7 @@ namespace MyMusic.Views
             {
                 WindowState = WindowState.Normal;
             }
-        }
+        }*/
 
 
     }

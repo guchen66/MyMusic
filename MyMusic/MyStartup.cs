@@ -2,6 +2,8 @@
 using Music.Shared.Entitys.Header;
 using Music.SqlSugar.IRepositorys;
 using Music.System.Registers;
+using MyMusic.ViewModels.Asides;
+using MyMusic.Views.Asides;
 
 namespace MyMusic
 {
@@ -12,7 +14,7 @@ namespace MyMusic
             containerRegistry.RegisterForNavigation<SetView>(); //设置信息
             containerRegistry.RegisterForNavigation<DownLoadView, DownLoadViewModel>();
             containerRegistry.RegisterForNavigation<RecentView, RecentViewModel>();
-
+            containerRegistry.RegisterForNavigation<AsideView, AsideViewModel>();
             containerRegistry.RegisterForNavigation<HeaderView, HeaderViewModel>();
             containerRegistry.RegisterForNavigation<FooterView, FooterViewModel>();
             containerRegistry.RegisterForNavigation<HomeView, HomeViewModel>();
@@ -26,6 +28,7 @@ namespace MyMusic
             containerRegistry.RegisterDialog<AddPlayListDialog, AddPlayListDialogViewModel>();
             containerRegistry.RegisterDialog<DeletePlayListDialog, DeletePlayListDialogViewModel>();
             containerRegistry.RegisterDialog<ReNamePlayListDialog, ReNamePlayListDialogViewModel>();
+            containerRegistry.RegisterDialog<DownLoadDialog, DownLoadDialogViewModel>();
             //   containerRegistry.RegisterDialog<PopupInputContentDialog, PopupInputContentDialogViewModel>();
             // 注册 ILog 日志接口和 NLogLogger 实现类
             containerRegistry.Register<IPlayListService, PlayListService>();

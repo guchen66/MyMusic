@@ -1,4 +1,5 @@
 ﻿
+using Music.System.Components;
 using Prism.Ioc;
 
 using StartupEventArgs = System.Windows.StartupEventArgs;
@@ -10,11 +11,6 @@ namespace MyMusic;
 /// </summary>
 public partial class App
 {
-
-    public App()
-    {
-       // Service.RunNative(RunOptions.Default);
-    }
     Mutex mutex;
     //初始化Root目录状态
     public RootArgs RootArgs { get; set; } = RootArgs.Instance;
@@ -90,23 +86,16 @@ public partial class App
 
     protected override void RegisterTypes(IContainerRegistry containerRegistry)
     {
+        containerRegistry.RegisterComponent<LocalServerComponent>();      //注册本地服务
+        containerRegistry.RegisterComponent<SqlsugarComponent>();         //注册Sqlsugar组件
+        containerRegistry.RegisterComponent<PlayMusicComponent>();          //注册MahApps组件库
+        containerRegistry.RegisterComponent<MapsterComponent>();          //注册Mapster映射
         MyStartup.Register(containerRegistry);
 
         RegistExtension register = new RegistExtension(containerRegistry);
         register.RegisterScannedTypes();
 
-        var config = TypeAdapterConfig.GlobalSettings;
-        // RegisterMapper(containerRegistry);
-      //  var config = new TypeAdapterConfig();
-        var assembly = Assembly.Load("Music.System");
-        config.Scan(assembly);
-
-        // 注册单例实例
-        containerRegistry.RegisterInstance(typeof(TypeAdapterConfig), config);
-
-        // 创建并注册 Mapper 实例
-        var mapper = new Mapper(config);
-        containerRegistry.RegisterInstance(typeof(Mapper), mapper);
+    
     }
 
     /// <summary>

@@ -1,19 +1,31 @@
 ﻿
+using Music.Shared.Events.EmptySign;
+using Music.System.Services.CustomPlaySign;
+using Music.System.Services.MainSign.HomeSign;
+
 namespace MyMusic.ViewModels.Footers
 {
-    public class FooterViewModel : BindableBase
+    public class FooterViewModel : BaseViewModel
     {
-
+        private Timer _timer;
+        private DispatcherTimer timer;
         private const string SHOW_LRC_ICON = "pack://application:,,,/Assets/Images/Music.jpg";
         IButtonPlaySingleService _buttonPlaySingleService;
-        public FooterViewModel(IButtonPlaySingleService buttonPlaySingleService)
+        IPlayMusicService _playMusicService;
+        public FooterViewModel(IPlayMusicService playMusicService,IButtonPlaySingleService buttonPlaySingleService, IContainerProvider provider) : base(provider)
         {
+            _playMusicService = playMusicService;
             _buttonPlaySingleService = buttonPlaySingleService;
-            PlayCommand = new DelegateCommand<string>(ExecutePlay);
+            InitingCommand = new DelegateCommand(ExecuteIniting);
+            PlayCommand = new DelegateCommand(async()=>await ExecutePlay());
             StopPlayCommand = new DelegateCommand(ExecuteStop);
+            EventAggregator.GetEvent<EmptyViewMusicEvent>().Subscribe(GetMusicName);
             ViewModelManager.Footer = this;
         }
+
+
         #region  命令
+        public ICommand InitingCommand { get;  set; }
         public ICommand DragMoveCommand { get; set; }
         public ICommand MusicPositionChangedCommand { get; set; }
         public ICommand MusicPositionBeginChangedCommand { get; set; }
@@ -169,6 +181,39 @@ namespace MyMusic.ViewModels.Footers
         #region 方法
 
         /// <summary>
+        /// 界面初始化
+        /// </summary>
+        private void ExecuteIniting()
+        {
+
+            timer = new DispatcherTimer();
+            timer.Interval = TimeSpan.FromSeconds(1);
+            timer.Tick += Timer_Tick;
+            timer.Start();
+
+        }
+
+        private void Timer_Tick(object sender, EventArgs e)
+        {
+           // Task.Delay(1000);
+            EventAggregator.GetEvent<EmptyViewMusicEvent>().Subscribe(GetMusicName);
+        }
+
+        private string _name;
+
+        public string Name
+        {
+            get => _name;
+            set => SetProperty(ref _name, value);
+        }
+
+
+        private void GetMusicName(string obj)
+        {
+            Name = obj;
+        }
+
+        /// <summary>
         /// 设置播放状态
         /// </summary>
         public void SetPlayState()
@@ -190,6 +235,7 @@ namespace MyMusic.ViewModels.Footers
              MusicConnection = " - ";*/
             PlayButtonVisibility = Visibility.Visible;
             PauseButtonVisibility = Visibility.Hidden;
+           
             //  CoverSource = new Uri("/Resources/DefaultCover.png", UriKind.Relative);
         }
 
@@ -198,8 +244,8 @@ namespace MyMusic.ViewModels.Footers
         /// </summary>
         public void ExecuteStop()
         {
-            // PlayerManager.Pause();
-            _buttonPlaySingleService.StopPlayAsync();
+            IBasePlayService.Pause();
+          //  _buttonPlaySingleService.StopPlayAsync();
             PlayButtonVisibility = Visibility.Visible;
             PauseButtonVisibility = Visibility.Hidden;
         }
@@ -207,9 +253,14 @@ namespace MyMusic.ViewModels.Footers
         /// <summary>
         /// 点击播放
         /// </summary>
-        public void ExecutePlay(string id)
+        public async Task ExecutePlay()
         {
-            _buttonPlaySingleService.PlayListAsync(id);
+            var result = Name;
+            SetPlayState();
+            var playService = MusicSourceFactory.CreatePlayProvider("网易云");
+            await playService.PlayListAsync(result);
+         //   await _playMusicService.SingleMusicPlay(Name);
+          //  _buttonPlaySingleService.PlayListAsync(id);
         }
         #endregion
 

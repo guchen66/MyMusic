@@ -83,9 +83,7 @@ namespace MyMusic.ViewModels.Headers
             LogoutCommand = new DelegateCommand(async () => await ExecuteRestartAsync());
             ConfirmPlaySourceCommand = new DelegateCommand<string>(async (source) => await ExecuteSourceAsync(source));
             InitializedCommand = new DelegateCommand(ExecuteInit);
-        }
-
-       
+        }      
 
         #region  命令
 
@@ -104,6 +102,8 @@ namespace MyMusic.ViewModels.Headers
 
         #region  方法
 
+        #region 初始化查看是否选中播放源
+
         public void ExecuteInit()
         {
             Task.Run(async () => { await ExecuteHeaderMusicSourceInfo(); });
@@ -118,6 +118,7 @@ namespace MyMusic.ViewModels.Headers
             var musicSourceInfos = await _headerMusicSourceService.QueryListAsync();
             MusicSourceInfoList = musicSourceInfos.ToObservableCollection();
         }
+        #endregion
 
         #region 导航
 

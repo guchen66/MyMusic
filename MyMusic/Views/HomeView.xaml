@@ -157,13 +157,15 @@
                 Style="{StaticResource MaterialDesignCircularProgressBar}"
                 Visibility="{Binding IsDataLoading, Converter={StaticResource boolToVisibilityConverter}}" />
             <DataGrid
-                x:Name="dgv"
+                x:Name="dataGrid"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Top"
                 AutoGenerateColumns="False"
                 CanUserAddRows="False"
                 CanUserReorderColumns="False"
                 CanUserSortColumns="False"
+                VirtualizingPanel.IsContainerVirtualizable="True"
+                VirtualizingPanel.VirtualizationMode="Recycling"
                 ColumnWidth="*"
                 IsReadOnly="True"
                 ItemsSource="{Binding MusicInfos}"
@@ -176,7 +178,7 @@
                 </i:Interaction.Triggers>-->
                 <DataGrid.Columns>
                     <DataGridTextColumn
-                        Width="4*"
+                        Width="3*"
                         Binding="{Binding MusicName}"
                         Header="歌曲名" />
                     <DataGridTextColumn
@@ -204,8 +206,9 @@
                                     <Button
                                         Width="30"
                                         Padding="2,0,2,0"
-                                        md:RippleAssist.IsCentered="True"
-                                        Command="{Binding DataContext.PlayCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}">
+                                        Margin="0 0 10 0"
+                                        md:RippleAssist.IsCentered="True" CommandParameter="{Binding MusicName}"
+                                        Command="{Binding DataContext.PlayCommand, ElementName=dataGrid}">
                                         <md:PackIcon Kind="arrowrightdropcircle" />
                                     </Button>
                                     <Button

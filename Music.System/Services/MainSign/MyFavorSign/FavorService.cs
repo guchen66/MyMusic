@@ -1,5 +1,8 @@
 ﻿
 using Music.Shared.Attributes;
+using System.Windows.Forms;
+using HtmlDocument = HtmlAgilityPack.HtmlDocument;
+using MessageBox = System.Windows.MessageBox;
 
 namespace Music.System.Services.MainSign.MyFavorSign
 {

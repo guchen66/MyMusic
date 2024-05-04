@@ -1,19 +1,19 @@
-﻿
-namespace Music.System.Services.LoginSign
+﻿namespace Music.System.Services.LoginSign
 {
-    [Scanning(RegisterType= "Register")]
+    [Scanning(RegisterType = "Register")]
     public class LoginService : ILoginService
     {
         private readonly IEventAggregator _eventAggregator;
         private readonly ILogger _logger;
         private readonly IContainerProvider _container;
+
         public LoginService(IEventAggregator eventAggregator, ILogger logger, IContainerProvider container)
         {
             this._logger = logger;
             _eventAggregator = eventAggregator;
             _container = container;
             _eventAggregator.GetEvent<LoginEvent>().Subscribe(LoginExecute);
-            _eventAggregator.GetEvent<LogOutEvent>().Subscribe(async()=>await LogoutAsync());
+            _eventAggregator.GetEvent<LogOutEvent>().Subscribe(async () => await LogoutAsync());
         }
 
         public void LoginExecute(Window win)
@@ -37,9 +37,8 @@ namespace Music.System.Services.LoginSign
             LoginInputDto canLoginArgs = await IsCanLoginAsync(); // 调用异步的IsCanLoginAsync方法获取登录参数
             var result = canLoginArgs.UserName == loginArgs.UserName && canLoginArgs.Password == loginArgs.Password;
             return result;
-           
         }
-       
+
         public Task<bool> RegisterAsync()
         {
             throw new NotImplementedException();
@@ -54,8 +53,8 @@ namespace Music.System.Services.LoginSign
 
                 if (dataList != null)
                 {
-                   // GlobalLoginArgs.Instance.LoginAccountList=
-                       string s= dataList.Password;
+                    // GlobalLoginArgs.Instance.LoginAccountList=
+                    string s = dataList.Password;
                 }
             }
             return true;
@@ -63,8 +62,8 @@ namespace Music.System.Services.LoginSign
 
         public async Task<LoginInputDto> IsCanLoginAsync()
         {
-            string[] jsonFileName =await JsonComponent.GetJsonFileNamesAsync();  // 先找到所有的json文件
-            var json =await JsonComponent.GetDecisionJsonAsync(jsonFileName.FirstOrDefault(x => x.Contains("Account")), "Account"); // 获得名称包含Account的
+            string[] jsonFileName = await JsonComponent.GetJsonFileNamesAsync();  // 先找到所有的json文件
+            var json = await JsonComponent.GetDecisionJsonAsync(jsonFileName.FirstOrDefault(x => x.Contains("Account")), "Account"); // 获得名称包含Account的
             LoginInputDto loginDto = JsonConvert.DeserializeObject<LoginInputDto>(json);
             return loginDto;
         }

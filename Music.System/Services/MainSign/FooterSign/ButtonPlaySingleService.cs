@@ -46,7 +46,7 @@ namespace Music.System.Services.MainSign.FooterSign
             }
             catch (Exception e)
             {
-                MessageBox.Show("VIP歌曲，暂不支持提供播放");
+               // MessageBox.Show($"{e.Message}暂不支持提供播放002");
             }
 
         }

@@ -24,6 +24,79 @@
 
 #### 1、启动项 MyMusic
 
+1、登录界面
+
+![image-20240404124137284](C:\Users\liuxin\AppData\Roaming\Typora\typora-user-images\image-20240404124137284.png)
+
+2、主界面展示
+
+![image-20240404124231501](C:\Users\liuxin\AppData\Roaming\Typora\typora-user-images\image-20240404124231501.png)
+
+3、使用YitIdHelper配置雪花ID
+
+```c#
+ // 配置雪花Id算法机器码
+ YitIdHelper.SetIdGenerator(new IdGeneratorOptions
+ {
+     WorkerId = 1,// 取值范围0~63,默认1
+    // DataCenterId=1,//数据中心Id
+ });
+```
+
+4、使用反射注册仓储、服务、以及视图
+
+减少下面的书写
+
+```
+ // containerRegistry.Register<IMapper, Mapper>();
+ // containerRegistry.RegisterScoped<IHttpClientService, HttpClientService>();
+ // containerRegistry.RegisterScoped<IRegister, AsideMenuRegister>();
+```
+
+改为
+
+```C#
+foreach (var assemblyName in assemblies)
+{
+    //1、先是加载程序集
+    var assembly = Assembly.Load(assemblyName);
+    //2、找到类中标注了特性ScanningAttribute的所有类
+    var typesToRegister = assembly
+        .GetTypes()
+        .Where(type => Attribute.IsDefined(type, typeof(ScanningAttribute)));
+
+    // 3、创建一个字典，键是接口类型，值是实现类的类型 因为标注了特性ScanningAttribute的类只有一个接口
+    var typeInterfaceDicts = typesToRegister.ToDictionary(
+        type => type.GetInterfaces()[0],
+        type => type);
+
+    foreach (var typeInterDict in typeInterfaceDicts)
+    {
+        //4、找到关于类中特性的RegisterType
+        var attribute = typeInterDict.Value.GetCustomAttribute<ScanningAttribute>(false);
+        if (attribute != null)
+        {
+            switch (attribute.RegisterType)
+            {
+                case "Register":
+                    Register(typeInterDict.Key, typeInterDict.Value);
+                    break;
+                case "RegisterScoped":
+                    RegisterScoped(typeInterDict.Key, typeInterDict.Value);
+                    break;
+                case "RegisterSingleton":
+                    RegisterScoped(typeInterDict.Key, typeInterDict.Value);
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+}
+```
+
+
+
 #### 2、Mapster的使用
 
 需要增加字段但是实体类生成失败，只能手动增加
@@ -76,3 +149,6 @@ ALTER TABLE AsideCreateController ADD IsFullContent BIT NULL
  }
 ```
 
+#### 3、NAudio使用
+
+1、首先我点击播放，请求网易的服务器，
