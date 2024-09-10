@@ -16,6 +16,7 @@ public partial class App
     public RootArgs RootArgs { get; set; } = RootArgs.Instance;
     protected override void OnStartup(StartupEventArgs e)
     {
+        
         mutex = new Mutex(true, "MyMusic");
         if (!mutex.WaitOne(TimeSpan.Zero, true))
         {
@@ -24,10 +25,9 @@ public partial class App
         }
         //注册SqlSugar服务
         MyStartup.AddSqlSugar();
-        base.OnStartup(e);
-       
         //程序启动加载上一次关闭时保存的数据状态
-      //  await StateManager.SaveLocalStateData();
+        StateManager.LastBehavor();
+        base.OnStartup(e);     
     }
 
      
@@ -58,7 +58,7 @@ public partial class App
         var loginView = Container.Resolve<LoginView>();
         loginView.Topmost = true;
         loginView.Activate();
-        var result = loginView.ShowDialog();
+        var result = loginView.ShowDialog().HasValue;
         if (result == true)
         {
             base.InitializeShell(shell);

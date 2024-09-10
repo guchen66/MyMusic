@@ -113,7 +113,7 @@ namespace Music.ToolKit.Common
         {
             string fullPath = Directory.GetFiles(driveName, itemName, SearchOption.AllDirectories)
                                        .Union(Directory.GetDirectories(driveName, itemName, SearchOption.AllDirectories))
-                                       .FirstOrDefault();
+                                       .FirstOrDefault()!;
             if (!string.IsNullOrEmpty(fullPath))
             {
                 System.Diagnostics.Process.Start(fullPath);

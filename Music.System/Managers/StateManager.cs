@@ -1,4 +1,8 @@
 ﻿
+using NewLife.Serialization;
+using System.Text.Json.Nodes;
+using System.Windows.Input;
+
 namespace Music.System.Managers
 {
     public class StateManager
@@ -96,6 +100,59 @@ namespace Music.System.Managers
             }
         }
 
-       
+        public static void LastBehavor()
+        {
+            FileQuerier fileQuerier = new FileQuerier()
+            {
+                FileName = "musicState.json",
+            };
+            fileQuerier.Loading();
+          //  fileQuerier.SaveFile("");
+        }
+    }
+
+    /// <summary>
+    /// 文件查询器
+    /// </summary>
+    public class FileQuerier
+    {
+        public string FileName { get; internal set; }
+
+        public string Loading()
+        {
+            var folder = Directory.GetCurrentDirectory();
+            var path=Path.Combine(folder,FileName);
+
+            using (var stream = File.OpenText(path))
+            {
+                if (stream == null) return null;
+
+                JsonTextReader reader = new JsonTextReader(stream);
+                var jsonArray = (JArray)JToken.ReadFrom(reader);
+
+                // 获取第一个元素
+                var firstElement = jsonArray[0];
+
+                // 获取 "Name": "QQ音乐" 的元素
+                var targetElement = jsonArray.FirstOrDefault(e => e["Name"].Value<string>() == "QQ音乐");
+                return "";
+            }
+        }
+
+        public void SaveFile(string fileName)
+        {
+            var folder = Directory.GetCurrentDirectory();
+            var path = Path.Combine(folder, fileName);
+
+            using (var stream = File.OpenText(path))
+            {
+                
+
+                JsonTextReader reader = new JsonTextReader(stream);
+                var jsonObject = (JArray)JToken.ReadFrom(reader);
+
+                string json = jsonObject[""]!.ToString();
+            }
+        }
     }
 }

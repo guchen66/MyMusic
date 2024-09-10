@@ -20,7 +20,7 @@
         {
             win.DialogResult = true;    //Window.DialogResult 属性表示对话框的返回值=true表示APp.xaml.cs中的MainWindow已经成功登录，                                        //  win.Close();             //然后关闭LoginView
             // 关闭当前登录界面
-            LogoutAsync();
+          //  LogoutAsync();
         }
 
         public Task LogoutAsync()

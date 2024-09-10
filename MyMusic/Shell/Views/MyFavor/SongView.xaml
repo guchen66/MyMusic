@@ -1,14 +1,87 @@
-﻿<UserControl x:Class="MyMusic.Shell.Views.MyFavor.SongView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:MyMusic.Shell.Views.MyFavor"
-             xmlns:prism="http://prismlibrary.com/"
-             prism:ViewModelLocator.AutoWireViewModel="True"
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+﻿<UserControl
+    x:Class="MyMusic.Shell.Views.MyFavor.SongView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:local="clr-namespace:MyMusic.Shell.Views.MyFavor"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:prism="http://prismlibrary.com/"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    prism:ViewModelLocator.AutoWireViewModel="True"
+    mc:Ignorable="d">
     <Grid>
-        <TextBlock Text="{Binding FavorArgs.Song,Mode=TwoWay}"/>
+        <DataGrid
+            x:Name="dataGrid"
+            AutoGenerateColumns="False"
+            Background="Transparent"
+            CanUserAddRows="False"
+            CanUserReorderColumns="False"
+            CanUserSortColumns="False"
+            IsReadOnly="True"
+            ItemsSource="{Binding MusicInfos}">
+            <DataGrid.Columns>
+                <DataGridTextColumn
+                    Width="2*"
+                    Binding="{Binding Name}"
+                    Header="歌曲名" />
+                <DataGridTextColumn
+                    Width="2*"
+                    Binding="{Binding Artists}"
+                    Header="歌手" />
+                <DataGridTextColumn
+                    Width="2*"
+                    Binding="{Binding Album}"
+                    Header="专辑" />
+                <DataGridTextColumn
+                    Width="2*"
+                    Binding="{Binding SourceName}"
+                    Header="音乐来源" />
+                <DataGridTextColumn
+                    Width="2*"
+                    Binding="{Binding Duration}"
+                    Header="时长" />
+                <DataGridTemplateColumn Width="120" Header="操作">
+                    <DataGridTemplateColumn.HeaderStyle>
+                        <Style BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}" TargetType="DataGridColumnHeader">
+                            <Setter Property="HorizontalContentAlignment" Value="Center" />
+                            <Setter Property="VerticalContentAlignment" Value="Center" />
+                        </Style>
+                    </DataGridTemplateColumn.HeaderStyle>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Button
+                                    Width="30"
+                                    Padding="2,0,2,0"
+                                    Command="{Binding DataContext.PlayCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                    CommandParameter="{Binding Id}"
+                                    Content="播放"
+                                    Style="{StaticResource MaterialDesignToolButton}" />
+                                <Button
+                                    Width="30"
+                                    Padding="2,0,2,0"
+                                    md:RippleAssist.IsCentered="True"
+                                    Command="{Binding DataContext.PlayCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                    CommandParameter="{Binding Id}"
+                                    Content="下载"
+                                    Style="{StaticResource MaterialDesignToolButton}" />
+                                <Button
+                                    Width="30"
+                                    Padding="2,0,2,0"
+                                    md:RippleAssist.IsCentered="True"
+                                    Command="{Binding DataContext.PlayCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                    CommandParameter="{Binding Id}"
+                                    Content="移除"
+                                    Style="{StaticResource MaterialDesignToolButton}" />
+                            </StackPanel>
+
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
     </Grid>
 </UserControl>

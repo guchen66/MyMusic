@@ -128,8 +128,7 @@
                 ItemsSource="{Binding MusicInfos}">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="MouseDoubleClick">
-                        <i:InvokeCommandAction Command="{Binding PrePlayCommand}" 
-                                               CommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
+                        <i:InvokeCommandAction Command="{Binding PrePlayCommand}" CommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
                 <DataGrid.Columns>
@@ -159,9 +158,9 @@
                         Header="时长" />
                     <DataGridTemplateColumn Width="120" Header="操作">
                         <DataGridTemplateColumn.HeaderStyle>
-                            <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}">
-                                <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                            <Style BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}" TargetType="DataGridColumnHeader">
+                                <Setter Property="HorizontalContentAlignment" Value="Center" />
+                                <Setter Property="VerticalContentAlignment" Value="Center" />
                             </Style>
                         </DataGridTemplateColumn.HeaderStyle>
                         <DataGridTemplateColumn.CellTemplate>
@@ -180,16 +179,18 @@
                                         Width="30"
                                         Padding="2,0,2,0"
                                         md:RippleAssist.IsCentered="True"
-                                        Command="{Binding DataContext.AddToFavorCommand,ElementName=dataGrid}"
-                                        CommandParameter="{Binding SelectedItem,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid,AncestorLevel=1}}"
+                                        Command="{Binding DataContext.AddToFavorCommand, ElementName=dataGrid}"
+                                        CommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid, AncestorLevel=1}}"
                                         Style="{StaticResource MaterialDesignToolButton}">
                                         <md:PackIcon Kind="Heart" />
                                     </Button>
                                     <md:PopupBox Padding="2,0,2,0">
                                         <StackPanel>
-                                            <Button Content="下载"   Command="{Binding DataContext.DownLoadCommand,ElementName=dataGrid}"
-  CommandParameter="{Binding SelectedItem,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid,AncestorLevel=1}}"
-  Style="{StaticResource MaterialDesignToolButton}"/>
+                                            <Button
+                                                Command="{Binding DataContext.DownLoadCommand, ElementName=dataGrid}"
+                                                CommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid, AncestorLevel=1}}"
+                                                Content="下载"
+                                                Style="{StaticResource MaterialDesignToolButton}" />
                                             <Button Content="Options" />
                                         </StackPanel>
                                     </md:PopupBox>

@@ -1,4 +1,6 @@
 ﻿
+using Music.SqlSugar.Db;
+
 namespace Music.System.Services.MainSign.MyFavorSign
 {
     public interface IFavorService
@@ -8,6 +10,10 @@ namespace Music.System.Services.MainSign.MyFavorSign
         /// </summary>
         /// <returns></returns>
         Task<List<HongKongMusicDto>> GetHongKongListAsync();
+
+        void AddPlayListToFavor(string musicName);
         Task GetSongList();
+
+        DbContext<FavorPlayListInfo> GetFavorDbContext { get;  }
     }
 }

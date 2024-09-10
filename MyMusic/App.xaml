@@ -4,11 +4,14 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:convers="clr-namespace:MyMusic.Styles"
     xmlns:local="clr-namespace:MyMusic"
-    xmlns:prism="http://prismlibrary.com/">
+    xmlns:prism="http://prismlibrary.com/"
+    xmlns:setDto="clr-namespace:Music.Shared.Dtos;assembly=Music.Shared">
 
     <Application.Resources>
         <ResourceDictionary>
 
+            <!--  这种写法可以共享资源字典  -->
+            <setDto:SettingDto x:Key="setting" />
             <ResourceDictionary.MergedDictionaries>
 
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Light.xaml" />

@@ -107,7 +107,7 @@
                     Height="auto"
                     Background="#000000"
                     BorderBrush="#000000"
-                    Command="{Binding CancelCommand}" ToolTip="关闭">
+                    Command="{Binding CancelCommand}" ToolTip="关闭"  IsCancel="True">
                     <md:PackIcon
                         Width="30"
                         Height="30"

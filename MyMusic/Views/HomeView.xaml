@@ -214,7 +214,7 @@
                                     <Button
                                         Width="30"
                                         Padding="2,0,2,0"
-                                        md:RippleAssist.IsCentered="True">
+                                        md:RippleAssist.IsCentered="True"  Command="{Binding DataContext.FavorCommand, ElementName=dataGrid}" CommandParameter="{Binding MusicName}">
                                         <md:PackIcon Kind="Heart" />
                                     </Button>
                                     <md:PopupBox Padding="2,0,2,0">

@@ -1,5 +1,6 @@
 ﻿using Mapster;
 using MapsterMapper;
+using Music.System.Services.MainSign.DownLoads;
 using MySqlConnector.Logging;
 using Prism.Ioc;
 using System;
@@ -16,7 +17,8 @@ namespace Music.System.Components
         public void Load(IContainerRegistry registry, ComponentContext context)
         {
             registry.Register<ILoginService, LoginService>();
-          //  registry.RegisterSingleton<Kstopa.Lx.Admin.IServices.ILogger, DefaultLogger>();
+            registry.Register<IReadService, ReadService>();
+            //  registry.RegisterSingleton<Kstopa.Lx.Admin.IServices.ILogger, DefaultLogger>();
         }
     }
 }

@@ -3,11 +3,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:setDto="clr-namespace:Music.Shared.Dtos;assembly=Music.Shared"
              mc:Ignorable="d" 
              xmlns:prism="http://prismlibrary.com/"
              prism:ViewModelLocator.AutoWireViewModel="True"
              d:DesignHeight="450" d:DesignWidth="800">
+
     <Grid>
-        <TextBlock Text="快捷键" Background="AliceBlue"/>
+        <TextBox Text="{Binding Source={StaticResource setting},Path=SetTitle,UpdateSourceTrigger=PropertyChanged}" Background="AliceBlue"/>
     </Grid>
 </UserControl>

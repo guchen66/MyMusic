@@ -24,11 +24,7 @@ namespace Music.Shared.Dtos
         /// <summary>
         /// 用于正确产生接口产生的艺术家数组名称
         /// </summary>
-        public string Singer
-        {
-            get;
-            set;
-        }
+        public string Singer { get; set; }
 
         /// <summary>
         /// 音乐名称

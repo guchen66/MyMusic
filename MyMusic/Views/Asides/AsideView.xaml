@@ -44,7 +44,7 @@
             <BeginStoryboard Storyboard="{StaticResource MenuClose}" />
         </EventTrigger>
     </UserControl.Triggers>
-  
+
     <Grid
         x:Name="GridMenu"
         Width="60"
@@ -92,7 +92,7 @@
                     <RowDefinition />
                 </Grid.RowDefinitions>
 
-                  <!--导航歌单-->  
+                <!--  导航歌单  -->
                 <ListView
                     Foreground="White"
                     ItemsSource="{Binding AsideMenus}"
@@ -120,7 +120,7 @@
                     </i:Interaction.Triggers>
                 </ListView>
 
-                  <!--创建新歌单-->  
+                <!--  创建新歌单  -->
                 <Border Grid.Row="1" BorderThickness="1,1,0,0">
                     <Border.BorderBrush>
                         <SolidColorBrush Opacity="0.2" Color="Gray" />
@@ -162,6 +162,7 @@
                             <ItemsControl be:RefreshItemsControlBehavior.IsChanged="{Binding DataContext.IsChanged, ElementName=expander}" ItemsSource="{Binding AsedeCreateplayListDtos, Mode=TwoWay}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
+                                        <!--  StringToLongConverter没有丝毫意思，我就是想误导我自己，结果我上当了  -->
                                         <Button
                                             x:Name="btn"
                                             Height="50"
@@ -172,12 +173,12 @@
                                             Style="{StaticResource MaterialDesignFlatButton}"
                                             Tag="{Binding Id}"
                                             TextBlock.TextAlignment="Center">
-                                              <!--使用定位器重新实例化一个Button的数据上下文内容-->  
+                                            <!--  使用定位器重新实例化一个Button的数据上下文内容  -->
                                             <Button.ContextMenu>
                                                 <ContextMenu Background="{x:Null}" Foreground="White">
                                                     <ContextMenu.Resources>
                                                         <ObjectDataProvider x:Key="playListDataProvider" ObjectType="{x:Type sign:OperatePlayLists}">
-                                                              <!--`技术有限，由于接口不能直接绑定为参数-->  
+                                                            <!--  `技术有限，由于接口不能直接绑定为参数  -->
                                                             <!--<ioc:IContainerProvider/>-->
                                                         </ObjectDataProvider>
                                                     </ContextMenu.Resources>
@@ -198,7 +199,7 @@
                                                 </ContextMenu>
                                             </Button.ContextMenu>
                                         </Button>
-                                         
+
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>

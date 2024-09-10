@@ -83,8 +83,13 @@ namespace MyMusic.ViewModels
             InitingCommand = new DelegateCommand(ExecuteIniting);
             PrePlayCommand = new DelegateCommand<string>(PrePlayExecute);
             PlayCommand = new DelegateCommand<string>(ExecutePlay);
+            FavorCommand = new DelegateCommand<string>(ExecuteFavor);
+          //  BackgroundCodeInit();
+
+            
         }
 
+      
 
         #region  命令
 
@@ -93,11 +98,20 @@ namespace MyMusic.ViewModels
         public ICommand OpenPopupCommand { get; set; }
         public ICommand PrePlayCommand { get; set; }
         public ICommand PlayCommand {  get; set; }
+        public ICommand FavorCommand {  get; set; }
         #endregion
 
 
         #region  方法
 
+
+        public void BackgroundCodeInit()
+        {
+            //  MessageBox.Show("初始化");
+
+            Task task = new Task(ExecuteIniting);
+            task.Start();
+        }
         /// <summary>
         /// 界面初始化
         /// 默认首页界面是QQ音乐的每日粤语推荐
@@ -106,17 +120,27 @@ namespace MyMusic.ViewModels
         {
             MusicInfos = await _favorService.GetHongKongListAsync();
 
-            if (MusicInfos.Count==0)
+           /* if (MusicInfos.Count==0)
             {
                 RegionManager.RequestNavigate(RegionNames.ContentRegion, new Uri("_404View", UriKind.Relative));
               
-            }
+            }*/
 
+        }
+
+        /// <summary>
+        /// 执行收藏，收藏歌曲到收藏界面
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        private void ExecuteFavor(string obj)
+        {
+            _favorService.AddPlayListToFavor(obj);
         }
 
         private async void Timer_Tick(object sender, EventArgs e)
         {
-            MusicInfos = await _favorService.GetHongKongListAsync();
+          //  MusicInfos = await _favorService.GetHongKongListAsync();
             CloseSplash("");
         }
 

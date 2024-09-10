@@ -333,8 +333,6 @@ namespace MyMusic.ViewModels
         #endregion
     }
 
-
-
 }
 
 

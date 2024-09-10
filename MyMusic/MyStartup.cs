@@ -4,6 +4,7 @@ using Music.SqlSugar.IRepositorys;
 using Music.System.Registers;
 using MyMusic.ViewModels.Asides;
 using MyMusic.Views.Asides;
+using Prism.Services.Dialogs;
 
 namespace MyMusic
 {
@@ -11,6 +12,7 @@ namespace MyMusic
     {
         public static void Register(IContainerRegistry containerRegistry)
         {
+            
             containerRegistry.RegisterForNavigation<SetView>(); //设置信息
             containerRegistry.RegisterForNavigation<DownLoadView, DownLoadViewModel>();
             containerRegistry.RegisterForNavigation<RecentView, RecentViewModel>();
@@ -92,7 +94,7 @@ namespace MyMusic
                     typeof(MusicInfo),
                     typeof(PlayListUiInfo),
                     typeof(PlayListInfo),
-                    typeof(AsideMenu),typeof(MusicSourceInfo),typeof(SysUser)
+                    typeof(AsideMenu),typeof(MusicSourceInfo),typeof(SysUser),typeof(FavorPlayListInfo)
                 );
             }
             //生成种子数据

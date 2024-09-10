@@ -1,4 +1,5 @@
 ﻿using Music.SqlSugar.Services;
+using SqlSugar.IOC;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +17,7 @@ namespace Music.SqlSugar.Db
     {
         public async Task<List<TEntity>> QueryListAsync()
         {
-            return await Db.Queryable<TEntity>().ToListAsync();
+            return await Context.Queryable<TEntity>().ToListAsync();
         }
     }
     public interface IBaseService<TEntity> where TEntity : class, new()
