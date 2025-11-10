@@ -1,0 +1,38 @@
+﻿<UserControl
+    x:Class="Music.Mah.Dialogs.Views.Toast.LoginSucessView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:prism="http://prismlibrary.com/"
+    Width="400"
+    Height="100"
+    prism:ViewModelLocator.AutoWireViewModel="True"
+    mc:Ignorable="d">
+    <StackPanel
+        Background="Transparent"
+        Orientation="Vertical">
+        <StackPanel>
+            <Button
+                Width="20"
+                Height="20"
+                Margin="10,0,0,0"
+                Background="Transparent"
+                BorderThickness="0" HorizontalAlignment="Right"
+                Command="{Binding CloseCommand}"
+                Content="×"
+                Cursor="Hand"
+                FontSize="12"
+                Foreground="#CCCCCC" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal">
+            <Image Margin="15" Source="{StaticResource FinishSource}" Width="40" Height="40" />
+            <TextBlock
+                Margin="5"
+                VerticalAlignment="Center" HorizontalAlignment="Center"
+                FontSize="14"
+                Foreground="Black"
+                Text="登录成功！" />
+        </StackPanel>
+    </StackPanel>
+</UserControl>

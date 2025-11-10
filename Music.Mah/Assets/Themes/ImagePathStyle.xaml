@@ -1,0 +1,16 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <BitmapImage x:Key="LoginBackground" UriSource="pack://application:,,,/Music.Mah;component/Assets/Images/LoginBackground.jpg" />
+    <BitmapImage x:Key="MusicSource" UriSource="pack://application:,,,/Music.Mah;component/Assets/Images/music.jpg" />
+    <BitmapImage x:Key="WarnSource" UriSource="pack://application:,,,/Music.Mah;component/Assets/Images/警告.png" />
+    <BitmapImage x:Key="SuggestSource" UriSource="pack://application:,,,/Music.Mah;component/Assets/Images/提示.png" />
+    <BitmapImage x:Key="NoticeSource" UriSource="pack://application:,,,/Music.Mah;component/Assets/Images/通知公告.png" />
+    <BitmapImage x:Key="DownLoadFailSource" UriSource="pack://application:,,,/Music.Mah;component/Assets/Images/下载失败.png" />
+    <BitmapImage x:Key="SnowSource" UriSource="pack://application:,,,/Music.Mah;component/Assets/Images/雪花.jpeg" />
+    <BitmapImage x:Key="FinishSource" UriSource="pack://application:,,,/Music.Mah;component/Assets/Images/Sucess.png" />
+    <BitmapImage x:Key="_403Source" UriSource="pack://application:,,,/Music.Mah;component/Assets/Images/Error/403.png" />
+    <BitmapImage x:Key="_404Source" UriSource="pack://application:,,,/Music.Mah;component/Assets/Images/Error/404.png" />
+    <BitmapImage x:Key="_500Source" UriSource="pack://application:,,,/Music.Mah;component/Assets/Images/Error/500.png" />
+    <BitmapImage x:Key="SleepingSource" UriSource="pack://application:,,,/Music.Mah;component/Assets/Images/Error/Sleeping.png" />
+    <BitmapImage x:Key="没数据Source" UriSource="pack://application:,,,/Music.Mah;component/Assets/Images/Error/没数据.png" />
+    <BitmapImage x:Key="无网络Source" UriSource="pack://application:,,,/Music.Mah;component/Assets/Images/Error/无网络.png" />
+</ResourceDictionary>

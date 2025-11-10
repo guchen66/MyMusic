@@ -1,0 +1,19 @@
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <!--使用包源映射-->
+    <RestoreSources>$(RestoreSources);https://api.nuget.org/v3/index.json</RestoreSources>
+  </PropertyGroup>
+  <ItemGroup>
+    <!--   使用中央包管理器  -->
+    <PackageVersion Include="Mapster" Version="7.4.0" />
+    <PackageVersion Include="Prism.Core" Version="9.0.537" />
+    <PackageVersion Include="Prism.Wpf" Version="9.0.537" />
+    <PackageVersion Include="SqlSugarCore" Version="5.1.4.207" />
+    <PackageVersion Include="SqlSugar.IOC" Version="2.0.1" />
+    <PackageVersion Include="Prism.DryIoc" Version="9.0.537" />
+    <PackageVersion Include="IT.Tangdao.Core" Version="3.0.14" />
+    <PackageVersion Include="MahApps.Metro" Version="2.4.11" />
+    <PackageVersion Include="MahApps.Metro.IconPacks" Version="6.2.1" />
+  </ItemGroup>
+</Project>

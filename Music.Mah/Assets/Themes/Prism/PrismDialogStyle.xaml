@@ -1,0 +1,22 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:prism="http://prismlibrary.com/">
+    <!--  修改弹窗的样式为锁定状态。无法移动，无法放大缩小  -->
+    <Style x:Key="DialogStyle" TargetType="UserControl">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="prism:Dialog.WindowStyle">
+            <Setter.Value>
+                <Style TargetType="Window">
+                    <Setter Property="prism:Dialog.WindowStartupLocation" Value="Manual" />
+                    <Setter Property="ResizeMode" Value="NoResize" />
+                    <Setter Property="ShowInTaskbar" Value="False" />
+                    <Setter Property="SizeToContent" Value="WidthAndHeight" />
+                    <Setter Property="Left" Value="-2000" />
+                    <Setter Property="Top" Value="-2000" />
+                    <Setter Property="AllowsTransparency" Value="True" />
+                    <Setter Property="WindowStyle" Value="None" />
+                </Style>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>
