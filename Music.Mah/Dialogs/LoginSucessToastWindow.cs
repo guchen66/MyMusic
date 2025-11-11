@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Threading;
 
 namespace Music.Mah.Dialogs
@@ -27,7 +28,8 @@ namespace Music.Mah.Dialogs
             ResizeMode = ResizeMode.NoResize;    // 禁止拖动边框改变大小
             SizeToContent = SizeToContent.WidthAndHeight; // 宽高按内容自动计算
             WindowStartupLocation = WindowStartupLocation.Manual; // 不居中，手动给坐标
-
+            Opacity = 1;
+            Owner = Application.Current.MainWindow;
             // 关键：在内容渲染前订阅事件
             ContentRendered += OnContentRendered;
             Loaded += OnLoaded;
@@ -66,7 +68,7 @@ namespace Music.Mah.Dialogs
 
         private void StartAutoCloseTimer()
         {
-            var timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(5) };
+            var timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(3) };
             timer.Tick += (s, e) =>
             {
                 timer.Stop();

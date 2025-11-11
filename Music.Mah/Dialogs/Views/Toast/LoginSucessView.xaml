@@ -9,16 +9,29 @@
     Height="100"
     prism:ViewModelLocator.AutoWireViewModel="True"
     mc:Ignorable="d">
-    <StackPanel
-        Background="Transparent"
-        Orientation="Vertical">
+    <UserControl.Triggers>
+        <EventTrigger RoutedEvent="Loaded">
+            <BeginStoryboard>
+                <Storyboard>
+                    <DoubleAnimation
+                        Storyboard.TargetProperty="Opacity"
+                        From="1"
+                        To="0"
+                        Duration="0:0:3" />
+                </Storyboard>
+            </BeginStoryboard>
+        </EventTrigger>
+    </UserControl.Triggers>
+
+    <StackPanel Background="Transparent" Orientation="Vertical">
         <StackPanel>
             <Button
                 Width="20"
                 Height="20"
                 Margin="10,0,0,0"
+                HorizontalAlignment="Right"
                 Background="Transparent"
-                BorderThickness="0" HorizontalAlignment="Right"
+                BorderThickness="0"
                 Command="{Binding CloseCommand}"
                 Content="×"
                 Cursor="Hand"
@@ -26,10 +39,15 @@
                 Foreground="#CCCCCC" />
         </StackPanel>
         <StackPanel Orientation="Horizontal">
-            <Image Margin="15" Source="{StaticResource FinishSource}" Width="40" Height="40" />
+            <Image
+                Width="40"
+                Height="40"
+                Margin="15"
+                Source="{StaticResource FinishSource}" />
             <TextBlock
                 Margin="5"
-                VerticalAlignment="Center" HorizontalAlignment="Center"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
                 FontSize="14"
                 Foreground="Black"
                 Text="登录成功！" />
