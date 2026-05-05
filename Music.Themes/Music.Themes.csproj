@@ -9,6 +9,7 @@
   <ItemGroup>
     <PackageReference Include="MaterialDesignColors" />
     <PackageReference Include="MaterialDesignThemes" />
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" />
   </ItemGroup>
 
 </Project>

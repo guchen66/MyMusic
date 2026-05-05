@@ -37,9 +37,6 @@
         </Setter>
     </Style>
 
-
-
-
     <Style x:Key="CustomListBoxItemStyle1" TargetType="ListBoxItem">
         <!--  样式属性  -->
         <Setter Property="Background" Value="Transparent" />
@@ -97,12 +94,4 @@
             </Setter.Value>
         </Setter>
     </Style>
-
-
-
-
-
-
-
-
 </ResourceDictionary>

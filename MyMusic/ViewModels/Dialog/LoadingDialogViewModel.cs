@@ -1,5 +1,4 @@
-﻿
-namespace MyMusic.ViewModels.Dialog
+﻿namespace MyMusic.ViewModels.Dialog
 {
     public class LoadingDialogViewModel : BindableBase, IDialogAware
     {
@@ -8,9 +7,10 @@ namespace MyMusic.ViewModels.Dialog
         public string Title => "Loading";
         private Timer _timer;
         private readonly Dispatcher _dispatcher;
+
         public event Action<IDialogResult> RequestClose;
 
-        #endregion
+        #endregion 字段、属性
 
         public LoadingDialogViewModel()
         {
@@ -26,7 +26,6 @@ namespace MyMusic.ViewModels.Dialog
 
         public void OnDialogClosed()
         {
-
         }
 
         public void OnDialogOpened(IDialogParameters parameters)
@@ -43,7 +42,7 @@ namespace MyMusic.ViewModels.Dialog
                 RequestClose?.Invoke(new DialogResult(ButtonResult.None));
             });
         }
-        #endregion
 
+        #endregion 方法
     }
 }

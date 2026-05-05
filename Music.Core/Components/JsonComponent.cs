@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using NewLife.Configuration;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -9,69 +10,17 @@ using System.Threading.Tasks;
 
 namespace Music.Core.Components
 {
+    /// <summary>
+    /// 使用NewLife和Newtonsoft.Json进行封装
+    /// </summary>
     public class JsonComponent
     {
-        /// <summary>
-        /// 获取根目录下的所有json文件
-        /// </summary>
-        /// <returns></returns>
-        public static async Task<string[]> GetJsonFileNamesAsync()
+        public static string GetJsonObjectValue(string fileName, string keyValue)
         {
-            string rootDirectory = DirectoryComponent.SelectRootDirectory();
-
-            string[] jsonFilePaths = await Task.Run(() => Directory.GetFiles(rootDirectory, "*.json"));
-
-            return jsonFilePaths.Select(Path.GetFileName).ToArray()!;           //只列出路径的文件名
+            string result = "";
+            var provider = new JsonConfigProvider() { FileName = fileName };
+            result = provider.GetSection(keyValue).Value;
+            return result;
         }
-
-        /// <summary>
-        /// 条件宽松
-        /// 获取根目录下包含Name的所有json文件
-        /// </summary>
-        public static async Task<List<string>> GetJsonFilesContainNameAsync(string searchContent)
-        {
-            var allJsonFilePaths = await GetJsonFileNamesAsync();
-            var allJsons = allJsonFilePaths.Where(s => s.Contains(searchContent)).ToList();
-            return allJsons;
-        }
-
-        /// <summary>
-        /// 条件不宽松
-        /// 获取根目录下指定Name的唯一json文件
-        /// </summary>
-        public static async Task<string> GetJsonFileByNameAsync(string name)
-        {
-            if (name is null)
-            {
-                return await Task.FromResult<string>(null);
-            }
-
-            var allJsonFilePaths = await GetJsonFileNamesAsync();
-            var matchingJson = allJsonFilePaths.FirstOrDefault(s => Path.GetFileNameWithoutExtension(s) == name);
-            return matchingJson;
-        }
-
-
-        /// <summary>
-        /// 获取根目录下的指定json文件并打开查看内容
-        /// </summary>
-        /// <param name="resourceName"></param>
-        /// <returns></returns>
-        public static async Task<string> GetDecisionJsonAsync(string resourceName, string key)
-        {
-            var path = DirectoryComponent.SelectDirectoryByName(resourceName);
-            using (var stream = File.OpenText(path))
-            {
-                if (stream == null) return null;
-
-                JsonTextReader reader = new JsonTextReader(stream);
-                JObject jsonObject = (JObject)await JToken.ReadFromAsync(reader);
-
-                string json = jsonObject[key]!.ToString();
-                return json;
-            }
-        }
-
-        
     }
 }

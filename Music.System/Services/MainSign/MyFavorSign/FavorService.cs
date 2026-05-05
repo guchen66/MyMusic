@@ -1,4 +1,5 @@
-﻿
+﻿using IT.Tangdao.Core.Attributes;
+using IT.Tangdao.Core.Enums;
 using Music.Core.Helpers;
 using Music.Shared.Attributes;
 using Music.SqlSugar.Db;
@@ -8,15 +9,15 @@ using MessageBox = System.Windows.MessageBox;
 
 namespace Music.System.Services.MainSign.MyFavorSign
 {
-    [Scanning(RegisterType = "Register")]
+    [AutoRegister(Mode = RegisterMode.Singleton)]
     public class FavorService : IFavorService
     {
+        private List<HongKongMusicDto> HongKongDataList;
 
-        List<HongKongMusicDto> HongKongDataList;
         public async Task<List<HongKongMusicDto>> GetHongKongListAsync()
         {
             HongKongDataList = new List<HongKongMusicDto>();
-            var ping=  NetConnHelper.CheckPing();
+            var ping = NetConnHelper.CheckPing();
             if (ping)
             {
                 using (var httpClient = new HttpClient())
@@ -63,26 +64,22 @@ namespace Music.System.Services.MainSign.MyFavorSign
                                     honKongData.Singer = singer;
                                     honKongData.MusicTime = time;
                                     HongKongDataList.Add(honKongData);
-
                                 }
                             }
                         }
                     }
                     catch (Exception)
                     {
-
-
                     }
-
                 }
             }
             else
             {
+                // HandyControl.Controls.
                 MessageBox.Show("网络未连接");
             }
 
             // 使用 HttpClient 异步获取网页内容
-          
 
             return HongKongDataList;
         }
@@ -92,17 +89,15 @@ namespace Music.System.Services.MainSign.MyFavorSign
             return Task.FromResult(0);
         }
 
-        
         public void AddPlayListToFavor(string musicName)
         {
             HongKongMusicDto musicDto = HongKongDataList.Where(x => x.MusicName == musicName).FirstOrDefault();
-            FavorPlayListInfo favorPlayListInfo=new FavorPlayListInfo();
+            FavorPlayListInfo favorPlayListInfo = new FavorPlayListInfo();
             favorPlayListInfo.Name = musicDto.MusicName;
             // favorPlayListInfo.Artists = musicDto.MusicAlbum;
             GetFavorDbContext.Context.Insertable(favorPlayListInfo).ExecuteCommand();
         }
 
-        public DbContext<FavorPlayListInfo> GetFavorDbContext=> ContainerLocator.Container.Resolve<DbContext<FavorPlayListInfo>>();
-
+        public DbContext<FavorPlayListInfo> GetFavorDbContext => ContainerLocator.Container.Resolve<DbContext<FavorPlayListInfo>>();
     }
 }

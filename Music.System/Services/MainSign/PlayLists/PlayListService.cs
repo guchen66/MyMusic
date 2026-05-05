@@ -1,9 +1,10 @@
-﻿
+﻿using IT.Tangdao.Core.Attributes;
+using IT.Tangdao.Core.Enums;
 using Music.Shared.Attributes;
 
 namespace Music.System.Services.MainSign.PlayLists
 {
-    [Scanning(RegisterType = "Register")]
+    [AutoRegister(Mode = RegisterMode.Singleton)]
     public class PlayListService : DataRepository<PlayListInfo>, IPlayListService
     {
         public async Task<bool> CreatePlatListAsync(PlayListInputDto input)
@@ -11,13 +12,13 @@ namespace Music.System.Services.MainSign.PlayLists
             var playList = input.Adapt<PlayListInfo>();//实体转换       父类转子类
             return await InsertAsync(playList);//添加数据
         }
+
         /// <summary>
         /// 检查输入参数
         /// </summary>
         /// <param name="sysUser"></param>
         private async Task CheckInput(PlayListInputDto inputInfo)
         {
-
             //判断歌单重复,直接从redis拿
             /* var accountId = await GetIdByAccount(sysUser.Account);
              if (accountId > 0 && accountId != sysUser.Id)
@@ -47,7 +48,6 @@ namespace Music.System.Services.MainSign.PlayLists
 
         public async Task<PlayListInfo> GetPlatListByNameAsync(string name)
         {
-
             return await GetFirstAsync(x => x.PlayListName == name);
         }
 
@@ -64,7 +64,6 @@ namespace Music.System.Services.MainSign.PlayLists
 
         public async Task<bool> GetReNamePlatListAsync(PlayListInfo playListInfo)
         {
-
             //  var reName = playListInfo.Adapt<PlayListInfo>();//实体转换       父类转子类
             return await UpdateAsync(playListInfo);
         }

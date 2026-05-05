@@ -1,5 +1,4 @@
-﻿
-using Music.SqlSugar.IRepositorys;
+﻿using Music.SqlSugar.IRepositorys;
 
 namespace Music.SqlSugar.Services
 {
@@ -11,6 +10,7 @@ namespace Music.SqlSugar.Services
         {
             db = repository;
         }
+
         public async Task<bool> AddAsync(TEntity entity)
         {
             return await db.AddAsync(entity);
@@ -23,17 +23,16 @@ namespace Music.SqlSugar.Services
 
         public async Task<bool> DeleteAsync(int id)
         {
-            return await db.DeleteAsync(id);
+            return await db.DeleteByIdAsync(id);
         }
 
         public async Task<TEntity> QueryAsync(int id)
         {
-            return await db.QueryAsync(id);
+            return await db.QueryByIdAsync(id);
         }
 
         public virtual async Task<List<TEntity>> QueryListAsync()
         {
-
             return await db.QueryListAsync();
         }
 
@@ -57,5 +56,4 @@ namespace Music.SqlSugar.Services
             return await db.QueryAsync(func);
         }
     }
-
 }

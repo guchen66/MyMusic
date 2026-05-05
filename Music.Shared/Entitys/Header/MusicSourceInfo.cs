@@ -1,5 +1,4 @@
-﻿
-namespace Music.Shared.Entitys.Header
+﻿namespace Music.Shared.Entitys.Header
 {
     [SugarTable("MusicSourceInfo", "音乐来源")]
     public class MusicSourceInfo
@@ -14,11 +13,14 @@ namespace Music.Shared.Entitys.Header
         public string? SourceName { get; set; }
 
         /// <summary>
-        /// 新增的点击，最好设置默认值，否则重新建表会报错
+        /// 是否选中，最好设置默认值，否则重新建表会报错
         /// </summary>
         [SugarColumn(IsNullable = false, DefaultValue = "0")]
         public bool? IsSelected { get; set; }
 
+        /// <summary>
+        /// 音乐站点
+        /// </summary>
         [SugarColumn(ColumnDataType = "Nvarchar(50)", IsNullable = true)]
         public string? Site { get; set; }
     }

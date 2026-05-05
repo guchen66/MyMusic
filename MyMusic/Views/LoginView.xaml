@@ -11,6 +11,7 @@
     xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:prism="http://prismlibrary.com/"
     xmlns:provider="clr-namespace:Music.ToolKit.Providers;assembly=Music.ToolKit"
+    x:Name="login"
     Title="用户登录"
     Width="650"
     Height="390"
@@ -99,7 +100,7 @@
                     Width="384"
                     Height="240"
                     VerticalAlignment="Top"
-                    Source="../Assets/Images/jita.jpg"
+                    Source="{StaticResource jitaSource}"
                     Stretch="Fill" />
             </StackPanel>
             <StackPanel Margin="30,0,0,0" HorizontalAlignment="Right">
@@ -107,7 +108,7 @@
                     Height="auto"
                     Background="#000000"
                     BorderBrush="#000000"
-                    Command="{Binding CancelCommand}" ToolTip="关闭"  IsCancel="True">
+                    Command="{Binding CancelCommand}" CommandParameter="{Binding ElementName=login}" ToolTip="关闭"  IsCancel="True">
                     <md:PackIcon
                         Width="30"
                         Height="30"
@@ -117,5 +118,4 @@
             </StackPanel>
         </StackPanel>
     </Grid>
-
 </Window>

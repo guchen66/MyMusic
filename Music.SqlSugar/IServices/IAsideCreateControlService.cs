@@ -1,5 +1,4 @@
-﻿
-using Music.Shared.Dtos;
+﻿using Music.Shared.Dtos;
 
 namespace Music.SqlSugar.IServices
 {
@@ -18,7 +17,6 @@ namespace Music.SqlSugar.IServices
         /// <returns></returns>
         public Task<bool> RemovePlatListById(long? id);
 
- 
         /// <summary>
         /// 跟据Id获取歌单
         /// </summary>

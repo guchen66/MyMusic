@@ -1,32 +1,32 @@
-﻿
-using Music.System.Services.MainSign.HomeSign;
+﻿using Music.System.Services.MainSign.HomeSign;
 using System.Windows.Controls;
 
 namespace MyMusic.ViewModels
 {
     public class HomeViewModel : BaseViewModel
     {
-
         #region 字段
 
         private Timer _timer;
         private DispatcherTimer timer;
         private readonly IFavorService _favorService;
         private readonly IPlayMusicService _playMusicService;
-        IPlayListService _playListService;
-        IRegionManager _regionManager;
-        IHttpClientService _httpClientService;
-        #endregion
+        private IPlayListService _playListService;
+        private IRegionManager _regionManager;
+        private IHttpClientService _httpClientService;
 
-        #region  属性
+        #endregion 字段
+
+        #region 属性
 
         private bool _isDataLoading;
 
         public bool IsDataLoading
         {
-            get => _isDataLoading?false:true;
+            get => _isDataLoading ? false : true;
             set => SetProperty(ref _isDataLoading, value);
         }
+
         /// <summary>
         /// 传递过来的歌单Name
         /// </summary>
@@ -39,6 +39,7 @@ namespace MyMusic.ViewModels
         }
 
         public List<HongKongMusicDto> _musicInfos;
+
         public List<HongKongMusicDto> MusicInfos
         {
             get { return _musicInfos; }
@@ -46,6 +47,7 @@ namespace MyMusic.ViewModels
         }
 
         private ObservableCollection<object> _menus;
+
         public ObservableCollection<object> Menus
         {
             get { return _menus; }
@@ -60,6 +62,7 @@ namespace MyMusic.ViewModels
         /// 找到数据之后展示数据，结束转圈圈
         /// </summary>
         private Visibility _dataVisibility;
+
         public Visibility DataVisibility
         {
             get { return _dataVisibility; }
@@ -70,12 +73,12 @@ namespace MyMusic.ViewModels
             }
         }
 
-        #endregion
+        #endregion 属性
 
-        public HomeViewModel(IContainerProvider provider):base(provider)
+        public HomeViewModel(IContainerProvider provider) : base(provider)
         {
-           // SearchProgressVisibility = Visibility.Visible;
-           // DataVisibility = Visibility.Hidden;
+            // SearchProgressVisibility = Visibility.Visible;
+            // DataVisibility = Visibility.Hidden;
             _playMusicService = provider.Resolve<IPlayMusicService>();
             _favorService = provider.Resolve<IFavorService>();
             _playListService = provider.Resolve<IPlayListService>();
@@ -84,26 +87,21 @@ namespace MyMusic.ViewModels
             PrePlayCommand = new DelegateCommand<string>(PrePlayExecute);
             PlayCommand = new DelegateCommand<string>(ExecutePlay);
             FavorCommand = new DelegateCommand<string>(ExecuteFavor);
-          //  BackgroundCodeInit();
-
-            
+            BackgroundCodeInit();
         }
 
-      
-
-        #region  命令
+        #region 命令
 
         public ICommand InitingCommand { get; set; }
         public ICommand ClickPlayAllCommand { get; set; }
         public ICommand OpenPopupCommand { get; set; }
         public ICommand PrePlayCommand { get; set; }
-        public ICommand PlayCommand {  get; set; }
-        public ICommand FavorCommand {  get; set; }
-        #endregion
+        public ICommand PlayCommand { get; set; }
+        public ICommand FavorCommand { get; set; }
 
+        #endregion 命令
 
-        #region  方法
-
+        #region 方法
 
         public void BackgroundCodeInit()
         {
@@ -112,6 +110,7 @@ namespace MyMusic.ViewModels
             Task task = new Task(ExecuteIniting);
             task.Start();
         }
+
         /// <summary>
         /// 界面初始化
         /// 默认首页界面是QQ音乐的每日粤语推荐
@@ -120,12 +119,10 @@ namespace MyMusic.ViewModels
         {
             MusicInfos = await _favorService.GetHongKongListAsync();
 
-           /* if (MusicInfos.Count==0)
-            {
-                RegionManager.RequestNavigate(RegionNames.ContentRegion, new Uri("_404View", UriKind.Relative));
-              
-            }*/
-
+            /* if (MusicInfos.Count==0)
+             {
+                 RegionManager.RequestNavigate(RegionNames.ContentRegion, new Uri("_404View", UriKind.Relative));
+             }*/
         }
 
         /// <summary>
@@ -140,7 +137,7 @@ namespace MyMusic.ViewModels
 
         private async void Timer_Tick(object sender, EventArgs e)
         {
-          //  MusicInfos = await _favorService.GetHongKongListAsync();
+            //  MusicInfos = await _favorService.GetHongKongListAsync();
             CloseSplash("");
         }
 
@@ -178,6 +175,7 @@ namespace MyMusic.ViewModels
         {
             _playMusicService.SingleMusicPlay(name);
         }
-        #endregion
+
+        #endregion 方法
     }
 }

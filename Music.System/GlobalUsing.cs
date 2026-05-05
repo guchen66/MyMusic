@@ -64,3 +64,5 @@ global using NAudio.Wave.SampleProviders;
 global using Newtonsoft.Json.Linq;
 global using System.Numerics;
 global using System.Threading.Channels;
+global using IT.Tangdao.Core.Attributes;
+global using IT.Tangdao.Core.Enums;

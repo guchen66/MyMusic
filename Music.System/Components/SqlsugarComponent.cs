@@ -9,11 +9,11 @@ namespace Music.System.Components
 {
     public class SqlsugarComponent : IContainerComponent
     {
-        public void Load(IContainerRegistry registry, ComponentContext context)
+        public void Load(IContainerRegistry registry)
         {
-           /* registry.RegisterScoped(typeof(IBaseService<>), typeof(BaseService<>));
-            registry.RegisterScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
-            registry.RegisterScoped<IProductDataConfigService,ProductDataConfigService>();*/
+            /* registry.RegisterScoped(typeof(IBaseService<>), typeof(BaseService<>));
+             registry.RegisterScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
+             registry.RegisterScoped<IProductDataConfigService,ProductDataConfigService>();*/
             // containerRegistry.RegisterScoped<IUserService, UserService>();
             // containerRegistry.Register<IUserRepository, UserRepository>();
         }

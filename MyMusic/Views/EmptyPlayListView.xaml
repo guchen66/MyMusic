@@ -188,14 +188,13 @@
                                         <StackPanel>
                                             <Button
                                                 Command="{Binding DataContext.DownLoadCommand, ElementName=dataGrid}"
-                                                CommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid, AncestorLevel=1}}"
+                                                CommandParameter="{Binding Path=SelectedItem, ElementName=dataGrid}"
                                                 Content="下载"
                                                 Style="{StaticResource MaterialDesignToolButton}" />
                                             <Button Content="Options" />
                                         </StackPanel>
                                     </md:PopupBox>
                                 </StackPanel>
-
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>

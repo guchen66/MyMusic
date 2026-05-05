@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DryIoc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,24 @@ namespace MyMusic.ViewModels.Dialog
     {
         public string Title => "下载";
 
+        private string _downLoadMusicName;
+
+        public string DownLoadMusicName
+        {
+            get => _downLoadMusicName;
+            set => SetProperty(ref _downLoadMusicName, value);
+        }
+
+        private IMusic _music;
+
+        public IMusic Music
+        {
+            get => _music;
+            set => SetProperty(ref _music, value);
+        }
+
+        public IDialogParameters Parameters { get; set; }
+
         public event Action<IDialogResult> RequestClose;
 
         public bool CanCloseDialog()
@@ -19,13 +38,19 @@ namespace MyMusic.ViewModels.Dialog
 
         public void OnDialogClosed()
         {
-            
+            DownLoadMusicName = string.Empty;
+            Music = null;
+            Parameters = null;
         }
 
         public void OnDialogOpened(IDialogParameters parameters)
         {
-            
+            Music = parameters.GetValue<IMusic>("selectedItem");
+            Parameters.Add("selectedItem", Music);
+            DownLoadMusicName = Music.Name;
+            DownLoadMusicName = $"《{DownLoadMusicName}》";
         }
+
         public DownLoadDialogViewModel()
         {
             CancelCommand = new DelegateCommand<string>(ExecuteCancel);
@@ -34,7 +59,7 @@ namespace MyMusic.ViewModels.Dialog
 
         private void ExecuteConfirm(string obj)
         {
-            RequestClose?.Invoke(new DialogResult(ButtonResult.OK));
+            RequestClose?.Invoke(new DialogResult(ButtonResult.OK, Parameters));
         }
 
         private void ExecuteCancel(string obj)
@@ -43,6 +68,6 @@ namespace MyMusic.ViewModels.Dialog
         }
 
         public ICommand ConfirmCommand { get; set; }
-        public ICommand CancelCommand { get; set;}
+        public ICommand CancelCommand { get; set; }
     }
 }

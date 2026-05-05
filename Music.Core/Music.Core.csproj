@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="Bogus" />
+    <PackageReference Include="IT.Tangdao.Core" />
     <PackageReference Include="NewLife.Core" />
     <PackageReference Include="Newtonsoft.Json" />
   </ItemGroup>

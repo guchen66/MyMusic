@@ -18,16 +18,17 @@
     mc:Ignorable="d">
 
     <i:Interaction.Triggers>
-        <i:EventTrigger EventName="Loaded">
+        <i:EventTrigger EventName="Initilaized">
             <i:InvokeCommandAction Command="{Binding InitingCommand}" />
         </i:EventTrigger>
     </i:Interaction.Triggers>
     <UserControl.Resources>
         <ResourceDictionary>
-            <!--<ResourceDictionary.MergedDictionaries>
+            <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/Music.Themes;component/Styles/MyDataGridStyle.xaml" />
-            </ResourceDictionary.MergedDictionaries>-->
+            </ResourceDictionary.MergedDictionaries>
             <conver:BoolToVisibilityConverter x:Key="boolToVisibilityConverter" />
+            <Style TargetType="Button" />
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -36,7 +37,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/Control/DataGrid.xaml" />
                 <ResourceDictionary>
-                    <converter:VisibilityConverter x:Key="VisibilityConverter"/>
+                    <converter:VisibilityConverter x:Key="VisibilityConverter" />
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
@@ -146,7 +147,7 @@
         <!--#region 第二层歌单列表-->
 
         <Grid Grid.Row="1">
-            <i:Interaction.Behaviors>
+            <!--<i:Interaction.Behaviors>
                 <be:DataGridLoadBehavior Loading="{Binding IsDataLoading}" />
             </i:Interaction.Behaviors>
             <ProgressBar
@@ -155,7 +156,7 @@
                 Height="80"
                 IsIndeterminate="True"
                 Style="{StaticResource MaterialDesignCircularProgressBar}"
-                Visibility="{Binding IsDataLoading, Converter={StaticResource boolToVisibilityConverter}}" />
+                Visibility="{Binding IsDataLoading, Converter={StaticResource boolToVisibilityConverter}}" />-->
             <DataGrid
                 x:Name="dataGrid"
                 HorizontalAlignment="Center"
@@ -169,8 +170,7 @@
                 ColumnWidth="*"
                 IsReadOnly="True"
                 ItemsSource="{Binding MusicInfos}"
-                SelectionMode="Single"
-                Visibility="{Binding DataVisibility}">
+                SelectionMode="Single">
                 <!--<i:Interaction.Triggers>
                     <i:EventTrigger EventName="MouseDoubleClick">
                         <i:InvokeCommandAction Command="{Binding PrePlayCommand}" CommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
@@ -224,7 +224,6 @@
                                         </StackPanel>
                                     </md:PopupBox>
                                 </StackPanel>
-
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
@@ -232,6 +231,5 @@
             </DataGrid>
         </Grid>
         <!--#endregion-->
-
     </Grid>
 </UserControl>

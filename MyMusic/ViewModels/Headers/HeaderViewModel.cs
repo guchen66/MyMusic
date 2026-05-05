@@ -1,7 +1,8 @@
-﻿
-using Music.Shared.Entitys.Header;
+﻿using Music.Shared.Entitys.Header;
 using SqlSugar;
 using Prism.Ioc;
+using IT.Tangdao.Core.Extensions;
+
 namespace MyMusic.ViewModels.Headers
 {
     public class HeaderViewModel : BaseViewModel
@@ -10,9 +11,10 @@ namespace MyMusic.ViewModels.Headers
 
         private readonly IStateService _stateService;
         private readonly IPlayListService _playListService;
-        IHeaderMusicSourceService _headerMusicSourceService;
-        IAsideCreateControlService _asideCreateControlService;
-        #endregion
+        private IHeaderMusicSourceService _headerMusicSourceService;
+        private IAsideCreateControlService _asideCreateControlService;
+
+        #endregion 字段
 
         #region 属性
 
@@ -20,6 +22,7 @@ namespace MyMusic.ViewModels.Headers
         /// 音乐来源
         /// </summary>
         private MusicSourceDto _musicSourceArgs;
+
         public MusicSourceDto MusicSource
         {
             get => _musicSourceArgs;
@@ -30,7 +33,7 @@ namespace MyMusic.ViewModels.Headers
 
         public ObservableCollection<MusicSourceInfo> MusicSourceInfoList
         {
-            get => _musicSourceInfoList??(_musicSourceInfoList=new ObservableCollection<MusicSourceInfo>());
+            get => _musicSourceInfoList ?? (_musicSourceInfoList = new ObservableCollection<MusicSourceInfo>());
             set => SetProperty(ref _musicSourceInfoList, value);
         }
 
@@ -38,6 +41,7 @@ namespace MyMusic.ViewModels.Headers
         /// 搜索文本框内容
         /// </summary>
         private string _searchContent;
+
         public string SearchContent
         {
             get => _searchContent;
@@ -48,6 +52,7 @@ namespace MyMusic.ViewModels.Headers
         /// 搜索的历史
         /// </summary>
         private bool _searchHistoryIsOpen = false;
+
         public bool SearchHistoryIsOpen
         {
             get => _searchHistoryIsOpen;
@@ -55,7 +60,7 @@ namespace MyMusic.ViewModels.Headers
         }
 
         public GlibalHeaderArgs HeaderArgs { get; set; } = GlibalHeaderArgs.Instance;
-        
+
         private bool _isSlected;
 
         public bool IsSlected
@@ -64,18 +69,17 @@ namespace MyMusic.ViewModels.Headers
             set => SetProperty(ref _isSlected, value);
         }
 
-        #endregion
+        #endregion 属性
 
-        public HeaderViewModel(IHeaderMusicSourceService headerMusicSourceService, IStateService stateService, IPlayListService playListService,IContainerProvider provider) : base(provider)
+        public HeaderViewModel(IHeaderMusicSourceService headerMusicSourceService, IStateService stateService, IPlayListService playListService, IContainerProvider provider) : base(provider)
         {
-  
             _stateService = stateService;
             _playListService = playListService;
-            _headerMusicSourceService=headerMusicSourceService;
+            _headerMusicSourceService = headerMusicSourceService;
             _asideCreateControlService = ContainerLocator.Container.Resolve<IAsideCreateControlService>();
             OpenSettingCommand = new DelegateCommand<string>(ExecuteSetting);
             CloseCommand = new DelegateCommand(ExecuteClosing);
-            SearchCommand = new DelegateCommand<string>(ExecuteSearchSong);
+            SearchCommand = new DelegateCommand<string>(async (content) => await ExecuteSearchSong(content));
             GoBackCommand = new DelegateCommand(ExecuteGoBack);
             ForWardCommand = new DelegateCommand(ExecuteForWard);
             OpenLoggerCommand = new DelegateCommand(ExecuteOpenLogger);
@@ -83,24 +87,24 @@ namespace MyMusic.ViewModels.Headers
             LogoutCommand = new DelegateCommand(async () => await ExecuteRestartAsync());
             ConfirmPlaySourceCommand = new DelegateCommand<string>(async (source) => await ExecuteSourceAsync(source));
             InitializedCommand = new DelegateCommand(ExecuteInit);
-        }      
+        }
 
-        #region  命令
+        #region 命令
 
         public ICommand ConfirmPlaySourceCommand { get; set; }                   //确认播放源
         public ICommand OpenSettingCommand { get; set; }
-        public ICommand CloseCommand {  get; set; }
-        public ICommand SearchCommand {  get; set; }
-        public ICommand GoBackCommand {  get; set; }
+        public ICommand CloseCommand { get; set; }
+        public ICommand SearchCommand { get; set; }
+        public ICommand GoBackCommand { get; set; }
         public ICommand ForWardCommand { get; set; }
         public ICommand OpenLoggerCommand { get; set; }
         public ICommand DragMoveCommand { get; set; }
         public ICommand LogoutCommand { get; set; }
         public ICommand InitializedCommand { get; set; }
 
-        #endregion
+        #endregion 命令
 
-        #region  方法
+        #region 方法
 
         #region 初始化查看是否选中播放源
 
@@ -108,17 +112,18 @@ namespace MyMusic.ViewModels.Headers
         {
             Task.Run(async () => { await ExecuteHeaderMusicSourceInfo(); });
         }
+
         /// <summary>
         /// 查看Header是否选中播放源
         /// </summary>
         /// <returns></returns>
         private async Task ExecuteHeaderMusicSourceInfo()
         {
-
             var musicSourceInfos = await _headerMusicSourceService.QueryListAsync();
             MusicSourceInfoList = musicSourceInfos.ToObservableCollection();
         }
-        #endregion
+
+        #endregion 初始化查看是否选中播放源
 
         #region 导航
 
@@ -127,9 +132,9 @@ namespace MyMusic.ViewModels.Headers
             NavigationToView(paramters);
         }
 
-        #endregion
+        #endregion 导航
 
-        #region  关闭按钮
+        #region 关闭按钮
 
         public void ExecuteClosing()
         {
@@ -137,9 +142,9 @@ namespace MyMusic.ViewModels.Headers
             //Application.Current.MainWindow.Close(); //关闭主窗口，报错
         }
 
-        #endregion
+        #endregion 关闭按钮
 
-        #region  前进后退
+        #region 前进后退
 
         private void ExecuteGoBack()
         {
@@ -151,68 +156,62 @@ namespace MyMusic.ViewModels.Headers
             RegionManager.Regions["ContentRegion"].NavigationService.Journal.GoForward();
         }
 
-        #endregion
+        #endregion 前进后退
 
-        #region  搜索歌曲
+        #region 搜索歌曲
 
         /// <summary>
         /// 构建空白界面，显示搜索的内容
         /// </summary>
         /// <param name="content"></param>
-        public async void ExecuteSearchSong(string content)
-        {       
+        public async Task ExecuteSearchSong(string content)
+        {
             //防呆
-            if (content == null)
+            if (string.IsNullOrEmpty(content))
             {
                 PopupInputContentDialog popupDialog = new PopupInputContentDialog();
+                popupDialog.Owner = Application.Current.MainWindow;
                 popupDialog.Show();
-                Task.Delay(1500).Wait();
-                popupDialog.Close();return;
+                await Task.Delay(1500);
+                popupDialog.Close();
+                return;
             }
             if (content != null)
             {
                 var musicSourceInfos = await _headerMusicSourceService.QueryListAsync();
 
-                var SourceName = musicSourceInfos.Where(x => x.IsSelected == true).Select(x=>x.SourceName).ToArray();
+                var SourceName = musicSourceInfos.Where(x => x.IsSelected == true).Select(x => x.SourceName).ToArray();
 
                 //将搜索的内容和三大音乐官网的SourceName传输过去
-                var navigationParameters = new NavigationParameters 
+                var navigationParameters = new NavigationParameters
                 {
                     { "PlaylistName", SearchContent },
-                    { "SourceName",SourceName} 
+                    { "SourceName",SourceName}
                 };
-                if (navigationParameters == null)
-                {
-                    RegionManager.RequestNavigate(RegionNames.ContentRegion, new Uri("EmptyPlayListView", UriKind.Relative));
-                }
-                if (navigationParameters != null)
-                {
-                    RegionManager.RequestNavigate(RegionNames.ContentRegion, new Uri("EmptyPlayListView", UriKind.Relative), navigationParameters);
-                }
+                RegionManager.RequestNavigate(RegionNames.ContentRegion, new Uri("EmptyPlayListView", UriKind.Relative), navigationParameters);
             }
-
         }
 
-        #endregion
+        #endregion 搜索歌曲
 
-        #region  一键换肤
+        #region 一键换肤
 
         private DelegateCommand<object> _skinCmd;
+
         public DelegateCommand<object> SkinCommand =>
             _skinCmd ?? (_skinCmd = new DelegateCommand<object>(DoSkinCmd));
 
         public void DoSkinCmd(object obj)
         {
-
-
         }
-        #endregion
 
-        #region  退出主界面，重新登录
+        #endregion 一键换肤
+
+        #region 退出主界面，重新登录
 
         private async Task ExecuteRestartAsync()
         {
-            // 关闭当前窗口 
+            // 关闭当前窗口
             Process.Start(Process.GetCurrentProcess().ProcessName);
             Application.Current.Shutdown();
 
@@ -226,27 +225,26 @@ namespace MyMusic.ViewModels.Headers
                     LoginView loginWindow = new LoginView();
                     loginWindow.Show();
                 }, DispatcherPriority.Normal, null);
-
             });
         }
-        #endregion
 
-        #region  确认播放源
-       
+        #endregion 退出主界面，重新登录
+
+        #region 确认播放源
+
         private async Task ExecuteSourceAsync(string source)
         {
-            var music=await _headerMusicSourceService.QueryAsync(x=>x.SourceName==source);
-            music.IsSelected= !music.IsSelected;
+            var music = await _headerMusicSourceService.QueryAsync(x => x.SourceName == source);
+            music.IsSelected = !music.IsSelected;
             await _headerMusicSourceService.UpdateAsync(music);
         }
 
-        #endregion
+        #endregion 确认播放源
 
         #region 查看本地日志
 
         private void ExecuteOpenLogger()
         {
-
             // 从配置中获取日志文件夹路径
             var logDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logs");
             try
@@ -275,16 +273,15 @@ namespace MyMusic.ViewModels.Headers
             {
                 MessageBox.Show($"Cannot open log directory: {ex.Message}", "Error");
             }
-
         }
-        #endregion
+
+        #endregion 查看本地日志
 
         #region 鼠标左键移动
 
         private void ExecuteDragMove()
         {
             Application.Current.MainWindow.DragMove();
-
         }
 
         private void HandleHeaderViewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -302,8 +299,9 @@ namespace MyMusic.ViewModels.Headers
                 DragMoveCommand.Execute(null);
             }
         }
-        #endregion
-      
-        #endregion
+
+        #endregion 鼠标左键移动
+
+        #endregion 方法
     }
 }

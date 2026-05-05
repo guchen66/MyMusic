@@ -1,10 +1,9 @@
-﻿
-using Microsoft.Win32;
+﻿using Microsoft.Win32;
 using Music.Shared.Entitys;
 using Music.Shared.Events.EmptySign;
 using Music.System.Services.CustomPlaySign;
 using Music.System.Services.CustomPlaySign.Netease;
-
+using System.Security.Authentication;
 
 namespace MyMusic.ViewModels
 {
@@ -16,12 +15,13 @@ namespace MyMusic.ViewModels
         private DispatcherTimer timer;
         private readonly IFavorService _favorService;
         private Music.System.Services.Loggers.ILogger _logger;
-        IHttpClientService _httpClientService;
-        IButtonPlaySingleService _buttonPlaySingleService;
+        private IHttpClientService _httpClientService;
+        private IButtonPlaySingleService _buttonPlaySingleService;
         private static IWavePlayer player = new WaveOutEvent();
-        #endregion
 
-        #region  属性
+        #endregion 字段
+
+        #region 属性
 
         private string _musicName;
 
@@ -32,6 +32,7 @@ namespace MyMusic.ViewModels
         }
 
         public List<IMusic> _musicInfos;
+
         public List<IMusic> MusicInfos
         {
             get { return _musicInfos; }
@@ -39,6 +40,7 @@ namespace MyMusic.ViewModels
         }
 
         private ObservableCollection<object> _menus;
+
         public ObservableCollection<object> Menus
         {
             get { return _menus; }
@@ -50,15 +52,16 @@ namespace MyMusic.ViewModels
         }
 
         private bool _isRequestFailed;
+
         public bool IsRequestFailed
         {
             get { return _isRequestFailed; }
             set { SetProperty(ref _isRequestFailed, value); }
         }
 
-        #endregion
+        #endregion 属性
 
-        public EmptyPlayListViewModel(IFavorService favorService, IHttpClientService httpClientService, IButtonPlaySingleService buttonPlaySingleService, IContainerProvider provider):base(provider)
+        public EmptyPlayListViewModel(IFavorService favorService, IHttpClientService httpClientService, IButtonPlaySingleService buttonPlaySingleService, IContainerProvider provider) : base(provider)
         {
             _favorService = favorService;
             _httpClientService = httpClientService;
@@ -66,11 +69,9 @@ namespace MyMusic.ViewModels
             _logger = ContainerLocator.Container.Resolve<Music.System.Services.Loggers.ILogger>();
             InitingCommand = new DelegateCommand(ExecuteIniting);
             PrePlayCommand = new DelegateCommand<object>(PrePlayExecute);
-            PlayCommand = new DelegateCommand<string>(async (id)=>await ExecutePlay(id));
+            PlayCommand = new DelegateCommand<string>(async (id) => await ExecutePlay(id));
             AddToFavorCommand = new DelegateCommand(ExecuteAddToFavor);
-            DownLoadCommand = new DelegateCommand<object>(async (x)=>await ExecuteDownLoad(x));
-
-
+            DownLoadCommand = new DelegateCommand<object>(ExecuteDownLoad);
         }
 
         /// <summary>
@@ -78,7 +79,6 @@ namespace MyMusic.ViewModels
         /// </summary>
         private void ExecuteAddToFavor()
         {
-           
         }
 
         /// <summary>
@@ -86,12 +86,10 @@ namespace MyMusic.ViewModels
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
-        private async Task ExecuteDownLoad(object obj)
+        private void ExecuteDownLoad(object selectedItem)
         {
-            // return null;
             DialogParameters paramters = new DialogParameters();
-             paramters.Add("selectedItem", obj);
-            await Task.Delay(1000);
+            paramters.Add("selectedItem", selectedItem);
             DialogService.ShowDialog("DownLoadDialog", paramters, DialogCompleted);
         }
 
@@ -145,12 +143,11 @@ namespace MyMusic.ViewModels
             }
             else
             {
-              //  MessageBox.Show("返回");
+                //  MessageBox.Show("返回");
             }
         }
 
-
-        #region  命令
+        #region 命令
 
         public ICommand InitingCommand { get; set; }
         public ICommand ClickPlayAllCommand { get; set; }
@@ -159,29 +156,26 @@ namespace MyMusic.ViewModels
         public ICommand PlayCommand { get; set; }
         public ICommand AddToFavorCommand { get; set; }
         public ICommand DownLoadCommand { get; set; }
-        #endregion
 
+        #endregion 命令
 
-        #region  方法
+        #region 方法
 
         /// <summary>
         /// 界面初始化
         /// </summary>
         private void ExecuteIniting()
         {
-           
             timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromSeconds(1);
             timer.Tick += Timer_Tick;
             timer.Start();
-
         }
-        
+
         private async void Timer_Tick(object sender, EventArgs e)
         {
             await Task.Run(() => { });
-          //  MusicInfos = await _favorService.GetHongKongListAsync();
-            
+            //  MusicInfos = await _favorService.GetHongKongListAsync();
         }
 
         /// <summary>
@@ -191,33 +185,34 @@ namespace MyMusic.ViewModels
         public async Task ExecutePlay(string id)
         {
             //主页面设置播放状态
-             ViewModelManager.Footer.SetPlayState();
-            //   var SourceName = SourceName;
-            var model= MusicInfos.FirstOrDefault(x=>x.Id==id);
+            ViewModelManager.Footer.SetPlayState();
+            var model = MusicInfos.FirstOrDefault(x => x.Id == id);
             EventAggregator.GetEvent<EmptyViewMusicEvent>().Publish(model.Name);
-            var playService =  MusicSourceFactory.CreatePlayProvider(model.SourceName);
+            var playService = MusicSourceFactory.CreatePlayProvider(model.SourceName);
             await playService.PlayListAsync(id);
         }
+
         public static PlaybackState State
         {
             get { return player.PlaybackState; }
         }
-       
+
         private static MediaFoundationReader reader = null;
-      //  private static SampleAggregator aggregator = null;
+
+        //  private static SampleAggregator aggregator = null;
         private static SampleChannel channel = null;
 
         public static string Source { get; set; }
+
         /// <summary>
         /// 准备播放的歌曲
         /// </summary>
         /// <param name="parameter"></param>
         public void PrePlayExecute(object parameter)
         {
- 
         }
 
-        List<int> Count = new List<int>();
+        private List<int> Count = new List<int>();
 
         public async void OnNavigatedTo(NavigationContext navigationContext)
         {
@@ -229,7 +224,7 @@ namespace MyMusic.ViewModels
                 var source = navigationContext.Parameters["SourceName"] as string[];
                 var tasks = new List<Task<List<IMusic>>>();
 
-                if (source ==null || TransferName==null)
+                if (source == null || TransferName == null)
                 {
                     return;
                 }
@@ -242,11 +237,11 @@ namespace MyMusic.ViewModels
                     }
 
                     Task<List<IMusic>> task = GetMusicDataAsync(item, TransferName);
-                    tasks.Add(task); 
+                    tasks.Add(task);
                 }
 
                 await Task.WhenAll(tasks);
-             //   MusicSourceArgs
+                //   MusicSourceArgs
                 List<IMusic> musicInfos = new List<IMusic>();
                 foreach (var task in tasks)
                 {
@@ -261,48 +256,51 @@ namespace MyMusic.ViewModels
                 throw;
             }
         }
+
         private async Task<List<IMusic>> GetMusicDataAsync(string source, string content)
-        {        
+        {
             var musicInfos = new List<IMusic>();
-            if (source == "网易云音乐")
+            try
             {
-
-                string url = "https://tqlcode.com/page/music/api.php";
-                byte[] commit = Encoding.UTF8.GetBytes($"types=search&count=10&source=netease&pages=1&name={content}");
-                HttpClientDto clientDto = new HttpClientDto();
-                byte[] data = await _httpClientService.PostAsync(url, commit, clientDto);
-                string s = Encoding.UTF8.GetString(data);
-                var infos = JsonConvert.DeserializeObject<NeteaseMusic[]>(Encoding.UTF8.GetString(data));
-                // 根据歌单名称加载对应的歌曲列表数据
-                musicInfos.AddRange(infos);
-              
-            }
-            else if (source == "酷狗音乐")
-            {
-                string url = "https://tqlcode.com/page/music/api.php";
-                byte[] commit = Encoding.UTF8.GetBytes($"types=search&count=20&source=kugou&pages=1&name={content}");
-                HttpClientDto clientDto = new HttpClientDto();
-                byte[] data = await _httpClientService.PostAsync(url, commit, clientDto);
-                KugouMusic[] infos = JsonConvert.DeserializeObject<KugouMusic[]>(Encoding.UTF8.GetString(data));
-                musicInfos.AddRange(infos);
-
-            }
-            else if (source == "QQ音乐")
-            {
-                try
+                if (source == "网易云音乐")
                 {
-                    string url = $"https://api.qq.jsososo.com/search?key={content}&pageNo=1&pageSize=10";
+                    // string url = "https://tqlcode.com/page/music/api.php";
+                    string url = "https://music.163.com/";
+                    byte[] commit = Encoding.UTF8.GetBytes($"types=search&count=10&source=netease&pages=1&name={content}");
                     HttpClientDto clientDto = new HttpClientDto();
-                    byte[] data = await _httpClientService.GetAsync(url, clientDto);
-                    TencentMusic[] infos = JsonConvert.DeserializeObject<TencentMusic[]>(JObject.Parse(Encoding.UTF8.GetString(data))?["data"]?["list"].ToString());
+                    byte[] data = await _httpClientService.PostAsync(url, commit, clientDto);
+                    string s = Encoding.UTF8.GetString(data);
+                    var infos = JsonConvert.DeserializeObject<NeteaseMusic[]>(Encoding.UTF8.GetString(data));
+                    // 根据歌单名称加载对应的歌曲列表数据
                     musicInfos.AddRange(infos);
-
                 }
-                catch (Exception)
+                else if (source == "酷狗音乐")
                 {
-
+                    string url = "https://tqlcode.com/page/music/api.php";
+                    byte[] commit = Encoding.UTF8.GetBytes($"types=search&count=20&source=kugou&pages=1&name={content}");
+                    HttpClientDto clientDto = new HttpClientDto();
+                    byte[] data = await _httpClientService.PostAsync(url, commit, clientDto);
+                    KugouMusic[] infos = JsonConvert.DeserializeObject<KugouMusic[]>(Encoding.UTF8.GetString(data));
+                    musicInfos.AddRange(infos);
                 }
-
+                else if (source == "QQ音乐")
+                {
+                    try
+                    {
+                        string url = $"https://api.qq.jsososo.com/search?key={content}&pageNo=1&pageSize=10";
+                        HttpClientDto clientDto = new HttpClientDto();
+                        byte[] data = await _httpClientService.GetAsync(url, clientDto);
+                        TencentMusic[] infos = JsonConvert.DeserializeObject<TencentMusic[]>(JObject.Parse(Encoding.UTF8.GetString(data))?["data"]?["list"].ToString());
+                        musicInfos.AddRange(infos);
+                    }
+                    catch (Exception)
+                    {
+                    }
+                }
+            }
+            catch (HttpRequestException ex) when (ex.InnerException is AuthenticationException)
+            {
+                MessageBox.Show("安全连接失败：证书验证错误，请检查系统时间或联系管理员");
             }
 
             return musicInfos;
@@ -313,14 +311,13 @@ namespace MyMusic.ViewModels
             // 在这里可以根据传递的参数（如歌单名称）判断是否是目标导航
             // 如果是同一个歌单名称，则返回true，表示当前页面可以处理该导航
             // 如果不是同一个歌单名称，则返回false，表示需要重新创建新的页面
-           var TransferName = navigationContext.Parameters["PlaylistName"] as string;
-             return true; // 假设当前页面只能处理名称为"001"的歌单
-
+            var TransferName = navigationContext.Parameters["PlaylistName"] as string;
+            return true; // 假设当前页面只能处理名称为"001"的歌单
         }
 
         public void OnNavigatedFrom(NavigationContext navigationContext)
         {
-           var TransferName = navigationContext.Parameters["PlaylistName"] as string;
+            var TransferName = navigationContext.Parameters["PlaylistName"] as string;
         }
 
         // 加载歌单对应的歌曲列表数据的逻辑
@@ -330,9 +327,7 @@ namespace MyMusic.ViewModels
             // 返回一个包含歌曲的ObservableCollection<Song>对象
             return null;
         }
-        #endregion
+
+        #endregion 方法
     }
-
 }
-
-

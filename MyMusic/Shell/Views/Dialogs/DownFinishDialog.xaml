@@ -21,7 +21,7 @@
                     Height="50"
                     Margin="30"
                     RenderOptions.BitmapScalingMode="HighQuality"
-                    Source="../../../Assets/Images/已完成.png"
+                    Source="{StaticResource FinishSource}"
                     UseLayoutRounding="True" />
                 <TextBlock
                     Margin="30"
@@ -39,7 +39,6 @@
                     Click="Button_Click"
                     Content="确认"
                     Style="{StaticResource MaterialDesignFlatDarkBgButton}" />
-
             </StackPanel>
         </Grid>
     </Border>

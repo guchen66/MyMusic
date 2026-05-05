@@ -5,6 +5,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Downloader" />
+    <PackageReference Include="HandyControl" />
     <PackageReference Include="HtmlAgilityPack" />
     <PackageReference Include="Mapster" />
     <PackageReference Include="NLog" />

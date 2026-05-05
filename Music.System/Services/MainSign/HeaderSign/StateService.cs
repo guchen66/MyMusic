@@ -1,9 +1,10 @@
-﻿
+﻿using IT.Tangdao.Core.Attributes;
+using IT.Tangdao.Core.Enums;
 using Music.Shared.Attributes;
 
 namespace Music.System.Services.MainSign.HeaderSign
 {
-    [Scanning(RegisterType = "Register")]
+    [AutoRegister(Mode = RegisterMode.Singleton)]
     public class StateService : IStateService
     {
         public string GetHeader(string key)
@@ -36,6 +37,5 @@ namespace Music.System.Services.MainSign.HeaderSign
             }
             return true;
         }
-
     }
 }

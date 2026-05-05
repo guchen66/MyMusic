@@ -1,5 +1,4 @@
-﻿
-using NewLife.Serialization;
+﻿using NewLife.Serialization;
 using System.Text.Json.Nodes;
 using System.Windows.Input;
 
@@ -9,9 +8,8 @@ namespace Music.System.Managers
     {
         public static async Task SaveLocalStateData()
         {
-          
-            var stateJsons =await JsonComponent.GetJsonFilesContainNameAsync("State"); // 找到关于状态的所有json
-            
+            string[] stateJsons = null;// await JsonComponent.GetJsonFilesContainNameAsync("State"); // 找到关于状态的所有json
+
             // 定义一个字典来存储事件与处理方法的映射关系
             Dictionary<string, Func<Task<bool>>> eventHandlers = new Dictionary<string, Func<Task<bool>>>();
 
@@ -37,9 +35,9 @@ namespace Music.System.Managers
                         // RaiseRequestClose(new DialogResult(ButtonResult.No));
                     }
                 }
-            }          
-           
+            }
         }
+
         public static async Task<bool> SaveMusicSource()
         {
             if (File.Exists("musicState.json"))
@@ -61,8 +59,10 @@ namespace Music.System.Managers
             }
             return true;
         }
-        string path = "settings.json";
-        public  void ApplySavedState(string path2)
+
+        private string path = "settings.json";
+
+        public void ApplySavedState(string path2)
         {
             path2 = path;
             if (File.Exists(path2))
@@ -107,7 +107,7 @@ namespace Music.System.Managers
                 FileName = "musicState.json",
             };
             fileQuerier.Loading();
-          //  fileQuerier.SaveFile("");
+            //  fileQuerier.SaveFile("");
         }
     }
 
@@ -121,7 +121,7 @@ namespace Music.System.Managers
         public string Loading()
         {
             var folder = Directory.GetCurrentDirectory();
-            var path=Path.Combine(folder,FileName);
+            var path = Path.Combine(folder, FileName);
 
             using (var stream = File.OpenText(path))
             {
@@ -146,8 +146,6 @@ namespace Music.System.Managers
 
             using (var stream = File.OpenText(path))
             {
-                
-
                 JsonTextReader reader = new JsonTextReader(stream);
                 var jsonObject = (JArray)JToken.ReadFrom(reader);
 

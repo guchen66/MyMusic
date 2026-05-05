@@ -1,4 +1,5 @@
-﻿
+﻿using IT.Tangdao.Core.Attributes;
+using IT.Tangdao.Core.Enums;
 using Music.Shared.Attributes;
 using NLog;
 using System;
@@ -9,8 +10,7 @@ using System.Threading.Tasks;
 
 namespace Music.System.Services.Loggers
 {
-    // NLogLogger 实现类
-    [Scanning(RegisterType = "Register")]
+    [AutoRegister(Mode = RegisterMode.Singleton)]
     public class DefaultLogger : ILogger
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();

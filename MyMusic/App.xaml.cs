@@ -1,5 +1,4 @@
-﻿
-using Music.System.Components;
+﻿using Music.System.Components;
 using Prism.Ioc;
 
 using StartupEventArgs = System.Windows.StartupEventArgs;
@@ -11,12 +10,10 @@ namespace MyMusic;
 /// </summary>
 public partial class App
 {
-    Mutex mutex;
-    //初始化Root目录状态
-    public RootArgs RootArgs { get; set; } = RootArgs.Instance;
+    private Mutex mutex;
+
     protected override void OnStartup(StartupEventArgs e)
     {
-        
         mutex = new Mutex(true, "MyMusic");
         if (!mutex.WaitOne(TimeSpan.Zero, true))
         {
@@ -26,46 +23,44 @@ public partial class App
         //注册SqlSugar服务
         MyStartup.AddSqlSugar();
         //程序启动加载上一次关闭时保存的数据状态
-        StateManager.LastBehavor();
-        base.OnStartup(e);     
+        //StateManager.LastBehavor();
+        // LocalDataManager.LoadForm("login.json");
+        base.OnStartup(e);
     }
 
-     
     protected override void OnExit(ExitEventArgs e)
     {
         // 程序退出之前保存监控的数据
         MonitorComponent monitor = new MonitorComponent();
         monitor.MonitorCompleted += Monitor_MonitorCompleted;
         base.OnExit(e);
-      
     }
 
     private void Monitor_MonitorCompleted(object sender, RootJsonFileEventArgs e)
     {
-       var name= e.DefaultJsonFile.Name;
+        var name = e.DefaultJsonFile.Name;
     }
 
     protected override Window CreateShell()
-    {       
+    {
         return Container.Resolve<MainWindow>();
     }
 
     protected override void InitializeShell(System.Windows.Window shell)
     {
-       
         I18NService i18NService = new I18NService();
         i18NService.Init();
         var loginView = Container.Resolve<LoginView>();
         loginView.Topmost = true;
         loginView.Activate();
-        var result = loginView.ShowDialog().HasValue;
-        if (result == true)
+        var result = loginView.ShowDialog();
+        if (result == false)
         {
-            base.InitializeShell(shell);
+            Application.Current?.Shutdown();
         }
         else
         {
-            Application.Current?.Shutdown();
+            base.InitializeShell(shell);
         }
     }
 
@@ -76,7 +71,7 @@ public partial class App
         YitIdHelper.SetIdGenerator(new IdGeneratorOptions
         {
             WorkerId = 1,// 取值范围0~63,默认1
-           // DataCenterId=1,//数据中心Id
+                         // DataCenterId=1,//数据中心Id
         });
 
         //注册首页为默认视图
@@ -91,11 +86,7 @@ public partial class App
         containerRegistry.RegisterComponent<PlayMusicComponent>();          //注册MahApps组件库
         containerRegistry.RegisterComponent<MapsterComponent>();          //注册Mapster映射
         MyStartup.Register(containerRegistry);
-
-        RegistExtension register = new RegistExtension(containerRegistry);
-        register.RegisterScannedTypes();
-
-    
+        containerRegistry.RegisterScannedTypes();
     }
 
     /// <summary>
@@ -104,7 +95,6 @@ public partial class App
     /// <param name="containerRegistry"></param>
     private void RegisterMapper(IContainerRegistry containerRegistry)
     {
-
         var config = new TypeAdapterConfig();
         var assembly = Assembly.Load("Music.System");
         config.Scan(assembly);
@@ -116,7 +106,4 @@ public partial class App
         var mapper = new Mapper(config);
         containerRegistry.RegisterInstance(typeof(Mapper), mapper);
     }
-
 }
-
-

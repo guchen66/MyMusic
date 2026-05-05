@@ -12,6 +12,7 @@ namespace Music.Shared.Common
         public string Title { get; set; }
         public bool IsGenerator { get; set; }
         public bool IsSeedData { get; set; }
+       
     }
 
     public class GeneratorDataProvider

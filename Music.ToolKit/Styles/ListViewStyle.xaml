@@ -1,5 +1,5 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <Style x:Key="myListViewItemStyle" TargetType="ListViewItem">
+    <!--<Style x:Key="myListViewItemStyle" TargetType="ListViewItem">
         <Setter Property="MinHeight" Value="40" />
         <Setter Property="Template">
             <Setter.Value>
@@ -27,7 +27,95 @@
                             <Setter TargetName="border" Property="Background" Value="{DynamicResource PrimaryHueLightBrush}" />
                             <Setter TargetName="border" Property="Opacity" Value="0" />
                         </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>-->
 
+    <Style x:Key="myListViewItemStyle" TargetType="ListViewItem">
+        <Setter Property="MinHeight" Value="40" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ListViewItem}">
+                    <Grid>
+                        <!-- 新增缩放变换 -->
+                        <Border x:Name="borderHeader" RenderTransformOrigin="0.5,0.5">
+                            <Border.RenderTransform>
+                                <ScaleTransform x:Name="headerScale" ScaleX="1" ScaleY="1" />
+                            </Border.RenderTransform>
+                        </Border>
+                        <Border x:Name="border" RenderTransformOrigin="0.5,0.5">
+                            <Border.RenderTransform>
+                                <ScaleTransform x:Name="contentScale" ScaleX="1" ScaleY="1" />
+                            </Border.RenderTransform>
+                        </Border>
+
+                        <!-- 新增文本缩放元素 -->
+                        <ContentPresenter
+                        x:Name="contentPresenter"
+                        HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                        RenderTransformOrigin="0.5,0.5">
+                            <ContentPresenter.RenderTransform>
+                                <ScaleTransform x:Name="textScale" ScaleX="1" ScaleY="1" />
+                            </ContentPresenter.RenderTransform>
+                        </ContentPresenter>
+                    </Grid>
+
+                    <ControlTemplate.Triggers>
+                        <!-- 在原有触发器基础上增加字体动画 -->
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <!-- 保持原有背景变化 -->
+                            <Setter TargetName="border" Property="Background" Value="{DynamicResource PrimaryHueLightBrush}" />
+                            <Setter TargetName="border" Property="Opacity" Value="0.2" />
+
+                            <!-- 新增字体放大动画 -->
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation
+                                        Storyboard.TargetName="textScale"
+                                        Storyboard.TargetProperty="ScaleX"
+                                        To="1.2" Duration="0:0:0.3" />
+                                        <DoubleAnimation
+                                        Storyboard.TargetName="textScale"
+                                        Storyboard.TargetProperty="ScaleY"
+                                        To="1.2" Duration="0:0:0.3" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                        </Trigger>
+
+                        <Trigger Property="IsMouseOver" Value="False">
+                            <Setter TargetName="borderHeader" Property="BorderThickness" Value="0,0,0,0" />
+                            <Setter TargetName="border" Property="Background" Value="{DynamicResource PrimaryHueLightBrush}" />
+                            <Setter TargetName="border" Property="Opacity" Value="0" />
+
+                            <!-- 字体恢复动画 -->
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation
+                                        Storyboard.TargetName="textScale"
+                                        Storyboard.TargetProperty="ScaleX"
+                                        To="1" Duration="0:0:0.2" />
+                                        <DoubleAnimation
+                                        Storyboard.TargetName="textScale"
+                                        Storyboard.TargetProperty="ScaleY"
+                                        To="1" Duration="0:0:0.2" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                        </Trigger>
+
+                        <!-- 保持原有选中状态触发器 -->
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter TargetName="borderHeader" Property="BorderThickness" Value="4,0,0,0" />
+                            <Setter TargetName="borderHeader" Property="BorderBrush" Value="{DynamicResource PrimaryHueLightBrush}" />
+                            <Setter TargetName="border" Property="Background" Value="{DynamicResource PrimaryHueLightBrush}" />
+                            <Setter TargetName="border" Property="Opacity" Value="0.2" />
+                        </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>

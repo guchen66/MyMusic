@@ -12,7 +12,7 @@ namespace Music.System.Components
 {
     public class MapsterComponent : IContainerComponent
     {
-        public void Load(IContainerRegistry registry, ComponentContext context)
+        public void Load(IContainerRegistry registry)
         {
             var config = new TypeAdapterConfig();
             var assembly = Assembly.Load("Music.System");
@@ -26,10 +26,10 @@ namespace Music.System.Components
             registry.RegisterInstance(typeof(Mapper), mapper);
             registry.Register<IMapper, Mapper>();
 
-           /* MapsterIocService.RegisterMapster(x =>
-            {
-                x.Adapt(registry);
-            });*/
+            /* MapsterIocService.RegisterMapster(x =>
+             {
+                 x.Adapt(registry);
+             });*/
         }
     }
 

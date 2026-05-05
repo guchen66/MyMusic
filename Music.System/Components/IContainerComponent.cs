@@ -12,6 +12,6 @@ namespace Music.System.Components
     /// </summary>
     public interface IContainerComponent : IPrismComponent
     {
-        void Load(IContainerRegistry registry, ComponentContext context);
+        void Load(IContainerRegistry registry);
     }
 }

@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace Music.SqlSugar.Repositorys
 {
-    public class DataRepository<TEntity> : SimpleClient<TEntity>,IDataRepository<TEntity> where TEntity : class, new()
+    public class DataRepository<TEntity> : SimpleClient<TEntity>, IDataRepository<TEntity> where TEntity : class, new()
     {
         public DataRepository(ISqlSugarClient db = null) : base(db)
         {
@@ -30,12 +30,12 @@ namespace Music.SqlSugar.Repositorys
             return await base.UpdateAsync(entity);
         }
 
-        public async Task<bool> DeleteAsync(int id)
+        public async Task<bool> DeleteByIdAsync(int id)
         {
             return await base.DeleteByIdAsync(id);
         }
 
-        public virtual async Task<TEntity> QueryAsync(int id)
+        public virtual async Task<TEntity> QueryByIdAsync(int id)
         {
             return await base.GetByIdAsync(id);
         }
@@ -43,7 +43,6 @@ namespace Music.SqlSugar.Repositorys
         public virtual async Task<List<TEntity>> QueryListAsync()
         {
             return await base.GetListAsync();
-
         }
 
         public virtual async Task<List<TEntity>> QueryListAsync(Expression<Func<TEntity, bool>> func)
@@ -64,6 +63,46 @@ namespace Music.SqlSugar.Repositorys
         public async Task<TEntity> QueryAsync(Expression<Func<TEntity, bool>> func)
         {
             return await base.GetSingleAsync(func);
+        }
+
+        public bool Add(TEntity entity)
+        {
+            return base.Insert(entity);
+        }
+
+        public bool DeleteById(int id)
+        {
+            return base.DeleteById(id);
+        }
+
+        public TEntity QueryById(int id)
+        {
+            return base.GetById(id);
+        }
+
+        public TEntity Query(Expression<Func<TEntity, bool>> func)
+        {
+            return base.GetById(func);
+        }
+
+        public List<TEntity> QueryList()
+        {
+            return base.GetList();
+        }
+
+        public List<TEntity> QueryList(Expression<Func<TEntity, bool>> func)
+        {
+            return base.GetList(func);
+        }
+
+        public List<TEntity> QueryList(int page, int size, ref int total)
+        {
+            return base.Context.Queryable<TEntity>().ToPageList(page, size, ref total);
+        }
+
+        public List<TEntity> QueryList(Expression<Func<TEntity, bool>> func, int page, int size, ref int total)
+        {
+            return base.Context.Queryable<TEntity>().Where(func).ToPageList(page, size, ref total);
         }
     }
 }

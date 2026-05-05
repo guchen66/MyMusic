@@ -19,41 +19,13 @@
     Height="700"
     prism:ViewModelLocator.AutoWireViewModel="True"
     WindowStartupLocation="CenterScreen">
-    <!--<i:Interaction.Triggers>
-        <i:EventTrigger EventName="Loaded">
-            <i:InvokeCommandAction Command="{Binding LoadedCommand}" />
-        </i:EventTrigger>
-    </i:Interaction.Triggers>-->
-    <!--<Window.Resources>
-        <Storyboard x:Key="MenuOpen">
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="GridMenu" Storyboard.TargetProperty="(FrameworkElement.Width)">
-                <EasingDoubleKeyFrame KeyTime="0" Value="60" />
-                <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="200" />
-            </DoubleAnimationUsingKeyFrames>
-        </Storyboard>
-        <Storyboard x:Key="MenuClose">
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="GridMenu" Storyboard.TargetProperty="(FrameworkElement.Width)">
-                <EasingDoubleKeyFrame KeyTime="0" Value="200" />
-                <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="60" />
-            </DoubleAnimationUsingKeyFrames>
-        </Storyboard>
-    </Window.Resources>
-
-    <Window.Triggers>
-        <EventTrigger RoutedEvent="ButtonBase.Click" SourceName="ButtonOpenMenu">
-            <BeginStoryboard Storyboard="{StaticResource MenuOpen}" />
-        </EventTrigger>
-        <EventTrigger RoutedEvent="ButtonBase.Click" SourceName="ButtonCloseMenu">
-            <BeginStoryboard Storyboard="{StaticResource MenuClose}" />
-        </EventTrigger>
-    </Window.Triggers>-->
 
     <DockPanel LastChildFill="True">
         <!--  左侧折叠栏  -->
         <Grid DockPanel.Dock="Left">
             <ContentControl  prism:RegionManager.RegionName="{x:Static region:RegionNames.AsideRegion}" />
         </Grid>
-       
+
         <!--  Header   Background="{DynamicResource PrimaryHueMidBrush}"  -->
         <Border
             x:Name="GridTitle"
@@ -74,14 +46,17 @@
                 </LinearGradientBrush>
             </Grid.Background>-->
             <ContentControl prism:RegionManager.RegionName="{x:Static region:RegionNames.HeaderRegion}" />
-
         </Border>
         <!--  Footer  -->
         <Grid
             Height="80"
             VerticalAlignment="Bottom"
-            DockPanel.Dock="Bottom"
-            PreviewMouseDown="GridTitle_PreviewMouseDown">
+            DockPanel.Dock="Bottom">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="PreviewMouseDown">
+                    <i:InvokeCommandAction Command="{Binding FooterPreviewMouseDownCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
             <ContentControl prism:RegionManager.RegionName="{x:Static region:RegionNames.FooterRegion}" />
         </Grid>
 
@@ -89,7 +64,5 @@
         <Grid>
             <ContentControl prism:RegionManager.RegionName="{x:Static region:RegionNames.ContentRegion}" />
         </Grid>
-
-
     </DockPanel>
 </Window>

@@ -115,7 +115,8 @@
                     </ListView.ItemTemplate>
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="PreviewMouseLeftButtonUp">
-                            <i:InvokeCommandAction Command="{Binding DataContext.NavigateCommand, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}" CommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}" />
+                            <i:InvokeCommandAction Command="{Binding DataContext.NavigateCommand, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}"
+                                                   CommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}" />
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                 </ListView>
@@ -179,7 +180,7 @@
                                                     <ContextMenu.Resources>
                                                         <ObjectDataProvider x:Key="playListDataProvider" ObjectType="{x:Type sign:OperatePlayLists}">
                                                             <!--  `技术有限，由于接口不能直接绑定为参数  -->
-                                                            <!--<ioc:IContainerProvider/>-->
+                                                            <!--<ioc:IContainerProvider />-->
                                                         </ObjectDataProvider>
                                                     </ContextMenu.Resources>
                                                     <ContextMenu.DataContext>
@@ -199,7 +200,6 @@
                                                 </ContextMenu>
                                             </Button.ContextMenu>
                                         </Button>
-
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
@@ -207,7 +207,6 @@
                     </Expander>
                 </Border>
             </Grid>
-
         </StackPanel>
     </Grid>
 </UserControl>

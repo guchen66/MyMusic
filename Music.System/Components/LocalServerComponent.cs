@@ -14,7 +14,7 @@ namespace Music.System.Components
 {
     public class LocalServerComponent : IContainerComponent
     {
-        public void Load(IContainerRegistry registry, ComponentContext context)
+        public void Load(IContainerRegistry registry)
         {
             registry.Register<ILoginService, LoginService>();
             registry.Register<IReadService, ReadService>();

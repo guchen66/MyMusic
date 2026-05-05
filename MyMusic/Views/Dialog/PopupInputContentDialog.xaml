@@ -10,10 +10,11 @@
     Height="40"
     prism:ViewModelLocator.AutoWireViewModel="True"
     AllowsTransparency="True"
-    WindowStartupLocation="CenterScreen"
+    WindowStartupLocation="CenterOwner"
     WindowStyle="None">
     <TextBlock
         Height="40"
+        Width="350"
         HorizontalAlignment="Stretch"
         VerticalAlignment="Stretch"
         Background="{DynamicResource AttentionToActionBrush}"

@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="FluentValidation" />
+    <PackageReference Include="IT.Tangdao.Core" />
     <PackageReference Include="Microsoft.Extensions.Http" />
     <PackageReference Include="Microsoft.Rest.ClientRuntime" />
     <PackageReference Include="NAudio" />
@@ -17,6 +18,10 @@
     <PackageReference Include="Prism.DryIoc" />
     <PackageReference Include="ValueConverters" />
     <PackageReference Include="Yitter.IdGenerator" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Music.Shared\Music.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>

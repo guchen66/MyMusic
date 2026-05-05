@@ -1,117 +1,84 @@
-﻿using Prism.Ioc;
+﻿using IT.Tangdao.Core.Attributes;
+using IT.Tangdao.Core.Enums;
+using Music.Shared.Attributes;
+using Prism.Ioc;
 using Prism.Services.Dialogs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Music.ToolKit.Extensions
 {
-
-    public class RegisterExtension
+    public static class RegisterExtension
     {
-        IContainerRegistry container;
-        public RegisterExtension(IContainerRegistry containerRegistry)
+        public static void RegisterScannedTypes(this IContainerRegistry containerRegistry)
         {
-
-            container = containerRegistry;
-
-        }
-        /// <summary>
-        /// 注册服务
-        /// </summary>
-        /// <param name="containerRegistry"></param>
-        /// <returns></returns>
-       /* public RegisterExtension RegisterService()
-        {
-            var assembly = Assembly.GetExecutingAssembly(); // 获取当前执行的程序集
-            var types = assembly.GetTypes()
-                .Where(myType => myType.IsClass && !myType.IsAbstract && typeof(IPrismService).IsAssignableFrom(myType)); // 找到所有实现了IPrismComponent的非抽象类
-
-            foreach (var type in types)
+            var assemblies = new[] { "Music.SqlSugar", "Music.System", "MyMusic", };
+            foreach (var assemblyName in assemblies)
             {
-                container.RegisterScoped(typeof(IPrismService), type); // 将找到的类型注册为IPrismComponent的实现
+                //1、先是加载程序集
+                var assembly = Assembly.Load(assemblyName);
+                //2、找到类中标注了特性AutoRegisterAttribute的所有类
+                var typesToRegister = assembly
+                    .GetTypes()
+                    .Where(type => Attribute.IsDefined(type, typeof(AutoRegisterAttribute)));
 
-            }
-            return this;
-        }
-*/
-        /// <summary>
-        /// 注册仓储
-        /// </summary>
-        /// <param name="containerRegistry"></param>
-        /// <returns></returns>
-      /*  public RegisterExtension RegisterRepository()
-        {
-            var assembly = Assembly.GetExecutingAssembly(); // 获取当前执行的程序集
-            var types = assembly.GetTypes()
-                .Where(myType => myType.IsClass && !myType.IsAbstract && typeof(IPrismRepository).IsAssignableFrom(myType)); // 找到所有实现了IPrismComponent的非抽象类
+                // 3、创建一个字典，键是接口类型，值是实现类的类型 因为标注了特性AutoRegisterAttribute的类只有一个接口
+                var typeInterfaceDicts = typesToRegister.ToDictionary(
+                    type => type.GetInterfaces()[0],
+                    type => type);
 
-            foreach (var type in types)
-            {
-                container.RegisterScoped(typeof(IPrismRepository), type); // 将找到的类型注册为IPrismComponent的实现
-
-            }
-            return this;
-        }*/
-
-        /// <summary>
-        /// 注册视图
-        /// </summary>
-        /// <param name="containerRegistry"></param>
-        /// <returns></returns>
-        public RegisterExtension RegisterForNavigation()
-        {
-            var assembly = Assembly.GetExecutingAssembly();
-            var viewModelsNamespace = "ViewModels";
-            var viewsNamespace = "Views";
-
-            var viewModelTypes = assembly.GetTypes()
-                .Where(t => t.Namespace != null && t.Namespace.Contains(viewModelsNamespace) && t.Name.EndsWith("ViewModel"))
-                .ToList();
-
-            var viewTypes = assembly.GetTypes()
-                .Where(t => t.Namespace != null && t.Namespace.Contains(viewsNamespace) && t.Name.EndsWith("View"))
-                .ToList();
-
-            foreach (var viewModelType in viewModelTypes)
-            {
-                var viewType = viewTypes.FirstOrDefault(v => v.Name == viewModelType.Name.Replace("ViewModel", "View"));
-                if (viewType != null)
+                foreach (var typeInterDict in typeInterfaceDicts)
                 {
-                    container.RegisterForNavigation(viewType, viewModelType.ToString());
+                    //4、找到关于类中特性的RegisterType
+                    var attribute = typeInterDict.Value.GetCustomAttribute<AutoRegisterAttribute>(false);
+                    if (attribute != null)
+                    {
+                        switch (attribute.Mode)
+                        {
+                            case RegisterMode.Transient:
+                                Register(containerRegistry, typeInterDict.Key, typeInterDict.Value);
+                                break;
+
+                            case RegisterMode.Scoped:
+                                RegisterScoped(containerRegistry, typeInterDict.Key, typeInterDict.Value);
+                                break;
+
+                            case RegisterMode.Singleton:
+                                RegisterSingleton(containerRegistry, typeInterDict.Key, typeInterDict.Value);
+                                break;
+
+                            default:
+                                break;
+                        }
+                    }
                 }
             }
-            return this;
         }
 
         /// <summary>
-        /// 注册弹窗
+        /// 特性注册标注Register
         /// </summary>
-        /// <param name="containerRegistry"></param>
-        /// <returns></returns>
-        public RegisterExtension RegisterDialog()
+        private static void Register(IContainerRegistry containerRegistry, Type interfaceType, Type implementationType)
         {
-            var assembly = Assembly.GetExecutingAssembly(); // 获取当前执行的程序集
+            containerRegistry.Register(interfaceType, implementationType);
+        }
 
-            var dialogVMTypes = assembly.GetTypes()
-                .Where(myType => myType.IsClass && !myType.IsAbstract && typeof(IDialogAware).IsAssignableFrom(myType));
+        /// <summary>
+        /// 特性注册标注RegisterScoped
+        /// </summary>
+        private static void RegisterScoped(IContainerRegistry containerRegistry, Type interfaceType, Type implementationType)
+        {
+            containerRegistry.RegisterScoped(interfaceType, implementationType);
+        }
 
-            var doalogTypes = assembly.GetTypes()
-               .Where(t => t.Namespace != null && t.Name.EndsWith("Dialog"))
-               .ToList();
-            foreach (var type in dialogVMTypes)
-            {
-                var viewType = doalogTypes.FirstOrDefault(v => v.Name == type.Name.Replace("ViewModel", "View"));
-                if (viewType != null)
-                {
-                    container.RegisterForNavigation(viewType, type.ToString());
-                }
-
-            }
-            return this;
+        private static void RegisterSingleton(IContainerRegistry containerRegistry, Type interfaceType, Type implementationType)
+        {
+            containerRegistry.RegisterSingleton(interfaceType, implementationType);
         }
     }
 }

@@ -9,15 +9,15 @@ namespace MyMusic.ViewModels.Asides
 {
     public class AsideViewModel : BaseViewModel
     {
-
         #region 字段
+
         public DispatcherTimer _timer;
         public IMapper _mapper;
-        // private Timer _timer;
         private readonly IPlayListService _playListService;
         private readonly IAsideMenuService _asideMenuService;
         private readonly IAsideCreateControlService _asideCreateControlService;
-        #endregion
+
+        #endregion 字段
 
         #region 属性
 
@@ -36,6 +36,7 @@ namespace MyMusic.ViewModels.Asides
         /// 左侧新建的歌单列表控制器
         /// </summary>
         public ObservableCollection<AsideCreateControllerDto> _asedeCreateplayListDtos;
+
         public ObservableCollection<AsideCreateControllerDto> AsedeCreateplayListDtos
         {
             get => _asedeCreateplayListDtos ?? (_asedeCreateplayListDtos = new ObservableCollection<AsideCreateControllerDto>());
@@ -45,14 +46,15 @@ namespace MyMusic.ViewModels.Asides
         /// <summary>
         /// 左侧的菜单栏列表
         /// </summary>
-        public ThreadSafeObservableCollection<AsideMenuDto> _asideMenus;
-        public ThreadSafeObservableCollection<AsideMenuDto> AsideMenus
+        public ObservableCollection<AsideMenuDto> _asideMenus;
+
+        public ObservableCollection<AsideMenuDto> AsideMenus
         {
-            get => _asideMenus ?? (_asideMenus = new ThreadSafeObservableCollection<AsideMenuDto>());
+            get => _asideMenus ?? (_asideMenus = new ObservableCollection<AsideMenuDto>());
             set => SetProperty(ref value, _asideMenus);
         }
 
-        #endregion
+        #endregion 属性
 
         public AsideViewModel(IMapper mapper, IContainerProvider provider) : base(provider)
         {
@@ -60,12 +62,6 @@ namespace MyMusic.ViewModels.Asides
             _playListService = provider.Resolve<IPlayListService>();
             _asideMenuService = provider.Resolve<IAsideMenuService>();
             _asideCreateControlService = provider.Resolve<IAsideCreateControlService>();
-            //  RegionManager.RegisterViewWithRegion(RegionNames.ContentRegion, typeof(EmptyPlayListView));
-         /*   RegionManager.RegisterViewWithRegion(RegionNames.AsideRegion, typeof(AsideView));
-            RegionManager.RegisterViewWithRegion(RegionNames.ContentRegion, typeof(HomeView));
-            RegionManager.RegisterViewWithRegion(RegionNames.HeaderRegion, typeof(HeaderView));
-            RegionManager.RegisterViewWithRegion(RegionNames.FooterRegion, typeof(FooterView));*/
-            //   SplashScreenManager.CloseSplashScreen();
 
             NavigateCommand = new DelegateCommand<AsideMenuDto>(ExecuteOpenView);
             LoadedCommand = new DelegateCommand(async () => await ExecuteLoaded());
@@ -73,18 +69,16 @@ namespace MyMusic.ViewModels.Asides
             OpenPlayListCommand = new DelegateCommand<bool?>(ExecuteOpenPlayList);
 
             OpenLyricsCommand = new DelegateCommand(ExecuteOpenLyrics);
-            _timer = new DispatcherTimer();
-            _timer.Interval = TimeSpan.FromSeconds(1);
+            //_timer = new DispatcherTimer();
+            // _timer.Interval = TimeSpan.FromSeconds(1);
             //  _timer.Tick += _timer_Tick;
-            _timer.Start();
+            //_timer.Start();
 
             EventAggregator.GetEvent<RefreshEvent>().Subscribe(async () => await RefreshAsync());
 
             PlayListSignValue playListSignValue = new PlayListSignValue();
             playListSignValue.CalculationCompleted += PlayListSignValue_CalculationCompleted;
             playListSignValue.CalculateData(null, () => new PlayListInputDto());
-
-
         }
 
         private void PlayListSignValue_CalculationCompleted(object sender, PlayListArgs e)
@@ -109,9 +103,7 @@ namespace MyMusic.ViewModels.Asides
               {
                   PlayListInputDtos.Add(item);
               }
-
           }*/
-
 
         #region 命令
 
@@ -120,9 +112,10 @@ namespace MyMusic.ViewModels.Asides
         public ICommand CreatePlayListCommand { get; set; }
         public ICommand OpenPlayListCommand { get; set; }
         public ICommand OpenLyricsCommand { get; set; }
-        #endregion
 
-        #region  方法
+        #endregion 命令
+
+        #region 方法
 
         /// <summary>
         /// 初始化加载界面
@@ -141,7 +134,6 @@ namespace MyMusic.ViewModels.Asides
             //加载左侧新建歌单列表控制器选项
             await RefreshAsync();
         }
-
 
         /// <summary>
         /// 打开新的空白歌单界面
@@ -175,7 +167,6 @@ namespace MyMusic.ViewModels.Asides
             /*  bool isExist = isExistContext ?? false;
               string viewName = isExist ? "EditPlayListView" : "EmptyPlayListView";
               RegionManager.RequestNavigate(RegionNames.ContentRegion, new Uri(viewName, UriKind.Relative));*/
-
         }
 
         /// <summary>
@@ -186,7 +177,6 @@ namespace MyMusic.ViewModels.Asides
         {
             NavigationToView(paramters.NameSpace);
         }
-
 
         /// <summary>
         /// 新增歌单
@@ -220,7 +210,6 @@ namespace MyMusic.ViewModels.Asides
             });
         }
 
-
         /// <summary>
         /// 打开歌词通知
         /// </summary>
@@ -246,7 +235,7 @@ namespace MyMusic.ViewModels.Asides
                 Dispatcher.CurrentDispatcher.Invoke(() => AsedeCreateplayListDtos.Add(menu));
             }
         }
-        #endregion
 
+        #endregion 方法
     }
 }

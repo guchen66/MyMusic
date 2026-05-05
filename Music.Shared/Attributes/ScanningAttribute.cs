@@ -9,7 +9,6 @@ namespace Music.Shared.Attributes
     [AttributeUsage(AttributeTargets.Class, Inherited = false)]
     public class ScanningAttribute : Attribute
     {
-        public string RegisterType { get; set; }
-       
+        //public string RegisterType { get; set; }
     }
 }

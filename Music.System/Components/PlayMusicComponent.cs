@@ -9,7 +9,7 @@ namespace Music.System.Components
 {
     public class PlayMusicComponent : IContainerComponent
     {
-        public void Load(IContainerRegistry registry, ComponentContext context)
+        public void Load(IContainerRegistry registry)
         {
             registry.RegisterScoped<IPlayMusicService, PlayMusicService>();
             /* registry.RegisterScoped(typeof(IBaseService<>), typeof(BaseService<>));

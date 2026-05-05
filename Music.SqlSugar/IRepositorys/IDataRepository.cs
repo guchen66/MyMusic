@@ -14,14 +14,59 @@ namespace Music.SqlSugar.IRepositorys
     /// <typeparam name="TEntity"></typeparam>
     public interface IDataRepository<TEntity> where TEntity : class, new()
     {
-        #region 增删改查
+        #region 同步增删改查
+
+        bool Add(TEntity entity);
+
+        bool Update(TEntity entity);
+
+        bool DeleteById(int id);
+
+        TEntity QueryById(int id);
+
+        TEntity Query(Expression<Func<TEntity, bool>> func);
+
+        /// <summary>
+        /// 查询全部数据
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        List<TEntity> QueryList();
+
+        /// <summary>
+        /// 自定义条件查询
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        List<TEntity> QueryList(Expression<Func<TEntity, bool>> func);
+
+        /// <summary>
+        /// 分页查询
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        List<TEntity> QueryList(int page, int size, ref int total);
+
+        /// <summary>
+        /// 自定义条件分页查询
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        List<TEntity> QueryList(Expression<Func<TEntity, bool>> func, int page, int size, ref int total);
+
+        #endregion 同步增删改查
+
+        #region 异步增删改查
 
         Task<bool> AddAsync(TEntity entity);
+
         Task<bool> UpdateAsync(TEntity entity);
-        Task<bool> DeleteAsync(int id);
-        Task<TEntity> QueryAsync(int id);
+
+        Task<bool> DeleteByIdAsync(int id);
+
+        Task<TEntity> QueryByIdAsync(int id);
+
         Task<TEntity> QueryAsync(Expression<Func<TEntity, bool>> func);
-        #endregion
 
         /// <summary>
         /// 查询全部数据
@@ -50,5 +95,7 @@ namespace Music.SqlSugar.IRepositorys
         /// <param name="name"></param>
         /// <returns></returns>
         Task<List<TEntity>> QueryListAsync(Expression<Func<TEntity, bool>> func, int page, int size, RefAsync<int> total);
+
+        #endregion 异步增删改查
     }
 }

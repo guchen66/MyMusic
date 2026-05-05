@@ -2,6 +2,7 @@
 using Music.System.Services.CustomPlaySign.Netease;
 using Music.System.Services.CustomPlaySign.QQ;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,22 +12,21 @@ namespace Music.System.Services.CustomPlaySign
 {
     public class MusicSourceFactory
     {
+        private static readonly ConcurrentDictionary<string, Lazy<IBasePlayService>> _instances = new();
+
         public static IBasePlayService CreatePlayProvider(string sourceName)
         {
             if (string.IsNullOrEmpty(sourceName)) return null;
-            if (sourceName.Equals("酷狗"))
+
+            var lazy = _instances.GetOrAdd(sourceName, key => new Lazy<IBasePlayService>(() => key switch
             {
-                return new KugouPlayService();
-            }
-            else if (sourceName.Equals("QQ"))
-            {
-                return new QQPlayService();
-            }
-            else if(sourceName.Equals("网易云"))
-            {
-                return new NeteasePlayService();
-            }
-            return null;
+                "酷狗" => new KugouPlayService(),
+                "QQ" => new QQPlayService(),
+                "网易云" => new NeteasePlayService(),
+                _ => null
+            }));
+
+            return lazy.Value;
         }
     }
 }

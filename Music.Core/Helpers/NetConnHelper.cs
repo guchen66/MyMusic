@@ -9,17 +9,18 @@ namespace Music.Core.Helpers
 {
     public class NetConnHelper
     {
-        public static bool CheckPing()
+        public static bool CheckPing(string host = "baidu.com", int timeout = 3000)
         {
-            bool onLine = false;
-            Ping ping=new Ping();
-            PingReply pingReply = ping.Send("baidu.com");
-            if (pingReply.Status==IPStatus.Success)
+            using var ping = new Ping();
+            try
             {
-                onLine = true;
-                return onLine;
+                var reply = ping.Send(host, timeout);
+                return reply?.Status == IPStatus.Success;
             }
-            return onLine;
-        }   
+            catch (PingException)
+            {
+                return false;
+            }
+        }
     }
 }

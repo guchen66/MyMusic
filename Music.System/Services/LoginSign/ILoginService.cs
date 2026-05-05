@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace Music.System.Services.LoginSign
 {
+    /// <summary>
+    /// 登录服务
+    /// </summary>
     public interface ILoginService
     {
         /// <summary>
@@ -26,11 +29,5 @@ namespace Music.System.Services.LoginSign
         /// </summary>
         /// <returns></returns>
         Task LogoutAsync();
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        Task<bool> SavePasswordAsync();
     }
 }
