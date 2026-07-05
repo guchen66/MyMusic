@@ -1,4 +1,5 @@
-﻿using System;
+﻿using IT.Tangdao.Core.Abstractions.Loggers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,11 +16,11 @@ using System.Windows.Shapes;
 namespace MyMusic.Views
 {
     /// <summary>
-    /// SplashWindow.xaml 的交互逻辑
+    /// RootView.xaml 的交互逻辑
     /// </summary>
-    public partial class SplashWindow : Window
+    public partial class RootView : Window
     {
-        public SplashWindow()
+        public RootView()
         {
             InitializeComponent();
         }

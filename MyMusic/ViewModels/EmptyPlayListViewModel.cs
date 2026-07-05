@@ -268,7 +268,7 @@ namespace MyMusic.ViewModels
                     string url = "https://music.163.com/";
                     byte[] commit = Encoding.UTF8.GetBytes($"types=search&count=10&source=netease&pages=1&name={content}");
                     HttpClientDto clientDto = new HttpClientDto();
-                    byte[] data = await _httpClientService.PostAsync(url, commit, clientDto);
+                    byte[] data = await _httpClientService.PostAsync(url, commit);
                     string s = Encoding.UTF8.GetString(data);
                     var infos = JsonConvert.DeserializeObject<NeteaseMusic[]>(Encoding.UTF8.GetString(data));
                     // 根据歌单名称加载对应的歌曲列表数据
@@ -279,7 +279,7 @@ namespace MyMusic.ViewModels
                     string url = "https://tqlcode.com/page/music/api.php";
                     byte[] commit = Encoding.UTF8.GetBytes($"types=search&count=20&source=kugou&pages=1&name={content}");
                     HttpClientDto clientDto = new HttpClientDto();
-                    byte[] data = await _httpClientService.PostAsync(url, commit, clientDto);
+                    byte[] data = await _httpClientService.PostAsync(url, commit);
                     KugouMusic[] infos = JsonConvert.DeserializeObject<KugouMusic[]>(Encoding.UTF8.GetString(data));
                     musicInfos.AddRange(infos);
                 }
@@ -289,7 +289,7 @@ namespace MyMusic.ViewModels
                     {
                         string url = $"https://api.qq.jsososo.com/search?key={content}&pageNo=1&pageSize=10";
                         HttpClientDto clientDto = new HttpClientDto();
-                        byte[] data = await _httpClientService.GetAsync(url, clientDto);
+                        byte[] data = await _httpClientService.GetAsync(url);
                         TencentMusic[] infos = JsonConvert.DeserializeObject<TencentMusic[]>(JObject.Parse(Encoding.UTF8.GetString(data))?["data"]?["list"].ToString());
                         musicInfos.AddRange(infos);
                     }

@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="IT.Tangdao.Core" />
     <PackageReference Include="NewLife.Core" />
     <PackageReference Include="Prism.Core" />
     <PackageReference Include="Prism.Wpf" />

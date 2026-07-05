@@ -55,5 +55,60 @@ namespace Music.SqlSugar.Services
         {
             return await db.QueryAsync(func);
         }
+
+        public bool Add(TEntity entity)
+        {
+            return db.Add(entity);
+        }
+
+        public bool DeleteById(int id)
+        {
+            return db.DeleteById(id);
+        }
+
+        public TEntity QueryById(int id)
+        {
+            return db.QueryById(id);
+        }
+
+        public TEntity Query(Expression<Func<TEntity, bool>> func)
+        {
+            return db.Query(func);
+        }
+
+        public List<TEntity> QueryList()
+        {
+            return db.QueryList();
+        }
+
+        public List<TEntity> QueryList(Expression<Func<TEntity, bool>> func)
+        {
+            return db.QueryList(func);
+        }
+
+        public List<TEntity> QueryList(int page, int size, ref int total)
+        {
+            return db.QueryList(page, size, ref total);
+        }
+
+        public List<TEntity> QueryList(Expression<Func<TEntity, bool>> func, int page, int size, ref int total)
+        {
+            return db.QueryList(func, page, size, ref total);
+        }
+
+        public bool Update(TEntity entity)
+        {
+            return db.Update(entity);
+        }
+
+        public Task<bool> DeleteByIdAsync(int id)
+        {
+            return db.DeleteByIdAsync(id);
+        }
+
+        public Task<TEntity> QueryByIdAsync(int id)
+        {
+            return db.QueryByIdAsync(id);
+        }
     }
 }

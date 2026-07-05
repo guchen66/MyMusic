@@ -27,20 +27,19 @@
             materialDesign:ColorZoneAssist.Foreground="DeepSkyBlue"
             materialDesign:ColorZoneAssist.Mode="Custom">
 
-            <TabItem Header="常规设置">
+            <TabItem Header="{StaticResource CommonSet}">
                 <local:CommonSet />
-                
             </TabItem>
-            <TabItem Header="下载设置">
+            <TabItem Header="{StaticResource DownLoadSet}">
                 <local:DownLoadSet />
             </TabItem>
-            <TabItem Header="桌面歌词">
+            <TabItem Header="{StaticResource LyricsSet}">
                 <local:LyricsSet />
             </TabItem>
-            <TabItem Header="快捷键">
+            <TabItem Header="{StaticResource ShortcutkeySet}">
                 <local:ShortcutkeySet />
             </TabItem>
-            <TabItem Header="网络设置">
+            <TabItem Header="{StaticResource NetSet}">
                 <local:NetSet />
             </TabItem>
         </TabControl>

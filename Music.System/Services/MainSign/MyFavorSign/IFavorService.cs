@@ -1,5 +1,4 @@
-﻿
-using Music.SqlSugar.Db;
+﻿using Music.SqlSugar.Db;
 
 namespace Music.System.Services.MainSign.MyFavorSign
 {
@@ -9,11 +8,14 @@ namespace Music.System.Services.MainSign.MyFavorSign
         /// 获取港台歌曲
         /// </summary>
         /// <returns></returns>
-        Task<List<HongKongMusicDto>> GetHongKongListAsync();
+        Task<List<MusicInfoDto>> GetHongKongListAsync();
 
         void AddPlayListToFavor(string musicName);
+
+        Task<bool> FlushAsync();
+
         Task GetSongList();
 
-        DbContext<FavorPlayListInfo> GetFavorDbContext { get;  }
+        DbContext<FavorPlayListInfo> GetFavorDbContext { get; }
     }
 }

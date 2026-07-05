@@ -1,4 +1,5 @@
-﻿using Music.System.Components;
+﻿using IT.Tangdao.Core.Abstractions.Loggers;
+using Music.System.Components;
 using Prism.Ioc;
 
 using StartupEventArgs = System.Windows.StartupEventArgs;
@@ -20,8 +21,7 @@ public partial class App
             MessageBox.Show("警告，已重复打开软件！", "MyMusic", MessageBoxButton.OK, MessageBoxImage.Error);
             Environment.Exit(0);
         }
-        //注册SqlSugar服务
-        MyStartup.AddSqlSugar();
+
         //程序启动加载上一次关闭时保存的数据状态
         //StateManager.LastBehavor();
         // LocalDataManager.LoadForm("login.json");
@@ -43,7 +43,7 @@ public partial class App
 
     protected override Window CreateShell()
     {
-        return Container.Resolve<MainWindow>();
+        return Container.Resolve<RootView>();
     }
 
     protected override void InitializeShell(System.Windows.Window shell)
@@ -54,6 +54,7 @@ public partial class App
         loginView.Topmost = true;
         loginView.Activate();
         var result = loginView.ShowDialog();
+
         if (result == false)
         {
             Application.Current?.Shutdown();
@@ -64,19 +65,14 @@ public partial class App
         }
     }
 
-    protected override void OnInitialized()
+    protected override void Initialize()
     {
-        base.OnInitialized();
-        // 配置雪花Id算法机器码
-        YitIdHelper.SetIdGenerator(new IdGeneratorOptions
-        {
-            WorkerId = 1,// 取值范围0~63,默认1
-                         // DataCenterId=1,//数据中心Id
-        });
-
-        //注册首页为默认视图
-        var regionManager = Container.Resolve<IRegionManager>();
-        regionManager.RequestNavigate(RegionNames.ContentRegion, nameof(HomeView));
+        //YitIdHelper.SetIdGenerator(new IdGeneratorOptions
+        //{
+        //    WorkerId = 1,// 取值范围0~63,默认1
+        //                 // DataCenterId=1,//数据中心Id
+        //});
+        base.Initialize();
     }
 
     protected override void RegisterTypes(IContainerRegistry containerRegistry)
@@ -87,6 +83,10 @@ public partial class App
         containerRegistry.RegisterComponent<MapsterComponent>();          //注册Mapster映射
         MyStartup.Register(containerRegistry);
         containerRegistry.RegisterScannedTypes();
+        //注册SqlSugar服务
+        MyStartup.AddSqlSugar();
+        var regionManager = Container.Resolve<IRegionManager>();
+        regionManager.RequestNavigate(RegionNames.ContentRegion, nameof(HomeView));
     }
 
     /// <summary>

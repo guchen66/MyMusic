@@ -38,11 +38,11 @@ namespace MyMusic.ViewModels
             set { SetProperty<string>(ref _transferName, value); }
         }
 
-        public List<HongKongMusicDto> _musicInfos;
+        public List<MusicInfoDto> _musicInfos;
 
-        public List<HongKongMusicDto> MusicInfos
+        public List<MusicInfoDto> MusicInfos
         {
-            get { return _musicInfos; }
+            get { return _musicInfos ?? (_musicInfos = new List<MusicInfoDto>()); }
             set { SetProperty(ref _musicInfos, value); }
         }
 
@@ -77,48 +77,53 @@ namespace MyMusic.ViewModels
 
         public HomeViewModel(IContainerProvider provider) : base(provider)
         {
-            // SearchProgressVisibility = Visibility.Visible;
-            // DataVisibility = Visibility.Hidden;
             _playMusicService = provider.Resolve<IPlayMusicService>();
             _favorService = provider.Resolve<IFavorService>();
             _playListService = provider.Resolve<IPlayListService>();
             _httpClientService = provider.Resolve<IHttpClientService>();
-            InitingCommand = new DelegateCommand(ExecuteIniting);
+            LoadedCommand = new DelegateCommand<RoutedEventArgs>(async (x) => await ExecuteLoaded(x));
+            LoadedCommand2 = new DelegateCommand(ExecuteLoaded2);
             PrePlayCommand = new DelegateCommand<string>(PrePlayExecute);
-            PlayCommand = new DelegateCommand<string>(ExecutePlay);
+            PlayCommand = new DelegateCommand<string>(async (musicName) => await ExecutePlay(musicName));
             FavorCommand = new DelegateCommand<string>(ExecuteFavor);
-            BackgroundCodeInit();
+            FlushCommand = new DelegateCommand(async () => await ExecuteFlush());
         }
 
         #region 命令
 
-        public ICommand InitingCommand { get; set; }
+        public ICommand LoadedCommand { get; set; }
+        public ICommand LoadedCommand2 { get; set; }
         public ICommand ClickPlayAllCommand { get; set; }
         public ICommand OpenPopupCommand { get; set; }
         public ICommand PrePlayCommand { get; set; }
         public ICommand PlayCommand { get; set; }
         public ICommand FavorCommand { get; set; }
+        public ICommand FlushCommand { get; set; }
 
         #endregion 命令
 
         #region 方法
 
-        public void BackgroundCodeInit()
-        {
-            //  MessageBox.Show("初始化");
-
-            Task task = new Task(ExecuteIniting);
-            task.Start();
-        }
-
         /// <summary>
         /// 界面初始化
         /// 默认首页界面是QQ音乐的每日粤语推荐
         /// </summary>
-        private async void ExecuteIniting()
+        private async Task ExecuteLoaded(RoutedEventArgs e)
         {
             MusicInfos = await _favorService.GetHongKongListAsync();
+            if (MusicInfos.Count == 0)
+            {
+                RegionManager.RequestNavigate(RegionNames.ContentRegion, new Uri("_404View", UriKind.Relative));
+            }
 
+            e.Handled = true;
+        }
+
+        private void ExecuteLoaded2()
+        {
+            //  Logger.Info($"HomeViewModel的Loaded开始执行：{stopwatch.ElapsedMilliseconds}");
+            // MusicInfos = await _favorService.GetHongKongListAsync();
+            //  Logger.Info($"HomeViewModel的Loaded执行结束：{stopwatch.ElapsedMilliseconds}");
             /* if (MusicInfos.Count==0)
              {
                  RegionManager.RequestNavigate(RegionNames.ContentRegion, new Uri("_404View", UriKind.Relative));
@@ -133,6 +138,14 @@ namespace MyMusic.ViewModels
         private void ExecuteFavor(string obj)
         {
             _favorService.AddPlayListToFavor(obj);
+        }
+
+        /// <summary>
+        /// 刷新当前歌单
+        /// </summary>
+        private async Task ExecuteFlush()
+        {
+            await _favorService.FlushAsync();
         }
 
         private async void Timer_Tick(object sender, EventArgs e)
@@ -171,9 +184,9 @@ namespace MyMusic.ViewModels
             _timer = new Timer(CloseSplash, null, TimeSpan.FromSeconds(3), Timeout.InfiniteTimeSpan);
         }
 
-        public void ExecutePlay(string name)
+        public async Task ExecutePlay(string name)
         {
-            _playMusicService.SingleMusicPlay(name);
+            await _playMusicService.SingleMusicPlay(name);
         }
 
         #endregion 方法

@@ -1,4 +1,5 @@
-﻿using MyMusic.Providers;
+﻿using IT.Tangdao.Core.Abstractions.Loggers;
+using MyMusic.Providers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,13 +24,11 @@ namespace MyMusic.Views
         public LoginView()
         {
             InitializeComponent();
-           
         }
-        private void Border_MouseDown(object sender, MouseButtonEventArgs e) 
+
+        private void Border_MouseDown(object sender, MouseButtonEventArgs e)
         {
             this.DragMove();
         }
-    
-       
     }
 }

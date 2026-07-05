@@ -1,9 +1,11 @@
-﻿
+﻿using System.Windows.Forms;
+
 namespace MyMusic.ViewModels.Errors
 {
     public class _404ViewModel : BindableBase
     {
-        private bool _isRequestFailed=true;
+        private bool _isRequestFailed = true;
+
         public bool IsRequestFailed
         {
             get { return _isRequestFailed; }

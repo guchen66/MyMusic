@@ -17,4 +17,7 @@
     <ProjectReference Include="..\Music.SqlSugar\Music.SqlSugar.csproj" />
     <ProjectReference Include="..\Music.ToolKit\Music.ToolKit.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Services\MainSign\DownLoads\" />
+  </ItemGroup>
 </Project>

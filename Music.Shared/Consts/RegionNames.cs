@@ -1,5 +1,4 @@
-﻿
-namespace Music.Shared.Consts
+﻿namespace Music.Shared.Consts
 {
     public class RegionNames
     {
@@ -10,5 +9,8 @@ namespace Music.Shared.Consts
         public static readonly string SettingsRegion = nameof(SettingsRegion);
         public static readonly string SettingsTabRegion = nameof(SettingsTabRegion);
 
+        public static readonly string SplashRegion = nameof(SplashRegion);
+        public static readonly string MainPageRegion = nameof(MainPageRegion);
+        public static readonly string RootRegion = nameof(RootRegion);
     }
 }

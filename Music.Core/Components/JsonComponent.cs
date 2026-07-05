@@ -1,4 +1,6 @@
-﻿using NewLife.Configuration;
+﻿using Music.Shared.Dtos;
+using NewLife.Configuration;
+using NewLife.Serialization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -21,6 +23,20 @@ namespace Music.Core.Components
             var provider = new JsonConfigProvider() { FileName = fileName };
             result = provider.GetSection(keyValue).Value;
             return result;
+        }
+
+        public static T GetJsonObject<T>(string fileName) where T : class, new()
+        {
+            var provider = new JsonConfigProvider() { FileName = fileName };
+            T input = provider.Load<T>("Account");
+            return input;
+        }
+
+        public static LoginInputDto GetJsonObject(string fileName)
+        {
+            var json = File.ReadAllText(fileName);
+            var input = json.ToJsonEntity<LoginInputDto>();
+            return input;
         }
     }
 }

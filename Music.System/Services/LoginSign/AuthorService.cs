@@ -1,7 +1,4 @@
-﻿using IT.Tangdao.Core.Abstractions.Results;
-using IT.Tangdao.Core.Helpers;
-
-namespace Music.System.Services.LoginSign
+﻿namespace Music.System.Services.LoginSign
 {
     [AutoRegister(Mode = RegisterMode.Singleton)]
     public class AuthorService : IAuthorService

@@ -1,0 +1,10 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:s="clr-namespace:System;assembly=mscorlib">
+    <s:String x:Key="CommonSet">常规设置</s:String>
+    <s:String x:Key="DownLoadSet">下载设置</s:String>
+    <s:String x:Key="LyricsSet">桌面歌词</s:String>
+    <s:String x:Key="ShortcutkeySet">快捷键</s:String>
+    <s:String x:Key="NetSet">网络设置</s:String>
+</ResourceDictionary>

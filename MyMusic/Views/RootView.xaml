@@ -1,0 +1,17 @@
+﻿<Window
+    x:Class="MyMusic.Views.RootView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:MyMusic.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:prism="http://prismlibrary.com/"
+    Title="RootView"
+    Width="1100"
+    Height="700"
+    WindowStartupLocation="CenterScreen"
+     xmlns:region="clr-namespace:Music.Shared.Consts;assembly=Music.Shared"
+    prism:ViewModelLocator.AutoWireViewModel="True"
+    mc:Ignorable="d">
+    <ContentControl  prism:RegionManager.RegionName="{x:Static region:RegionNames.RootRegion}" />
+</Window>

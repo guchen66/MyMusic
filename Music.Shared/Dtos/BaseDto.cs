@@ -1,15 +1,13 @@
-﻿
-namespace Music.Shared.Dtos
+﻿namespace Music.Shared.Dtos
 {
-    public class BaseDto:BindableBase
+    public class BaseDto : BindableBase
     {
-		private long _id;
+        private long _id;
 
-		public long Id
-		{
-			get => _id;
-			set => SetProperty(ref _id, value);
-		}
-
-	}
+        public long Id
+        {
+            get => _id;
+            set => SetProperty(ref _id, value);
+        }
+    }
 }

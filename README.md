@@ -2,7 +2,7 @@
 
 这是我使用WPF写的一个简单的音乐播放器，
 
-主要使用了Prism框架+SqlSugar框架+SqlServer数据库
+主要使用了Prism框架+SqlSugar框架+SqlServer数据库+IT.Tangdao(唐刀，我自研的框架)
 
 播放音乐使用了NAudio框架，
 
@@ -96,6 +96,16 @@ foreach (var assemblyName in assemblies)
 ```
 
 
+
+表单：
+
+1、播放列表
+
+2、删除的列表
+
+3、收藏的列表
+
+4、
 
 #### 2、Mapster的使用
 

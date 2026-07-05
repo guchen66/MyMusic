@@ -21,12 +21,13 @@ namespace MyMusic.Shell.ViewModels.MyFavor
         private DispatcherTimer timer;
         private readonly IFavorService _favorService;
         private Music.System.Services.Loggers.ILogger _logger;
-        IHttpClientService _httpClientService;
-        IButtonPlaySingleService _buttonPlaySingleService;
+        private IHttpClientService _httpClientService;
+        private IButtonPlaySingleService _buttonPlaySingleService;
         private static IWavePlayer player = new WaveOutEvent();
-        #endregion
 
-        #region  属性
+        #endregion 字段
+
+        #region 属性
 
         private string _musicName;
 
@@ -37,6 +38,7 @@ namespace MyMusic.Shell.ViewModels.MyFavor
         }
 
         public IEnumerable<IMusic> _musicInfos;
+
         public IEnumerable<IMusic> MusicInfos
         {
             get { return _musicInfos; }
@@ -44,6 +46,7 @@ namespace MyMusic.Shell.ViewModels.MyFavor
         }
 
         private ObservableCollection<object> _menus;
+
         public ObservableCollection<object> Menus
         {
             get { return _menus; }
@@ -55,13 +58,14 @@ namespace MyMusic.Shell.ViewModels.MyFavor
         }
 
         private bool _isRequestFailed;
+
         public bool IsRequestFailed
         {
             get { return _isRequestFailed; }
             set { SetProperty(ref _isRequestFailed, value); }
         }
 
-        #endregion
+        #endregion 属性
 
         public SongViewModel(IFavorService favorService, IHttpClientService httpClientService, IButtonPlaySingleService buttonPlaySingleService, IContainerProvider provider) : base(provider)
         {
@@ -69,13 +73,13 @@ namespace MyMusic.Shell.ViewModels.MyFavor
             _httpClientService = httpClientService;
             _buttonPlaySingleService = buttonPlaySingleService;
             _logger = ContainerLocator.Container.Resolve<Music.System.Services.Loggers.ILogger>();
-         /*   InitingCommand = new DelegateCommand(ExecuteIniting);
-            PrePlayCommand = new DelegateCommand<object>(PrePlayExecute);
-            PlayCommand = new DelegateCommand<string>(async (id) => await ExecutePlay(id));
-            AddToFavorCommand = new DelegateCommand(ExecuteAddToFavor);
-            DownLoadCommand = new DelegateCommand<object>(async (x) => await ExecuteDownLoad(x));
+            /*   InitingCommand = new DelegateCommand(ExecuteIniting);
+               PrePlayCommand = new DelegateCommand<object>(PrePlayExecute);
+               PlayCommand = new DelegateCommand<string>(async (id) => await ExecutePlay(id));
+               AddToFavorCommand = new DelegateCommand(ExecuteAddToFavor);
+               DownLoadCommand = new DelegateCommand<object>(async (x) => await ExecuteDownLoad(x));
 
-*/
+   */
         }
 
         /// <summary>
@@ -83,7 +87,6 @@ namespace MyMusic.Shell.ViewModels.MyFavor
         /// </summary>
         private void ExecuteAddToFavor()
         {
-
         }
 
         /// <summary>
@@ -106,11 +109,9 @@ namespace MyMusic.Shell.ViewModels.MyFavor
         /// <param name="result"></param>
         private void DialogCompleted(IDialogResult result)
         {
-           
         }
 
-
-        #region  命令
+        #region 命令
 
         public ICommand InitingCommand { get; set; }
         public ICommand ClickPlayAllCommand { get; set; }
@@ -119,29 +120,26 @@ namespace MyMusic.Shell.ViewModels.MyFavor
         public ICommand PlayCommand { get; set; }
         public ICommand AddToFavorCommand { get; set; }
         public ICommand DownLoadCommand { get; set; }
-        #endregion
 
+        #endregion 命令
 
-        #region  方法
+        #region 方法
 
         /// <summary>
         /// 界面初始化
         /// </summary>
         private void ExecuteIniting()
         {
-
             timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromSeconds(1);
             timer.Tick += Timer_Tick;
             timer.Start();
-
         }
 
         private async void Timer_Tick(object sender, EventArgs e)
         {
             await Task.Run(() => { });
             //  MusicInfos = await _favorService.GetHongKongListAsync();
-
         }
 
         /// <summary>
@@ -158,26 +156,28 @@ namespace MyMusic.Shell.ViewModels.MyFavor
             var playService = MusicSourceFactory.CreatePlayProvider(model.SourceName);
             await playService.PlayListAsync(id);
         }
+
         public static PlaybackState State
         {
             get { return player.PlaybackState; }
         }
 
         private static MediaFoundationReader reader = null;
+
         //  private static SampleAggregator aggregator = null;
         private static SampleChannel channel = null;
 
         public static string Source { get; set; }
+
         /// <summary>
         /// 准备播放的歌曲
         /// </summary>
         /// <param name="parameter"></param>
         public void PrePlayExecute(object parameter)
         {
-
         }
 
-        List<int> Count = new List<int>();
+        private List<int> Count = new List<int>();
 
         public async void OnNavigatedTo(NavigationContext navigationContext)
         {
@@ -221,31 +221,29 @@ namespace MyMusic.Shell.ViewModels.MyFavor
                 throw;
             }
         }
+
         private async Task<List<IMusic>> GetMusicDataAsync(string source, string content)
         {
             var musicInfos = new List<IMusic>();
             if (source == "网易云音乐")
             {
-
                 string url = "https://tqlcode.com/page/music/api.php";
                 byte[] commit = Encoding.UTF8.GetBytes($"types=search&count=10&source=netease&pages=1&name={content}");
                 HttpClientDto clientDto = new HttpClientDto();
-                byte[] data = await _httpClientService.PostAsync(url, commit, clientDto);
+                byte[] data = await _httpClientService.PostAsync(url, commit);
                 string s = Encoding.UTF8.GetString(data);
                 var infos = JsonConvert.DeserializeObject<NeteaseMusic[]>(Encoding.UTF8.GetString(data));
                 // 根据歌单名称加载对应的歌曲列表数据
                 musicInfos.AddRange(infos);
-
             }
             else if (source == "酷狗音乐")
             {
                 string url = "https://tqlcode.com/page/music/api.php";
                 byte[] commit = Encoding.UTF8.GetBytes($"types=search&count=20&source=kugou&pages=1&name={content}");
                 HttpClientDto clientDto = new HttpClientDto();
-                byte[] data = await _httpClientService.PostAsync(url, commit, clientDto);
+                byte[] data = await _httpClientService.PostAsync(url, commit);
                 KugouMusic[] infos = JsonConvert.DeserializeObject<KugouMusic[]>(Encoding.UTF8.GetString(data));
                 musicInfos.AddRange(infos);
-
             }
             else if (source == "QQ音乐")
             {
@@ -253,16 +251,13 @@ namespace MyMusic.Shell.ViewModels.MyFavor
                 {
                     string url = $"https://api.qq.jsososo.com/search?key={content}&pageNo=1&pageSize=10";
                     HttpClientDto clientDto = new HttpClientDto();
-                    byte[] data = await _httpClientService.GetAsync(url, clientDto);
+                    byte[] data = await _httpClientService.GetAsync(url);
                     TencentMusic[] infos = JsonConvert.DeserializeObject<TencentMusic[]>(JObject.Parse(Encoding.UTF8.GetString(data))?["data"]?["list"].ToString());
                     musicInfos.AddRange(infos);
-
                 }
                 catch (Exception)
                 {
-
                 }
-
             }
 
             return musicInfos;
@@ -275,7 +270,6 @@ namespace MyMusic.Shell.ViewModels.MyFavor
             // 如果不是同一个歌单名称，则返回false，表示需要重新创建新的页面
             var TransferName = navigationContext.Parameters["PlaylistName"] as string;
             return true; // 假设当前页面只能处理名称为"001"的歌单
-
         }
 
         public void OnNavigatedFrom(NavigationContext navigationContext)
@@ -290,6 +284,7 @@ namespace MyMusic.Shell.ViewModels.MyFavor
             // 返回一个包含歌曲的ObservableCollection<Song>对象
             return null;
         }
-        #endregion
+
+        #endregion 方法
     }
 }

@@ -1,11 +1,14 @@
-﻿using Music.Shared.Common;
+﻿using IT.Tangdao.Core.Abstractions.Loggers;
+using Music.Shared.Common;
 using Music.Shared.Entitys;
 using Music.SqlSugar.Db;
 using Music.SqlSugar.IRepositorys;
+using NewLife.Log;
 using SqlSugar;
 using SqlSugar.IOC;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -42,7 +45,7 @@ namespace Music.SqlSugar.Repositorys
 
         public virtual async Task<List<TEntity>> QueryListAsync()
         {
-            return await base.GetListAsync();
+            return await base.GetListAsync(); ;
         }
 
         public virtual async Task<List<TEntity>> QueryListAsync(Expression<Func<TEntity, bool>> func)

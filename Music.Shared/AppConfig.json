@@ -2,7 +2,7 @@
   "SqlConnection": {
     "ConnectionMMsql": "server=.;uid=sa;pwd=211314;database=MusicDb;Trusted_Connection=true;MultipleActiveResultSets=True;",
     "ConnectionMysql": "database = datageneratordb; server = localhost; port = 3306; uid = root; pwd = 1314; ",
-    "ConnectionMMsqlExtension": "server=.;uid=sa;pwd=211314;database=MusicDb;Trusted_Connection=true;pooling=True;Max Pool Size=50;Connection Lifetime=120;MultipleActiveResultSets=True;"
+    "ConnectionMMsqlExtension": "server=.;uid=sa;pwd=211314;database=MusicDb;Trusted_Connection=true;pooling=True;Min Pool Size=1;Max Pool Size=50;Connection Lifetime=120;MultipleActiveResultSets=True;"
   },
   // "ConnectionMMsql": "server=.;uid=sa;pwd=211314;database=MusicDb;Trusted_Connection=true;MultipleActiveResultSets=True;",
   "HeaderConfig": {

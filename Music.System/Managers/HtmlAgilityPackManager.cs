@@ -1,9 +1,7 @@
-﻿
-namespace Music.System.Managers
+﻿namespace Music.System.Managers
 {
     public class HtmlAgilityPackManager
     {
-
         public static void GetNetData()
         {
             // 获取网页的Html
@@ -36,16 +34,14 @@ namespace Music.System.Managers
                 Console.WriteLine("时长： " + time);
                 Console.WriteLine();
             }
-
         }
-
 
         /// <summary>
         /// 获取香港地区榜单
         /// </summary>
-        public static List<HongKongMusicDto> GetHonKongData()
+        public static List<MusicInfoDto> GetHonKongData()
         {
-            List<HongKongMusicDto> HonKongDataList = new List<HongKongMusicDto>();
+            List<MusicInfoDto> HonKongDataList = new List<MusicInfoDto>();
             // 获取网页的Html
             var html = @"https://y.qq.com/n/ryqq/toplist/59/";
             var web = new HtmlWeb();
@@ -85,19 +81,17 @@ namespace Music.System.Managers
                             Console.WriteLine("时长： " + time);
                             Console.WriteLine();*/
 
-                        HongKongMusicDto honKongData = new HongKongMusicDto();
+                        MusicInfoDto honKongData = new MusicInfoDto();
                         honKongData.MusicAlbum = musicAlbum;
                         honKongData.MusicName = musicName;
                         honKongData.Singer = singer;
                         honKongData.MusicTime = time;
                         HonKongDataList.Add(honKongData);
-
                     }
                 }
             }
 
             return HonKongDataList;
         }
-
     }
 }

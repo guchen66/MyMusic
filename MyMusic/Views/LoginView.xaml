@@ -19,13 +19,13 @@
     ResizeMode="NoResize"
     WindowStartupLocation="CenterScreen"
     WindowStyle="None">
+
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding LoadedCommand}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
     <Grid MouseDown="Border_MouseDown">
-        <!--<Grid.Background>
-            <LinearGradientBrush StartPoint="0.1,0" EndPoint="0.9,1">
-                <GradientStop Offset="1" Color="#FFE63070" />
-                <GradientStop Offset="0" Color="#FFFE8704" />
-            </LinearGradientBrush>
-        </Grid.Background>-->
         <Border
             Height="390"
             VerticalAlignment="Top"
@@ -57,7 +57,7 @@
                             FontSize="16"
                             Foreground="White"
                             SelectionBrush="#FFD94448"
-                            Text="{Binding UserName}" />
+                            Text="{Binding LoginInputDto.UserName}" />
                     </StackPanel>
                     <StackPanel Margin="10" Orientation="Horizontal">
                         <md:PackIcon
@@ -71,7 +71,7 @@
                             Margin="10,0"
                             md:HintAssist.Hint="请输入密码"
                             provider:PasswordBoxProvider.Attach="True"
-                            provider:PasswordBoxProvider.Password="{Binding Password, Mode=TwoWay}"
+                            provider:PasswordBoxProvider.Password="{Binding LoginInputDto.Password, Mode=TwoWay}"
                             BorderBrush="White"
                             CaretBrush="#FFD94448"
                             FontSize="16"
@@ -108,7 +108,10 @@
                     Height="auto"
                     Background="#000000"
                     BorderBrush="#000000"
-                    Command="{Binding CancelCommand}" CommandParameter="{Binding ElementName=login}" ToolTip="关闭"  IsCancel="True">
+                    Command="{Binding CancelCommand}"
+                    CommandParameter="{Binding ElementName=login}"
+                    IsCancel="True"
+                    ToolTip="关闭">
                     <md:PackIcon
                         Width="30"
                         Height="30"

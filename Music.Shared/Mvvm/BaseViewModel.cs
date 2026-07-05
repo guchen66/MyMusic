@@ -1,4 +1,5 @@
-﻿
+﻿using IT.Tangdao.Core.Abstractions.Loggers;
+
 namespace Music.Shared.Mvvm
 {
     /// <summary>
@@ -6,28 +7,28 @@ namespace Music.Shared.Mvvm
     /// 中间类不能台臃肿，将Prism自带的注册进去，
     /// 再写一个自定义的接口，然后实现一个自定义的接口。
     /// </summary>
-    public class BaseViewModel:BindableBase
+    public class BaseViewModel : BindableBase
     {
         public DispatcherTimer Timer;
         public MainArgs AppData { get; set; } = MainArgs.Instance;
         public IRegionNavigationJournal NavigationJournal;//导航日志，上一页，下一页
         public IRegionManager RegionManager;//区域管理
         public IDialogService DialogService;
-      //  IPlayListService _playListService;
+
+        //  IPlayListService _playListService;
         public IEventAggregator EventAggregator;
 
+        public ITangdaoLogger Logger = TangdaoLogger.Get<BaseViewModel>();
         public IContainerProvider _containerProvider;
 
         public BaseViewModel(IContainerProvider provider)
         {
-            NavigationJournal=provider.Resolve<IRegionNavigationJournal>();
-            RegionManager=provider.Resolve<IRegionManager>();
-            DialogService=provider.Resolve<IDialogService>();
-            EventAggregator =provider.Resolve<IEventAggregator>();
-
+            NavigationJournal = provider.Resolve<IRegionNavigationJournal>();
+            RegionManager = provider.Resolve<IRegionManager>();
+            DialogService = provider.Resolve<IDialogService>();
+            EventAggregator = provider.Resolve<IEventAggregator>();
             Timer = new DispatcherTimer();
         }
-
 
         protected void NavigationToView(string navigatePath)
         {

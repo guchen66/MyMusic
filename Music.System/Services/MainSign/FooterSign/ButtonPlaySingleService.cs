@@ -25,7 +25,7 @@ namespace Music.System.Services.MainSign.FooterSign
             // string url = "http://v.api.aa1.cn/api/wymusic/index.php";
             string url = "https://tqlcode.com/page/music/api.php";
             byte[] commit = Encoding.UTF8.GetBytes($"types=url&id={id}&source=netease");
-            byte[] data = await httpClientService.PostAsync(url, commit, httpClientDto);
+            byte[] data = await httpClientService.PostAsync(url, commit);
             string s = Encoding.UTF8.GetString(data);
             JObject json = JObject.Parse(Encoding.UTF8.GetString(data));
             var Source = json["url"].ToString();

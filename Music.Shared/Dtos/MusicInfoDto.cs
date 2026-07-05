@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Music.Shared.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,10 +7,7 @@ using System.Threading.Tasks;
 
 namespace Music.Shared.Dtos
 {
-    /// <summary>
-    /// 个人喜欢港曲，所以推荐列表获取的是港区的
-    /// </summary>
-    public class HongKongMusicDto : BaseDto
+    public class MusicInfoDto : BaseDto
     {
         /// <summary>
         /// 音乐链接ID
@@ -41,6 +39,7 @@ namespace Music.Shared.Dtos
         /// </summary>
         public string MusicTime { get; set; }
 
+        public MusicType MusicType { get; set; }
         /// <summary>
         /// 音乐来源
         /// </summary>

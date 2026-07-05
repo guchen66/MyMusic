@@ -1,4 +1,8 @@
-﻿namespace MyMusic.ViewModels
+﻿using IT.Tangdao.Core.Abstractions.Loggers;
+using IT.Tangdao.Core.Threading;
+using System.Diagnostics;
+
+namespace MyMusic.ViewModels
 {
     public class LoginViewModel : BaseViewModel
     {
@@ -13,20 +17,12 @@
 
         #region 属性
 
-        private string _username;
+        private LoginInputDto _loginInputDto;
 
-        public string UserName
+        public LoginInputDto LoginInputDto
         {
-            get { return _username; }
-            set { SetProperty<string>(ref _username, value); }
-        }
-
-        private string _password;
-
-        public string Password
-        {
-            get { return _password; }
-            set { SetProperty<string>(ref _password, value); }
+            get { return _loginInputDto ?? (_loginInputDto = new LoginInputDto()); }
+            set { SetProperty(ref _loginInputDto, value); }
         }
 
         #endregion 属性
@@ -36,38 +32,46 @@
         public ICommand CloseingCommand { get; set; }
         public ICommand LoginCommand { get; set; }
         public ICommand CancelCommand { get; set; }
+        public ICommand LoadedCommand { get; set; }
 
         #endregion 命令
 
+        private Stopwatch stopwatch;
+        private ITangdaoLogger logger = TangdaoLogger.Get<LoginViewModel>();
+
         public LoginViewModel(ILogger logger, ILoginService loginService, IAuthorService authorService, IContainerProvider provider) : base(provider)
         {
-            _logger = logger;
             _loginService = loginService;
             _authorService = authorService;
-            CloseingCommand = new DelegateCommand(ExecuteClose);
-            LoginCommand = new DelegateCommand<Window>(async (win) => await SignInAsync(win));
+            LoginCommand = new DelegateCommand<Window>((win) => SignIn(win));
             CancelCommand = new DelegateCommand(SignOutAsync);
-            UserName = "admin";
-            Password = "123456";
+            LoadedCommand = new DelegateCommand(InitLoad);
         }
 
         #region 方法
+
+        public void InitLoad()
+        {
+            var jsonDto = JsonComponent.GetJsonObject<LoginInputDto>("loginAccount.json");
+            LoginInputDto.UserName = jsonDto.UserName;
+            LoginInputDto.Password = jsonDto.Password;
+            UIAmbientContext.SetObject("LoginInput", LoginInputDto);
+        }
 
         /// <summary>
         /// 异步登录，因为需要启动时读取网络数据
         /// </summary>
         /// <param name="win"></param>
-        private async Task SignInAsync(Window win)
+        private async void SignIn(Window win)
         {
-            _logger.Info($"用户进行了登录操作");
-            var loginResult = await AuthenticateAsync(UserName, Password);
-            if (loginResult.Status)
+            var loginResult = await AuthenticateAsync(LoginInputDto.UserName, LoginInputDto.Password);
+            if (loginResult.IsSuccess)
             {
                 EventAggregator.GetEvent<LoginEvent>().Publish(win);
             }
             else
             {
-                MessageBox.Show(loginResult.Result.ToString());
+                MessageBox.Show(loginResult.Message);
             }
         }
 
@@ -77,13 +81,6 @@
         private void SignOutAsync()
         {
             EventAggregator.GetEvent<LogoutEvent>().Publish();
-
-            //Application.Current.Shutdown();
-        }
-
-        private void Quit(Window win)
-        {
-            EventAggregator.GetEvent<QuitEvent>().Publish(win);
         }
 
         /// <summary>
@@ -92,7 +89,7 @@
         /// <param name="username"></param>
         /// <param name="password"></param>
         /// <returns></returns>
-        private async Task<ApiResponse> AuthenticateAsync(string username, string password)
+        private async Task<IResponseResult> AuthenticateAsync(string username, string password)
         {
             // string passwordMd5= MD5Extension.GetMD5Provider(username,password);
             var result = await _authorService.VerifyAsync(new LoginInputDto
@@ -102,15 +99,9 @@
             });
             if (result.IsSuccess)
             {
-                return new ApiResponse(true, LoginConst.LoginSucess);
+                return ResponseResult.Success(LoginConst.LoginSucess);
             }
-            return new ApiResponse(false, LoginConst.LoginFailed);
-        }
-
-        private void ExecuteClose()
-        {
-            SplashWindow splashWindow = new SplashWindow();
-            splashWindow.Show();
+            return ResponseResult.Failure(LoginConst.LoginFailed);
         }
 
         #endregion 方法

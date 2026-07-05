@@ -1,17 +1,35 @@
-﻿
+﻿using System.Net.Http;
+
 namespace Music.System.Services.HttpTools
 {
-   // [Scanning(RegisterType = "Singleton")]
+    // [Scanning(RegisterType = "Singleton")]
     public class HttpClientService : IHttpClientService
     {
-        public HttpClient CreateClient()
+        /// <summary>
+        /// 直接获取网页源码字符串（更高效）
+        /// </summary>
+        /// <param name="url">请求地址</param>
+        /// <returns>网页源码字符串</returns>
+        public async Task<string> GetStringDirectAsync(string url)
         {
-            return new HttpClient();
+            // 复用你现有的 HttpClientHandler 和请求头设置
+            HttpClientHandler handler = new HttpClientHandler();
+            handler.AllowAutoRedirect = true;
+            handler.UseCookies = true;
+            handler.CookieContainer = new CookieContainer();
+            handler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true;
+
+            using HttpClient client = new HttpClient(handler);
+            client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36 Edge/16.16299");
+
+            // 直接用 GetStringAsync，返回的就是字符串
+            string result = await client.GetStringAsync(url);
+            return result;
         }
 
-        public async Task<byte[]> GetAsync(string url, HttpClientDto httpClientArgs)
+        public async Task<byte[]> GetAsync(string url)
         {
-            httpClientArgs.headers = new WebHeaderCollection();
+            //httpClientArgs.headers = new WebHeaderCollection();
             //处理Http的响应
             HttpClientHandler handler = new HttpClientHandler();
             //重定向自动跟随
@@ -95,5 +113,24 @@ namespace Music.System.Services.HttpTools
             string s = Encoding.UTF8.GetString(result);
             return result;
         }
+
+        public void Dispose()
+        {
+            // Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private bool _disposed = false;
+        //protected virtual void Dispose(bool disposing)
+        //{
+        //    if (!_disposed)
+        //    {
+        //        if (disposing)
+        //        {
+        //            _httpClient?.Dispose();
+        //        }
+        //        _disposed = true;
+        //    }
+        //}
     }
 }

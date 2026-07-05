@@ -1,4 +1,7 @@
-﻿using MyMusic.Views.Asides;
+﻿using Music.Shared.Entitys.Header;
+using Music.SqlSugar.Services;
+using Music.SqlSugar.Utils;
+using MyMusic.Views.Asides;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +19,8 @@ namespace MyMusic.ViewModels.Asides
         private readonly IPlayListService _playListService;
         private readonly IAsideMenuService _asideMenuService;
         private readonly IAsideCreateControlService _asideCreateControlService;
+        private IDataRepository<AsideMenu> _dataRepository;
+        private IDataRepository<AsideCreateController> _dataRepositoryController;
 
         #endregion 字段
 
@@ -56,15 +61,21 @@ namespace MyMusic.ViewModels.Asides
 
         #endregion 属性
 
+        private Stopwatch stopwatch;
+
         public AsideViewModel(IMapper mapper, IContainerProvider provider) : base(provider)
         {
+            stopwatch = Stopwatch.StartNew();
+            stopwatch.Start();
             _mapper = mapper;
+            _dataRepository = provider.Resolve<IDataRepository<AsideMenu>>();
+            _dataRepositoryController = provider.Resolve<IDataRepository<AsideCreateController>>();
             _playListService = provider.Resolve<IPlayListService>();
             _asideMenuService = provider.Resolve<IAsideMenuService>();
             _asideCreateControlService = provider.Resolve<IAsideCreateControlService>();
 
             NavigateCommand = new DelegateCommand<AsideMenuDto>(ExecuteOpenView);
-            LoadedCommand = new DelegateCommand(async () => await ExecuteLoaded());
+            LoadedCommand = new DelegateCommand(() => ExecuteLoaded());
             CreatePlayListCommand = new DelegateCommand(ExecuteCreatePlayListView);
             OpenPlayListCommand = new DelegateCommand<bool?>(ExecuteOpenPlayList);
 
@@ -74,7 +85,7 @@ namespace MyMusic.ViewModels.Asides
             //  _timer.Tick += _timer_Tick;
             //_timer.Start();
 
-            EventAggregator.GetEvent<RefreshEvent>().Subscribe(async () => await RefreshAsync());
+            //  EventAggregator.GetEvent<RefreshEvent>().Subscribe(async () => await RefreshAsync());
 
             PlayListSignValue playListSignValue = new PlayListSignValue();
             playListSignValue.CalculationCompleted += PlayListSignValue_CalculationCompleted;
@@ -120,19 +131,29 @@ namespace MyMusic.ViewModels.Asides
         /// <summary>
         /// 初始化加载界面
         /// </summary>
-        private async Task ExecuteLoaded()
+        private void ExecuteLoaded()
         {
-            var asideMenus = await _asideMenuService.QueryListAsync();
+            Logger.Info($"AsideViewModel的Loaded执行开始：{stopwatch.ElapsedMilliseconds}");
+
+            var asideMenus = _dataRepository.QueryList();
+            // var asideMenus =_asideMenuService.QueryList(); // GlobalPreLoadDataProvider.AsideMenus;// await _asideMenuService.QueryListAsync();
             var asideMenuDtos = _mapper.Map<List<AsideMenuDto>>(asideMenus);
 
             // 加载左侧菜单选项
-            foreach (var menu in asideMenuDtos)
-            {
-                Dispatcher.CurrentDispatcher.Invoke(() => AsideMenus.Add(menu));
-            }
+            Logger.Info($"AsideViewModel的Loaded执行中：{stopwatch.ElapsedMilliseconds}");
 
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                foreach (var menu in asideMenuDtos)
+                {
+                    AsideMenus.Add(menu);
+                }
+            });
+
+            Logger.Info($"AsideViewModel的Loaded执行中，AsideMenus：{stopwatch.ElapsedMilliseconds}");
             //加载左侧新建歌单列表控制器选项
-            await RefreshAsync();
+            RefreshAsync();
+            Logger.Info($"AsideViewModel的Loaded执行结束：{stopwatch.ElapsedMilliseconds}");
         }
 
         /// <summary>
@@ -204,7 +225,7 @@ namespace MyMusic.ViewModels.Asides
                         await _asideCreateControlService.CreatePlatListAsync(controllerDto);
                         //    IsChanged = !IsChanged;
                         //拿到歌单名称后，实现异步将歌单添加到界面Expander内部
-                        await RefreshAsync();
+                        RefreshAsync();
                     }
                 }
             });
@@ -223,17 +244,24 @@ namespace MyMusic.ViewModels.Asides
         /// 刷新新建的歌单列表
         /// </summary>
         /// <returns></returns>
-        public async Task RefreshAsync()
+        public void RefreshAsync()
         {
+            Logger.Info($"AsideViewModel的Loaded执行中，刷新方法开始执行：{stopwatch.ElapsedMilliseconds}");
             // 清除现有的歌单列表
             AsedeCreateplayListDtos.Clear();
             //加载左侧新建个单列表控制器选项
-            var asideCreateControllers = await _asideCreateControlService.QueryListAsync(x => x.IsDelete == false);
+
+            var asideCreateControllers = _dataRepositoryController.QueryList(x => x.IsDelete == false); //GlobalPreLoadDataProvider.AsideCreateControllers;// await _asideCreateControlService.QueryListAsync(x => x.IsDelete == false);
             var asidasideCreateControllerseMenuDtos = _mapper.Map<List<AsideCreateControllerDto>>(asideCreateControllers);
-            foreach (var menu in asidasideCreateControllerseMenuDtos)
+            Application.Current.Dispatcher.Invoke(() =>
             {
-                Dispatcher.CurrentDispatcher.Invoke(() => AsedeCreateplayListDtos.Add(menu));
-            }
+                foreach (var menu in asidasideCreateControllerseMenuDtos)
+                {
+                    AsedeCreateplayListDtos.Add(menu);
+                }
+            });
+
+            Logger.Info($"AsideViewModel的Loaded执行中，刷新方法执行结束：{stopwatch.ElapsedMilliseconds}");
         }
 
         #endregion 方法

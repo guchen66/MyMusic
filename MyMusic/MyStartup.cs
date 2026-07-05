@@ -1,12 +1,17 @@
 ﻿using IT.Tangdao.Core.Abstractions.FileAccessor;
+using IT.Tangdao.Core.Abstractions.Loggers;
 using MapsterMapper;
 using Microsoft.Extensions.Configuration;
 using Music.Shared.Entitys.Header;
 using Music.SqlSugar.IRepositorys;
+using Music.SqlSugar.Repositorys;
+using Music.SqlSugar.Utils;
 using Music.System.Registers;
 using MyMusic.ViewModels.Asides;
 using MyMusic.Views.Asides;
 using Prism.Services.Dialogs;
+using System.Collections.Concurrent;
+using System.Diagnostics;
 
 namespace MyMusic
 {
@@ -14,9 +19,12 @@ namespace MyMusic
     {
         public static IConfigurationRoot Configuration { get; private set; }
 
+        public static ITangdaoLogger Logger = TangdaoLogger.Get<MyStartup>();
+
         public static void Register(IContainerRegistry containerRegistry)
         {
             //注册导航
+            containerRegistry.RegisterForNavigation<LoginView, LoginViewModel>();
             containerRegistry.RegisterForNavigation<SetView>(); //设置信息
             containerRegistry.RegisterForNavigation<DownLoadView, DownLoadViewModel>();
             containerRegistry.RegisterForNavigation<RecentView, RecentViewModel>();
@@ -29,7 +37,10 @@ namespace MyMusic
             containerRegistry.RegisterForNavigation<EditPlayListView, EditPlayListViewModel>();
             containerRegistry.RegisterForNavigation<_404View, _404ViewModel>();
             containerRegistry.RegisterForNavigation<_500View, _500ViewModel>();
-            containerRegistry.RegisterForNavigation<MainWindow, MainWindowViewModel>();
+            containerRegistry.RegisterForNavigation<RootView, RootViewModel>();
+
+            containerRegistry.RegisterForNavigation<SplashView, SplashViewModel>();
+            containerRegistry.RegisterForNavigation<MainPageView, MainPageViewModel>();
 
             //注册对话框弹窗
             containerRegistry.RegisterDialog<LoadingDialog, LoadingDialogViewModel>();
@@ -53,9 +64,10 @@ namespace MyMusic
             containerRegistry.Register<IMapper, Mapper>();
             //注册服务
             containerRegistry.RegisterScoped<IHttpClientService, HttpClientService>();
-            containerRegistry.RegisterScoped<IAsideMenuService, AsideMenuService>();
+            containerRegistry.RegisterSingleton<IAsideMenuService, AsideMenuService>();
             containerRegistry.RegisterScoped<IAsideCreateControlService, AsideCreateControlService>();
             containerRegistry.RegisterScoped<IHeaderMusicSourceService, HeaderMusicSourceService>();
+            containerRegistry.RegisterScoped(typeof(IDataRepository<>), typeof(DataRepository<>));
             //Configuration = new ConfigurationBuilder()
             //.SetBasePath(Directory.GetCurrentDirectory())
             //.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
@@ -65,6 +77,7 @@ namespace MyMusic
 
             //注册IT.Tangdao
             containerRegistry.RegisterSingleton<IContentAccess, ContentAccess>();
+            containerRegistry.RegisterSingleton<ITangdaoLogger, TangdaoLogger>();
         }
 
         public static void AddSqlSugar()

@@ -1,9 +1,16 @@
-﻿using MyMusic.Views.Asides;
-using Prism.Regions;
+﻿using IT.Tangdao.Core.Abstractions.Loggers;
+using MyMusic.Views.Asides;
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace MyMusic.ViewModels
 {
-    public class MainWindowViewModel : BaseViewModel
+    public class MainPageViewModel : BaseViewModel
     {
         #region 字段
 
@@ -12,6 +19,7 @@ namespace MyMusic.ViewModels
         private readonly IPlayListService _playListService;
         private readonly IAsideMenuService _asideMenuService;
         private readonly IAsideCreateControlService _asideCreateControlService;
+        private readonly ITangdaoLogger _logger = TangdaoLogger.Get<MainPageViewModel>();
 
         #endregion 字段
 
@@ -52,13 +60,15 @@ namespace MyMusic.ViewModels
 
         #endregion 属性
 
-        public MainWindowViewModel(IMapper mapper, IContainerProvider provider) : base(provider)
+        public MainPageViewModel(IMapper mapper, IContainerProvider provider) : base(provider)
         {
+            Stopwatch _stopwatch = Stopwatch.StartNew();
+            _logger.Info($"开始：{_stopwatch.ElapsedTicks}");
             _mapper = mapper;
             _playListService = provider.Resolve<IPlayListService>();
             _asideMenuService = provider.Resolve<IAsideMenuService>();
             _asideCreateControlService = provider.Resolve<IAsideCreateControlService>();
-            //  RegionManager.RegisterViewWithRegion(RegionNames.ContentRegion, typeof(EmptyPlayListView));
+
             RegionManager.RegisterViewWithRegion(RegionNames.AsideRegion, typeof(AsideView));
             RegionManager.RegisterViewWithRegion(RegionNames.ContentRegion, typeof(HomeView));
             RegionManager.RegisterViewWithRegion(RegionNames.HeaderRegion, typeof(HeaderView));
@@ -80,6 +90,8 @@ namespace MyMusic.ViewModels
             PlayListSignValue playListSignValue = new PlayListSignValue();
             playListSignValue.CalculationCompleted += PlayListSignValue_CalculationCompleted;
             playListSignValue.CalculateData(null, () => new PlayListInputDto());
+            // ContentRenderedCommand = new DelegateCommand(ExecuteContentRendered);
+            _logger.Info($"结束：{_stopwatch.ElapsedTicks}");
         }
 
         private void PlayListSignValue_CalculationCompleted(object sender, PlayListArgs e)

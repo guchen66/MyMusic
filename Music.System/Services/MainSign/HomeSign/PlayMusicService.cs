@@ -16,12 +16,14 @@ namespace Music.System.Services.MainSign.HomeSign
         private static MediaFoundationReader reader = null;
         private static SampleChannel channel = null;
         private static SampleAggregator aggregator = null;
-        IHttpClientService httpClientService;
-        IHeaderMusicSourceService _headerMusicSourceService;
+        private IHttpClientService httpClientService;
+        private IHeaderMusicSourceService _headerMusicSourceService;
+
         public static PlaybackState State
         {
             get { return player.PlaybackState; }
         }
+
         public async Task<bool> SingleMusicPlay(string name)
         {
             httpClientService = ContainerLocator.Container.Resolve<IHttpClientService>();
@@ -31,7 +33,7 @@ namespace Music.System.Services.MainSign.HomeSign
             // string url = "http://v.api.aa1.cn/api/wymusic/index.php";
             string url = "https://tqlcode.com/page/music/api.php";
             byte[] commit = Encoding.UTF8.GetBytes($"types=url&name={name}&source=netease");
-            byte[] data = await httpClientService.PostAsync(url, commit, httpClientDto);
+            byte[] data = await httpClientService.PostAsync(url, commit);
             string s = Encoding.UTF8.GetString(data);
             JObject json = JObject.Parse(Encoding.UTF8.GetString(data));
             var Source = json["url"].ToString();
@@ -54,10 +56,10 @@ namespace Music.System.Services.MainSign.HomeSign
             }
             catch (Exception e)
             {
-              //  MessageBox.Show($"{e.Message}暂不支持提供播放001");
+                //  MessageBox.Show($"{e.Message}暂不支持提供播放001");
             }
 
-           return true;
+            return true;
         }
     }
 }

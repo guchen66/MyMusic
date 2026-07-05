@@ -8,7 +8,7 @@ namespace MyMusic.Providers
 {
     public static class ViewModelManager
     {
-        public static MainWindowViewModel Main;
+        //  public static MainWindowViewModel Main;
         public static FooterViewModel Footer;
     }
 }

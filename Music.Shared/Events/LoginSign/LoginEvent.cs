@@ -45,4 +45,8 @@
     public class RefreshEvent : PubSubEvent
     {
     }
+
+    public class SplashEvent : PubSubEvent
+    {
+    }
 }

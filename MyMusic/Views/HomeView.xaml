@@ -18,30 +18,19 @@
     mc:Ignorable="d">
 
     <i:Interaction.Triggers>
-        <i:EventTrigger EventName="Initilaized">
-            <i:InvokeCommandAction Command="{Binding InitingCommand}" />
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding LoadedCommand}" PassEventArgsToCommand="true" />
         </i:EventTrigger>
     </i:Interaction.Triggers>
     <UserControl.Resources>
         <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
+            <!--<ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/Music.Themes;component/Styles/MyDataGridStyle.xaml" />
-            </ResourceDictionary.MergedDictionaries>
+            </ResourceDictionary.MergedDictionaries>-->
             <conver:BoolToVisibilityConverter x:Key="boolToVisibilityConverter" />
             <Style TargetType="Button" />
         </ResourceDictionary>
     </UserControl.Resources>
-
-    <!--<UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/Control/DataGrid.xaml" />
-                <ResourceDictionary>
-                    <converter:VisibilityConverter x:Key="VisibilityConverter" />
-                </ResourceDictionary>
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </UserControl.Resources>-->
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -103,7 +92,11 @@
                     <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
                         <i:InvokeCommandAction Command="{Binding OpenPopupCommand}" />
                     </i:EventTrigger>
+                    <i:EventTrigger EventName="Loaded">
+                        <i:InvokeCommandAction Command="{Binding LoadedCommand2}" />
+                    </i:EventTrigger>
                 </i:Interaction.Triggers>
+
                 <Grid
                     Width="120"
                     Height="40"
@@ -141,6 +134,27 @@
                     </md:PopupBox>
                 </Grid>
             </Button>
+
+            <Button
+                Width="120"
+                Height="38"
+                Margin="0,0,10,0"
+                md:ButtonAssist.CornerRadius="10"
+                Background="#2196f3"
+                Command="{Binding FlushCommand}"
+                Style="{StaticResource MaterialDesignFlatDarkBgButton}">
+                <StackPanel Orientation="Horizontal">
+                    <md:PackIcon
+                        Width="25"
+                        Height="25"
+                        Foreground="White"
+                        Kind="Autorenew" />
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        Foreground="White"
+                        Text="刷新" />
+                </StackPanel>
+            </Button>
         </ToolBar>
         <!--#endregion-->
 
@@ -165,22 +179,38 @@
                 CanUserAddRows="False"
                 CanUserReorderColumns="False"
                 CanUserSortColumns="False"
-                VirtualizingPanel.IsContainerVirtualizable="True"
-                VirtualizingPanel.VirtualizationMode="Recycling"
                 ColumnWidth="*"
                 IsReadOnly="True"
                 ItemsSource="{Binding MusicInfos}"
-                SelectionMode="Single">
+                SelectionMode="Single"
+                VirtualizingPanel.IsContainerVirtualizable="True"
+                VirtualizingPanel.VirtualizationMode="Recycling">
                 <!--<i:Interaction.Triggers>
                     <i:EventTrigger EventName="MouseDoubleClick">
                         <i:InvokeCommandAction Command="{Binding PrePlayCommand}" CommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
                     </i:EventTrigger>
                 </i:Interaction.Triggers>-->
                 <DataGrid.Columns>
-                    <DataGridTextColumn
+                    <!--<DataGridTextColumn
                         Width="3*"
                         Binding="{Binding MusicName}"
-                        Header="歌曲名" />
+                        Header="歌曲名">
+                    </DataGridTextColumn>-->
+                    <DataGridTemplateColumn Width="3*" Header="歌曲名">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Center"
+                                    Text="{Binding MusicName}"
+                                    TextWrapping="NoWrap">
+                                    <i:Interaction.Behaviors>
+                                        <be:TextTruncateBehavior IsEnabled="True" MaxDisplayLength="16" />
+                                    </i:Interaction.Behaviors>
+                                </TextBlock>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
                     <DataGridTextColumn
                         Width="2*"
                         Binding="{Binding Singer}"
@@ -205,16 +235,19 @@
                                 <StackPanel Orientation="Horizontal">
                                     <Button
                                         Width="30"
+                                        Margin="0,0,10,0"
                                         Padding="2,0,2,0"
-                                        Margin="0 0 10 0"
-                                        md:RippleAssist.IsCentered="True" CommandParameter="{Binding MusicName}"
-                                        Command="{Binding DataContext.PlayCommand, ElementName=dataGrid}">
+                                        md:RippleAssist.IsCentered="True"
+                                        Command="{Binding DataContext.PlayCommand, ElementName=dataGrid}"
+                                        CommandParameter="{Binding MusicName}">
                                         <md:PackIcon Kind="arrowrightdropcircle" />
                                     </Button>
                                     <Button
                                         Width="30"
                                         Padding="2,0,2,0"
-                                        md:RippleAssist.IsCentered="True"  Command="{Binding DataContext.FavorCommand, ElementName=dataGrid}" CommandParameter="{Binding MusicName}">
+                                        md:RippleAssist.IsCentered="True"
+                                        Command="{Binding DataContext.FavorCommand, ElementName=dataGrid}"
+                                        CommandParameter="{Binding MusicName}">
                                         <md:PackIcon Kind="Heart" />
                                     </Button>
                                     <md:PopupBox Padding="2,0,2,0">

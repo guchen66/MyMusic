@@ -11,6 +11,7 @@
     xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:prism="http://prismlibrary.com/"
     xmlns:vw="clr-namespace:MyMusic.Views;assembly=MyMusic"
+    xmlns:global="clr-namespace:Music.Shared.Globals;assembly=Music.Shared"
     prism:ViewModelLocator.AutoWireViewModel="True"
     FlowDirection="LeftToRight">
     <i:Interaction.Triggers>
@@ -87,10 +88,7 @@
                 CommandParameter="{Binding SearchContent}"
                 Content="搜索"
                 Cursor="Hand" />
-
         </StackPanel>
-
-
 
         <StackPanel
             Grid.Column="1"
@@ -105,7 +103,7 @@
             <DockPanel x:Name="GroupCheckButton">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="Loaded">
-                        <i:InvokeCommandAction Command="{Binding InitializedCommand}" />
+                        <i:InvokeCommandAction Command="{Binding LoadedCommand}" />
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
                 <StackPanel DockPanel.Dock="Left">
@@ -136,13 +134,13 @@
                               Height="56" Style="{StaticResource ToggleButtonStyle.LeftBarAndUnderline}">
                     <Grid>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="25"/>
-                            <RowDefinition Height="2"/>
-                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="25" />
+                            <RowDefinition Height="2" />
+                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-                        <md:PackIcon Kind="Menu" Foreground="{DynamicResource LightGreyBackgroundBrush}" HorizontalAlignment="Center" Height="22" Width="25"/>
+                        <md:PackIcon Kind="Menu" Foreground="{DynamicResource LightGreyBackgroundBrush}" HorizontalAlignment="Center" Height="22" Width="25" />
                         <TextBlock Grid.Row="2" HorizontalAlignment="Center" Foreground="{DynamicResource LightGreyBackgroundBrush}" FontSize="10"
-                                   Text="菜单"/>
+                                   Text="菜单" />
                     </Grid>
                 </ToggleButton>
                 <vw:SettingsPopup IsOpen="{Binding IsChecked, ElementName=SettingsToggleButton}"  StaysOpen="False"
@@ -160,7 +158,16 @@
                     FontFamily="Microsoft YaHei"
                     FontSize="24"
                     FontWeight="Light"
-                    Text="liu" />
+                    Text="{Binding UserName}">
+                    <TextBlock.ToolTip>
+                        <ToolTip DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
+                            <StackPanel>
+                                <TextBlock Text="{Binding UserName, StringFormat='用户名：{0}'}" />
+                                <TextBlock Text="{Binding Password, StringFormat='密码：{0}'}" />
+                            </StackPanel>
+                        </ToolTip>
+                    </TextBlock.ToolTip>
+                </TextBlock>
                 <md:PopupBox
                     Margin="10"
                     Foreground="DeepSkyBlue"
@@ -195,5 +202,3 @@
         </StackPanel>
     </Grid>
 </UserControl>
-
-

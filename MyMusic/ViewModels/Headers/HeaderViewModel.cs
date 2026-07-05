@@ -2,6 +2,11 @@
 using SqlSugar;
 using Prism.Ioc;
 using IT.Tangdao.Core.Extensions;
+using Bogus.DataSets;
+using IT.Tangdao.Core.Threading;
+using System.Diagnostics;
+using Music.SqlSugar.Utils;
+using Music.SqlSugar.Services;
 
 namespace MyMusic.ViewModels.Headers
 {
@@ -13,6 +18,7 @@ namespace MyMusic.ViewModels.Headers
         private readonly IPlayListService _playListService;
         private IHeaderMusicSourceService _headerMusicSourceService;
         private IAsideCreateControlService _asideCreateControlService;
+        private IDataRepository<MusicSourceInfo> _dataRepository;
 
         #endregion 字段
 
@@ -71,11 +77,16 @@ namespace MyMusic.ViewModels.Headers
 
         #endregion 属性
 
+        private Stopwatch stopwatch;
+
         public HeaderViewModel(IHeaderMusicSourceService headerMusicSourceService, IStateService stateService, IPlayListService playListService, IContainerProvider provider) : base(provider)
         {
+            stopwatch = Stopwatch.StartNew();
+            stopwatch.Start();
             _stateService = stateService;
             _playListService = playListService;
             _headerMusicSourceService = headerMusicSourceService;
+            _dataRepository = provider.Resolve<IDataRepository<MusicSourceInfo>>();
             _asideCreateControlService = ContainerLocator.Container.Resolve<IAsideCreateControlService>();
             OpenSettingCommand = new DelegateCommand<string>(ExecuteSetting);
             CloseCommand = new DelegateCommand(ExecuteClosing);
@@ -86,7 +97,7 @@ namespace MyMusic.ViewModels.Headers
             DragMoveCommand = new DelegateCommand(ExecuteDragMove);
             LogoutCommand = new DelegateCommand(async () => await ExecuteRestartAsync());
             ConfirmPlaySourceCommand = new DelegateCommand<string>(async (source) => await ExecuteSourceAsync(source));
-            InitializedCommand = new DelegateCommand(ExecuteInit);
+            LoadedCommand = new DelegateCommand(ExecuteInit);
         }
 
         #region 命令
@@ -100,9 +111,25 @@ namespace MyMusic.ViewModels.Headers
         public ICommand OpenLoggerCommand { get; set; }
         public ICommand DragMoveCommand { get; set; }
         public ICommand LogoutCommand { get; set; }
-        public ICommand InitializedCommand { get; set; }
+        public ICommand LoadedCommand { get; set; }
 
         #endregion 命令
+
+        private string _name;
+
+        public string UserName
+        {
+            get => _name;
+            set => SetProperty(ref _name, value);
+        }
+
+        private string _password;
+
+        public string Password
+        {
+            get => _password;
+            set => SetProperty(ref _password, value);
+        }
 
         #region 方法
 
@@ -110,17 +137,25 @@ namespace MyMusic.ViewModels.Headers
 
         public void ExecuteInit()
         {
-            Task.Run(async () => { await ExecuteHeaderMusicSourceInfo(); });
+            SystemUser.LoginUser = UIAmbientContext.GetObject<LoginInputDto>("LoginInput");
+            UserName = SystemUser.LoginUser.UserName;
+            Password = SystemUser.LoginUser.Password;
+            ExecuteHeaderMusicSourceInfo();
         }
 
         /// <summary>
         /// 查看Header是否选中播放源
         /// </summary>
         /// <returns></returns>
-        private async Task ExecuteHeaderMusicSourceInfo()
+        private void ExecuteHeaderMusicSourceInfo()
         {
-            var musicSourceInfos = await _headerMusicSourceService.QueryListAsync();
-            MusicSourceInfoList = musicSourceInfos.ToObservableCollection();
+            Logger.Info($"HeaderViewModel初始化开始{stopwatch.ElapsedMilliseconds}");
+            var musicSourceInfos = _dataRepository.QueryList(); // _headerMusicSourceService.QueryList();// GlobalPreLoadDataProvider.MusicSourceInfos;// await _headerMusicSourceService.QueryListAsync();
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                MusicSourceInfoList = musicSourceInfos.ToObservableCollection();
+            });
+            Logger.Info($"HeaderViewModel初始化结束{stopwatch.ElapsedMilliseconds}");
         }
 
         #endregion 初始化查看是否选中播放源

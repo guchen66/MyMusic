@@ -1,6 +1,4 @@
-﻿
-
-namespace Music.System.Services.MainSign.PlayLists
+﻿namespace Music.System.Services.MainSign.PlayLists
 {
     public interface IPlayListService
     {
@@ -8,7 +6,6 @@ namespace Music.System.Services.MainSign.PlayLists
         /// 创建歌单
         /// </summary>
         /// <returns></returns>
-        //public Task<bool> CreatePlatList(PlayListInputDto input);
         public Task<bool> CreatePlatListAsync(PlayListInputDto input);
 
         /// <summary>

@@ -66,3 +66,5 @@ global using System.Numerics;
 global using System.Threading.Channels;
 global using IT.Tangdao.Core.Attributes;
 global using IT.Tangdao.Core.Enums;
+global using IT.Tangdao.Core.Abstractions.Results;
+global using IT.Tangdao.Core.Helpers;
